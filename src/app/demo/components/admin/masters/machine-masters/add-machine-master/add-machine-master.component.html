@@ -1,0 +1,79 @@
+<form [formGroup]="machineMasterForm" (ngSubmit)="onSubmit()" *ngIf="!loadingModules || !loadingMachines;else loadingData;">
+    <small *ngIf="backendErrors?.message" class="p-error">
+        {{ backendErrors.message == "Duplicate entry '2-8' for key 'module'" ? "Machine already mapped with this module." :backendErrors.message  }}
+    </small>
+    <div class="p-fluid grid">
+      <!-- Plant Dropdown -->
+      <div class="field col-12  sm:col-6">
+        <label for="machine">Select Machine</label>
+        <p-dropdown
+            (focus)="backendErrors=undefined"
+              id="machine"
+              [options]="machineOptions"
+              formControlName="machine"
+              appendTo="body"
+              placeholder="Select Machine"
+              optionLabel="label"
+              optionValue="value"
+              filter="true"
+              filterBy="items.label"
+              [group]="true"
+            ></p-dropdown>
+        <small *ngIf="submitted && machineMasterForm.controls['machine'].invalid" class="p-error">
+          Machine is required.
+        </small>
+      </div>
+  
+      <!-- Customer Dropdown -->
+      <div class="field col-12 sm:col-6">
+        <label for="module">Select Module</label>
+        <div class="flex align-items-center">
+          <p-dropdown
+              (focus)="backendErrors=undefined"
+              id="module"
+              class="flex-grow-1"
+              [options]="moduleOptions"
+              [filter]="true"
+              filterBy="name"
+              formControlName="module"
+              placeholder="Select Module"
+              optionLabel="label"
+              optionValue="id"
+              appendTo="body"
+          >
+              <!-- Custom Loader Template -->
+              <!-- <ng-template pTemplate="empty">
+                  <div class="p-d-flex p-ai-center p-jc-center" style="height: 2rem;">
+                  <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
+                  <span class="ml-2">Loading...</span>
+                  </div>
+              </ng-template> -->
+          </p-dropdown>
+          <p-button icon="pi pi-plus" (click)="showAddModulesDialog()" />
+          <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem" />
+        </div>
+        <small *ngIf="submitted && machineMasterForm.controls['module'].invalid" class="p-error">
+          Module is required.
+        </small>
+      </div>
+
+
+      <!-- Submit Button -->
+      <div class="field col-12 sm:col-4">
+        <p-button type="submit" [loading]="loading" label="Submit" [disabled]="loading" />
+      </div>
+    </div>
+</form>
+  
+<ng-template #loadingData>
+    <div class="flex align-items-center justify-content-center">
+        <p-progressSpinner 
+            styleClass="w-2rem h-2rem" 
+            strokeWidth="8"  />
+        <span class="ml-2">Loading...</span>
+    </div>
+</ng-template>
+
+<p-dialog header="Add Module" [modal]="true" [(visible)]="visibleAddModuleDialog" [style]="{ width: '50vw', height: '50vh' }">
+  <app-add-module *ngIf="visibleAddModuleDialog" (notifyParent)="onModuleNotify($event)"></app-add-module>
+</p-dialog>

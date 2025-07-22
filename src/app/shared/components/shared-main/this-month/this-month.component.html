@@ -1,0 +1,256 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <!-- <p-table 
+            (onSort)="handleSort($event)" 
+            (onFilter)="handleFilter($event)"
+            #dt [columns]="selectedColumns" [exportHeader]="'customExportHeader'" [resizableColumns]="true"  dataKey="id" [value]="data" [loading]="loading_data" [tableStyle]="{ 'min-width': '70rem' }" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"> -->
+            <p-table 
+            (onFilter)="handleFilter($event)" selectionMode="multiple" [(selection)]="selectedRecords" [metaKeySelection]="'id'"
+            #dt [columns]="selectedColumns" [exportHeader]="'customExportHeader'" [resizableColumns]="true"  dataKey="id" [value]="data" [loading]="loading_data" [tableStyle]="{ 'min-width': '70rem' }" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm">
+                <ng-template pTemplate="caption">
+                    
+                    <div class="flex align-items-center justify-content-between">
+                        <div class="flex align-items-center">
+                            <p-multiSelect 
+                                display="chip" 
+                                [options]="cols" 
+                                [(ngModel)]="selectedColumns" 
+                                optionLabel="header"
+                                selectedItemsLabel="{0} columns selected" 
+                                [style]="{'min-width': '200px', 'margin-right': '8px'}" 
+                                placeholder="Choose Columns" />
+                            <p-button 
+                                icon="pi pi-external-link" 
+                                label="Export" 
+                                size="small"
+                                (onClick)="dt.exportCSV()" />
+                        </div>
+                        <div class="flex align-items-center">
+                            <p-button 
+                                icon="pi pi-pencil" 
+                                label="Update" 
+                                *ngIf="((userRole == '5' && today.getDay() !== 6) || userRole == '1')"
+                                size="small"
+                                [disabled]="!selectedRecords.length"
+                                (onClick)="showUpdateForm()" />
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <!-- <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                        <th>G</th>
+                        <th>H</th>
+                        <th>I</th>
+                        <th>J</th>
+                        <th>K</th>
+                        <th>L</th>
+                        <th>M</th>
+                        <th>N</th>
+                        <th>O</th>
+                        <th>P</th>
+                        <th>Q</th> -->
+                        <!-- Sap fields  -->
+                        <!-- <th>R</th>
+                        <th>S</th>
+                        <th>T</th>
+                        <th>U</th>
+                        <th>V</th>
+                        <th>W</th>
+                        <th>X</th>
+                        <th>Y</th>
+                        <th>Z</th>
+                        <th>AA</th>
+                        <th>AB</th>
+                        <th>AC</th>
+                        <th>AD</th>
+                        <th>AE</th>
+                        <th>AF</th>
+                        <th>AG</th>
+                        <th>AH</th>
+                        <th>AI</th>
+                        <th>AJ</th>
+                        <th>AK</th>
+                        <th>AL</th> -->
+                        <!-- derived -->
+                        <!-- <th>AM</th>
+                        <th>AN</th>
+                        <th>AO</th>
+                        <th>AP</th>
+                        <th>AQ</th>
+                        <th>AR</th>
+                        <th>AS</th>
+                        <th>AT</th>
+                        <th>AU</th>
+                        <th>AV</th>
+                        <th>AW</th>
+                        <th>AX</th>
+                        <th>AY</th>
+                        <th>AZ</th>
+                        <th>BA</th>
+                        <th>BB</th>
+                        <th>BC</th>
+                        <th>BD</th>
+                        <th>BE</th>
+                        <th>BF</th>
+                        <th>BG</th>
+                        <th>BH</th>
+                        <th>BI</th>
+                        <th>BJ</th>
+                        <th>BK</th>
+                        <th>BL</th>
+                    </tr> -->
+                    <!-- <tr>
+                        <th>SN</th>
+                        <th class="sap_file_color">Order</th>
+                        <th class="sap_file_color">Plant</th>
+                        <th class="sap_file_color">Material Number</th>
+                        <th class="sap_file_color">Material description</th>
+                        <th class="sap_file_color">Order quantity (GMEIN)</th>
+                        <th class="sap_file_color">Delivered quantity (GMEIN)</th>
+                        <th class="sap_file_color">Confirmed quantity (GMEIN)</th>
+                        <th class="sap_file_color">Unit of measure (=GMEIN)</th>
+                        <th class="sap_file_color">Batch</th>
+                        <th class="sap_file_color">Sequence number</th>
+                        <th class="sap_file_color">Created on</th>
+                        <th class="sap_file_color">Order Type</th>
+                        <th class="sap_file_color">System Status</th>
+                        <th class="sap_file_color">Entered by</th>
+                        <th class="sap_file_color">Posting Date</th>
+                        <th class="sap_file_color">Status Profile</th> -->
+                        <!-- Sap fields  -->
+                        <!-- <th class="wo_master_color">work order</th>
+                        <th class="wo_master_color">W/O ADD Date </th>
+                        <th class="wo_master_color">w/o Delivery Date</th>
+                        <th class="product_master_color">Responsible</th>
+                        <th class="product_master_color">Module</th>
+                        <th class="wo_master_color">Segment</th>
+                        <th class="wo_master_color">Customer</th>
+                        <th class="product_master_color">Finish</th>
+                        <th class="product_master_color">Finish Wt.</th>
+                        <th class="product_master_color">Size</th>
+                        <th class="product_master_color">Group</th>
+                        <th class="product_master_color">Length</th>
+                        <th class="product_master_color">SPEC</th>
+                        <th class="product_master_color">ROD DIA1.</th>
+                        <th class="product_master_color">DRAWN DIA.1</th>
+                        <th class="product_master_color">No.OF M/C</th>
+                        <th class="product_master_color">M/C-NAME</th>
+                        <th class="product_master_color">M/C-1 NAME</th>
+                        <th class="product_master_color">SPEED</th>
+                        <th class="product_master_color">Seg-2</th>
+                        <th class="product_master_color">Seg-3</th> -->
+                        <!-- derived -->
+                        <!-- <th class="calc_fields_color">To forge Qty</th>
+                        <th class="calc_fields_color">To forge Wt</th>
+                        <th class="calc_fields_color">To forge RM Wt</th>
+                        <th class="calc_fields_color">Final Pending Qty</th>
+                        <th class="calc_fields_color"> Pending Qty</th>
+                        <th class="calc_fields_color">Pending Wt.</th>
+                        <th class="calc_fields_color">Pending RM Wt.</th>
+                        <th class="calc_fields_color">Number of Day Pending</th>
+                        <th class="input_fields_color">Forging Commite Week</th>
+                        <th class="input_fields_color">NOV Forged Qty .</th>
+                        <th class="calc_fields_color">Plan NO. OF M/C</th>
+                        <th class="calc_fields_color">% of efficiency</th>
+                        <th class="calc_fields_color">Per Day Booking</th>
+                        <th class="calc_fields_color">Pending From Outside</th>
+                        <th class="calc_fields_color">NO. OF DAY Pending</th>
+                        <th class="input_fields_color">Allocated product  Qty </th>
+                        <th class="calc_fields_color">Allocated Product Wt</th>
+                        <th class="calc_fields_color">Allocated Balance RM Wt.</th>
+                        <th class="input_fields_color">SPECIAL REMARKS</th>
+                        <th class="input_fields_color">RM Delivery Date</th>
+                        <th class="input_fields_color">Advance Final RM Wt.</th>
+                        <th class="input_fields_color">RM Allocation Priority </th>
+                        <th class="input_fields_color">This Month Forge Wt.</th>
+                        <th class="input_fields_color">This Month Forge RM Wt</th>
+                        <th class="input_fields_color">Act allocated Balance RM Wt</th> -->
+                        <!-- <th class="input_fields_color">Per. of efficiency</th> -->
+                    <!-- </tr> -->
+                    <tr>
+                        <th>SN</th>
+                        <!-- <th pSortableColumn="{{col.field}}" pResizableColumn *ngFor="let col of columns"> -->
+                        <th pResizableColumn *ngFor="let col of columns; let i = index">
+                            {{col.header}}
+                            <!-- <app-sort-icons
+                            [colField]="col.field"
+                            [sortBy]="sortBy"
+                            (sortClick)="onSort($event)">
+                            </app-sort-icons> -->
+                            <i class="mr-2 pi pi-sort-alt" *ngIf="!sortBy || sortBy?.field !== col.field" (click)="sortingField(col.field)"></i>
+                            <i class="mr-2 pi pi-sort-amount-up-alt" style="color: blue;" (click)="rSortingField(col.field)" *ngIf="(sortBy && sortBy.field === col.field && sortBy.value === 1)"></i>
+                            <i class="mr-2 pi pi-sort-amount-down" style="color: blue;" (click)="sortingField(col.field)" *ngIf="(sortBy && sortBy.field === col.field && sortBy.value === -1)"></i>
+                            <i class="pi pi-filter" (click)="onFilterClick(i, $event, col.field)" *ngIf="filterForObj && !filterForObj[col.field].value"></i>
+                            <i class="pi pi-filter-slash" style="color: blue;" (click)="onFilterClear(i, $event, col.field)" *ngIf="filterForObj && filterForObj[col.field].value"></i>
+                            <!-- <p-sortIcon field="{{col.field}}" /> -->
+                            <!-- <p-columnFilter type="text" field="{{col.field}}" display="menu" class="ml-auto" /> -->
+                            <p-overlayPanel [id]="col.field" #op>
+                                <div class="flex flex-column">
+                                    <p-multiSelect 
+                                        display="chip" 
+                                        [options]="filterForArray" 
+                                        [(ngModel)]="selectedFilters"
+                                        selectedItemsLabel="{0} columns selected" 
+                                        [style]="{'min-width': '200px', 'margin-right': '8px'}" 
+                                        placeholder="Choose Columns" />
+                                    <div class="flex justify-content-between mt-2">
+                                        <p-button 
+                                            label="Cancel" 
+                                            size="small"
+                                            class=""
+                                            (onClick)="onFilterCancel(i, $event)" />
+                                        <p-button 
+                                            label="Clear" 
+                                            size="small"
+                                            class=""
+                                            (onClick)="onFilterClear(i, $event)" />
+                                        <p-button 
+                                            label="Apply" 
+                                            size="small"
+                                            class=""
+                                            [disabled]="!selectedFilters?.length"
+                                            (onClick)="onFilterApply(i, $event)" />
+                                    </div>
+                                </div>
+                            </p-overlayPanel>
+                        </th>
+                        <!-- <th pSortableColumn="{{col.field}}" *ngFor="let col of columns">
+                            {{col.header}} <p-sortIcon field="{{col.field}}" />
+                        </th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="columns">
+                    <!-- <tr (click)="showAddMainFileDialog(row)"> -->
+                    <tr [pSelectableRow]="row" [pSelectableRowIndex]="rowIndex">
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td *ngFor="let col of columns">
+                            {{row[col.field]}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <p-paginator 
+            (onPageChange)="onPageChange($event)" *ngIf="pagination"
+            [first]="'0'"
+            [rows]="pagination.per_page" 
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} - {last} of {totalRecords}"
+            [totalRecords]="pagination.total"  />
+            
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Update" [modal]="true" [(visible)]="visibleAdminUpdateDialog" [style]="{ width: '50rem' }">
+    <div>
+        <app-update-main-file [isRmUser]="isRmUser" [STPOptions]="STPData" [data]="selectedRecords" *ngIf="visibleAdminUpdateDialog" (notifyParent)="onChildNotify($event)"></app-update-main-file>
+    </div>
+</p-dialog>

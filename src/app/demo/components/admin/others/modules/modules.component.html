@@ -1,0 +1,30 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="p-2">
+            <p-button label="Add New" icon="pi pi-plus" (click)="showAddModuleDialog()" />
+        </div>
+        <p-table [loading]="loadingModules" [value]="modulesData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>Responsible</th>
+                    <th>Added At</th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-module let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{ rowIndex+1 }}</td>
+                    <td>{{ module.name }}</td>
+                    <td>{{ module.responsible }} - {{module.role}}</td>
+                    <td>{{ module.created_at | date:'medium' }}</td>
+                    <td><p-button icon="pi pi-pencil" /></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-dialog header="Add Module" [modal]="true" [(visible)]="visibleAddModuleDialog" [style]="{ width: '50vw' }">
+    <app-add-module *ngIf="visibleAddModuleDialog" (notifyParent)="onChildNotify($event)"></app-add-module>
+</p-dialog>

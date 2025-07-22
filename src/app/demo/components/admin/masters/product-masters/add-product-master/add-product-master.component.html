@@ -1,0 +1,320 @@
+<form [formGroup]="productMasterForm" (ngSubmit)="onSubmit()">
+    <p-fieldset legend="SAP DATA" [toggleable]="false">
+        <div class="p-fluid grid">
+          <!-- SAP DATA -->
+          <!-- <h3 class="col-12">SAP DATA</h3> -->
+          <div class="field col-12 sm:col-4">
+            <label for="order">Order <span class="text-red-500">*</span></label>
+            <input id="order" type="text" pInputText formControlName="order_number" placeholder="Enter Order" />
+            <small *ngIf="submitted && productMasterForm.controls['order_number'].invalid" class="p-error">Order is required.</small>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="material_number">Material Number <span class="text-red-500">*</span></label>
+            <p-inputGroup>
+              <input *ngIf="loading" id="material_number" (input)="onInput($event.target.value)" type="text" pInputText [disabled]="true" placeholder="Enter Material Number" />
+              <input *ngIf="!loading" id="material_number" (input)="onInput($event.target.value)" type="text" pInputText formControlName="material_number" placeholder="Enter Material Number" />
+              <button type="button" pButton
+                [ngClass]="materialNumberInfo ? 'p-button-success' : 'p-button-danger'">
+                <i *ngIf="checkingMaterialNumber" class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                <i *ngIf="!checkingMaterialNumber && materialNumberInfo" class="pi pi-check" style="font-size: 1rem"></i>
+                <i *ngIf="!checkingMaterialNumber && !materialNumberInfo" class="pi pi-times" style="font-size: 1rem"></i>
+              </button>
+              
+            </p-inputGroup>
+            <small *ngIf="submitted && productMasterForm.controls['material_number'].invalid" class="p-error">
+              Material Number is required.
+            </small>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="unit_of_measure">Unit of Measure <span class="text-red-500">*</span></label>
+            <input id="unit_of_measure" type="text" pInputText formControlName="unit_of_measure" placeholder="Enter Unit of Measure" />
+            <small *ngIf="submitted && productMasterForm.controls['unit_of_measure'].invalid" class="p-error">Unit of Measure is required.</small>
+          </div>
+          <div class="field col-12 sm:col-6">
+            <label for="material_description">Material Description <span class="text-red-500">*</span></label>
+            <textarea
+              id="material_description"
+              pInputTextarea
+              rows="3"
+              formControlName="material_description"
+              placeholder="Enter Material Description"
+            ></textarea>
+            <small *ngIf="submitted && productMasterForm.controls['material_description'].invalid" class="p-error">
+              Material Description is required.
+            </small>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="material_number">Material Number for <u class="text-primary">{{selectedProcess?.label}}</u><span class="text-red-500">*</span></label>
+            <input type="text" pInputText [disabled]="true" placeholder="Material Number" [value]="material_no_for_process" />
+          </div>
+          <div class="field col-12">
+            <label for="material_number">Process<span class="text-red-500">*</span></label>
+            <label>
+              <input
+                type="radio"
+                name="process"
+                value="Forging"
+                (change)="onProcessChange($event)"
+                checked
+              />
+              Forging
+            </label>
+          
+            <label>
+              <input
+                type="radio"
+                name="process"
+                value="Heating"
+                (change)="onProcessChange($event)"
+              />
+              Heating
+            </label>
+          
+            <label>
+              <input
+                type="radio"
+                name="process"
+                value="Finish"
+                (change)="onProcessChange($event)"
+              />
+              Finish
+            </label>
+          </div>
+        </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Machine" [toggleable]="false">
+
+        <div class="p-fluid grid">    
+      
+          <!-- Machine -->
+          <div class="field col-12 sm:col-6">
+            <label for="machine_name">Machine Name <span class="text-red-500">*</span></label>
+            <div class="flex align-items-center">
+              <p-dropdown
+                id="machine_name"
+                class="flex-grow-1"
+                [options]="machineOptions"
+                formControlName="machine"
+                appendTo="body"
+                placeholder="Select Machine"
+                optionLabel="label"
+                optionValue="value"
+                filter="true"
+                filterBy="items.label"
+                [group]="true"
+                (onChange)="machineChanged($event)"
+              ></p-dropdown>
+              <p-progressSpinner *ngIf="loadingMachines" styleClass="w-2rem h-2rem" />
+            </div>
+            <small *ngIf="submitted && productMasterForm.controls['machine'].invalid" class="p-error">Machine Name is required.</small>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="finish_wt">Module</label>
+            <div class="flex align-items-center">
+              <p-dropdown
+                id="machine_module_name"
+                class="flex-grow-1"
+                [options]="machineModuleOptions"
+                formControlName="machine_module"
+                appendTo="body"
+                placeholder="Select Module for Machine"
+                optionLabel="module_name"
+                optionValue="module_id"
+                filter="true"
+                filterBy="module_name"
+                (onChange)="machineModuleChanged($event)"
+              ></p-dropdown>
+              <p-progressSpinner *ngIf="loadingMachineModules" styleClass="w-2rem h-2rem" />
+            </div>
+            <!-- <input [disabled]="true" type="text" pInputText [value]="productMasterForm.controls['seg2']?.value?.value" /> -->
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="finish_wt">Responsible</label>
+            <input [disabled]="true" type="text" pInputText [value]="responsible_person || materialNumberInfo?.responsible_name" />
+          </div>
+        </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Input Fields" [toggleable]="false">
+
+        <div class="p-fluid grid">
+            
+      
+          <!-- Input Fields -->
+          <div class="field col-12 sm:col-4">
+            <label for="segment">Segment</label>
+            <div class="flex align-items-center">
+                <p-dropdown
+                  id="segment"
+                  class="flex-grow-1"
+                  [options]="segmentOptions"
+                  formControlName="segment"
+                  appendTo="body"
+                  placeholder="Select Segment"
+                  optionLabel="name"
+                  optionValue="id"
+                  filter="true"
+                ></p-dropdown>
+                <p-button icon="pi pi-plus" (click)="showAddSegmentDialog()" />
+                <p-progressSpinner *ngIf="loadingSegments" styleClass="w-2rem h-2rem" />
+            </div>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="cheese_wt">Cheese Wt</label>
+            <input id="cheese_wt" type="text" pInputText formControlName="cheese_wt" placeholder="Enter Cheese Wt" />
+          </div>
+          <div class="field col-12 sm:col-4">
+              <label for="finish">Finish</label>
+            <div class="flex align-items-center">
+                <p-dropdown
+                  id="finish"
+                  class="flex-grow-1"
+                  [options]="finishOptions"
+                  formControlName="finish"
+                  appendTo="body"
+                  placeholder="Select Finish"
+                  optionLabel="name"
+                  optionValue="id"
+                  filter="true"
+                ></p-dropdown>
+                <p-button icon="pi pi-plus" (click)="showAddFinishDialog()" />
+                <p-progressSpinner *ngIf="loadingFinish" styleClass="w-2rem h-2rem" />
+            </div>
+            
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="finish_wt">Finish Wt</label>
+            <input id="finish_wt" type="text" pInputText formControlName="finish_wt" placeholder="Enter Finish Wt" />
+          </div>
+    
+    
+          <div class="field col-12 sm:col-4">
+            <label for="size">Size</label>
+            <input id="size" type="text" pInputText formControlName="size" placeholder="Enter Size" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="length">Length</label>
+            <input id="length" type="text" pInputText formControlName="length" placeholder="Enter Length" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="spec">SPEC</label>
+            <input id="spec" type="text" pInputText formControlName="spec" placeholder="Enter SPEC" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="rod_dia1">ROD DIA1</label>
+            <input id="rod_dia1" type="text" pInputText formControlName="rod_dia1" placeholder="Enter Rod Dia1" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="drawn_dia1">DRAWN DIA1</label>
+            <input id="drawn_dia1" type="text" pInputText formControlName="drawn_dia1" placeholder="Enter Drawn Dia1" />
+          </div>
+                <!-- Additional Fields -->
+            <div class="field col-12 sm:col-4">
+                <label for="group">Group</label>
+                <div class="flex align-items-center">
+                    <p-dropdown
+                        id="group"
+                        class="flex-grow-1"
+                        [options]="groupOptions"
+                        formControlName="prod_group"
+                        appendTo="body"
+                        placeholder="Select Group"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter="true"
+                    ></p-dropdown>
+                    <p-button icon="pi pi-plus" (click)="showAddGroupDialog()" />
+                    <p-progressSpinner *ngIf="loadingGroups" styleClass="w-2rem h-2rem" />
+                </div>
+                </div>
+                <div class="field col-12 sm:col-4">
+                <label for="seg2">Seg-2</label>
+                <div class="flex align-items-center">
+                    <p-dropdown
+                        id="seg2"
+                        class="flex-grow-1"
+                        [options]="seg2Options"
+                        formControlName="seg2"
+                        appendTo="body"
+                        placeholder="Select Seg-2"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter="true"
+                    ></p-dropdown>
+                    <p-button icon="pi pi-plus" (click)="showAddSeg2Dialog()" />
+                    <p-progressSpinner *ngIf="loadingSeg2" styleClass="w-2rem h-2rem" />
+                </div>
+                </div>
+              <div class="field col-12 sm:col-4">
+                <label for="seg3">Seg-3</label>
+                <div class="flex align-items-center">
+                    <p-dropdown
+                        id="seg3"
+                        class="flex-grow-1"
+                        [options]="seg3Options"
+                        formControlName="seg3"
+                        appendTo="body"
+                        placeholder="Select Seg-3"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter="true"
+                    ></p-dropdown>
+                    <p-button icon="pi pi-plus" (click)="showAddSeg3Dialog()" />
+                    <p-progressSpinner *ngIf="loadingSeg3" styleClass="w-2rem h-2rem" />
+                </div>
+              </div>
+        
+
+          <div class="field col-12 sm:col-4">
+            <label for="special_remarks">Special Remarks</label>
+            <input id="special_remarks" type="text" pInputText formControlName="special_remarks" placeholder="Enter Special Remarks" />
+          </div>
+
+          <div class="field col-12 sm:col-4">
+            <label for="bom">BOM</label>
+            <input id="bom" type="text" pInputText formControlName="bom" placeholder="Enter BOM" />
+          </div>
+
+          <div class="field col-12 sm:col-4">
+            <label for="rm_component">RM Component</label>
+            <input id="rm_component" type="text" pInputText formControlName="rm_component" placeholder="Enter RM Component" />
+          </div>
+
+
+          <div class="field col-12 sm:col-6">
+            <label for="cond_of_rm">Condition of Raw material</label>
+            <textarea
+              id="cond_of_rm"
+              pInputTextarea
+              rows="3"
+              formControlName="condition_of_rm"
+              placeholder="Enter Condition of RM"
+            ></textarea>
+          </div>
+          <div class="col-offset-6"></div>
+        </div>
+    </p-fieldset>
+    <p-button type="submit" label="Submit" [disabled]="loading" />
+</form>
+
+<p-dialog header="Add Finish" [modal]="true" [(visible)]="visibleAddFinishDialog" [style]="{ width: '25vw' }">
+    <app-add-finish *ngIf="visibleAddFinishDialog" (notifyParent)="onFinishNotify($event)"></app-add-finish>
+</p-dialog>
+
+<p-dialog header="Add Segment" [modal]="true" [(visible)]="visibleAddSegmentDialog" [style]="{ width: '25vw' }">
+  <app-add-segments *ngIf="visibleAddSegmentDialog" (notifyParent)="onSegmentNotify($event)"></app-add-segments>
+</p-dialog>
+
+<p-dialog header="Add Group" [modal]="true" [(visible)]="visibleAddGroupDialog" [style]="{ width: '25vw' }">
+  <app-add-group *ngIf="visibleAddGroupDialog" (notifyParent)="onGroupNotify($event)"></app-add-group>
+</p-dialog>
+
+<p-dialog header="Add Seg-2" [modal]="true" [(visible)]="visibleAddSeg2Dialog" [style]="{ width: '25vw' }">
+  <app-add-seg-2 *ngIf="visibleAddSeg2Dialog" (notifyParent)="onSeg2Notify($event)"></app-add-seg-2>
+</p-dialog>
+
+<p-dialog header="Add Seg-3" [modal]="true" [(visible)]="visibleAddSeg3Dialog" [style]="{ width: '25vw' }">
+  <app-add-seg-3 *ngIf="visibleAddSeg3Dialog" (notifyParent)="onSeg3Notify($event)"></app-add-seg-3>
+</p-dialog>
+  

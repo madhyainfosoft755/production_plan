@@ -1,0 +1,22 @@
+
+<form [formGroup]="finishForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid grid">
+        <!-- Project Name -->
+        <div class="field col-12">
+            <label for="name">Name <span class="text-red-500">*</span></label>
+            <input id="name" type="text" pInputText  formControlName="name" (input)="onNameInput($event)" (focus)="backendErrors=undefined" />
+            <small *ngIf="submitted && finishForm.controls['name'].invalid" class="p-error">
+                Name is required.
+            </small>
+            <small *ngIf="backendErrors?.name" class="p-error">
+                {{ backendErrors.name }}
+            </small>
+        </div>
+    
+        <!-- Submit Button -->
+        <div class="field col-12">
+            <p-button type="submit" [disabled]="loading" label="Add" />
+        </div>
+    </div>
+</form>
+             

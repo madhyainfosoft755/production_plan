@@ -1,0 +1,193 @@
+<p-dialog header="Advance Filter" [modal]="true" [(visible)]="visibleFilterDrawer" [style]="{ width: '80vw' }" (onHide)="hideAdvanceFilterEmit()">
+  <form [formGroup]="productMasterForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid grid">
+          <div class="field col-12 sm:col-4">
+              <label for="material_number">Order</label>
+              <input id="order_number" formControlName="order_number" type="text" pInputText placeholder="Enter Order" />
+          </div>
+          <div class="field col-12 sm:col-4">
+              <label for="material_number">Material Number</label>
+              <input id="material_number" formControlName="material_number" type="text" pInputText placeholder="Enter Material Number" />
+          </div>
+          <!-- Machine -->
+          <div class="field col-12 sm:col-4">
+            <label for="machine_name">Machine Name</label>
+            <div class="flex align-items-center">
+              <p-dropdown
+                id="machine_name"
+                class="flex-grow-1"
+                [options]="machineOptions"
+                formControlName="machine"
+                appendTo="body"
+                placeholder="Select Machine"
+                optionLabel="label"
+                optionValue="value"
+                filter="true"
+                filterBy="items.label"
+                [group]="true"
+                (onChange)="machineChanged($event)"
+              ></p-dropdown>
+              <p-progressSpinner *ngIf="loadingMachines" styleClass="w-2rem h-2rem" />
+            </div>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="finish_wt">Module</label>
+            <div class="flex align-items-center">
+              <p-dropdown
+                id="machine_module_name"
+                class="flex-grow-1"
+                [options]="machineModuleOptions"
+                formControlName="machine_module"
+                appendTo="body"
+                placeholder="Select Module for Machine"
+                optionLabel="module_name"
+                optionValue="module_id"
+                filter="true"
+                filterBy="module_name"
+                (onChange)="machineModuleChanged($event)"
+              ></p-dropdown>
+              <p-progressSpinner *ngIf="loadingMachineModules" styleClass="w-2rem h-2rem" />
+            </div>
+          </div>
+          <!-- Input Fields -->
+          <div class="field col-12 sm:col-4">
+            <label for="segment">Segment</label>
+            <div class="flex align-items-center">
+                <p-dropdown
+                  id="segment"
+                  class="flex-grow-1"
+                  [options]="segmentOptions"
+                  formControlName="segment"
+                  appendTo="body"
+                  placeholder="Select Segment"
+                  optionLabel="name"
+                  optionValue="id"
+                  filter="true"
+                ></p-dropdown>
+                <p-progressSpinner *ngIf="loadingSegments" styleClass="w-2rem h-2rem" />
+            </div>
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="cheese_wt">Cheese Wt</label>
+            <input id="cheese_wt" type="text" pInputText formControlName="cheese_wt" placeholder="Enter Cheese Wt" />
+          </div>
+          <div class="field col-12 sm:col-4">
+              <label for="finish">Finish</label>
+            <div class="flex align-items-center">
+                <p-dropdown
+                  id="finish"
+                  class="flex-grow-1"
+                  [options]="finishOptions"
+                  formControlName="finish"
+                  appendTo="body"
+                  placeholder="Select Finish"
+                  optionLabel="name"
+                  optionValue="id"
+                  filter="true"
+                ></p-dropdown>
+                <p-progressSpinner *ngIf="loadingFinish" styleClass="w-2rem h-2rem" />
+            </div>
+            
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="finish_wt">Finish Wt</label>
+            <input id="finish_wt" type="text" pInputText formControlName="finish_wt" placeholder="Enter Finish Wt" />
+          </div>
+      
+      
+          <div class="field col-12 sm:col-4">
+            <label for="size">Size</label>
+            <input id="size" type="text" pInputText formControlName="size" placeholder="Enter Size" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="length">Length</label>
+            <input id="length" type="text" pInputText formControlName="length" placeholder="Enter Length" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="spec">SPEC</label>
+            <input id="spec" type="text" pInputText formControlName="spec" placeholder="Enter SPEC" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="rod_dia1">ROD DIA1</label>
+            <input id="rod_dia1" type="text" pInputText formControlName="rod_dia1" placeholder="Enter Rod Dia1" />
+          </div>
+          <div class="field col-12 sm:col-4">
+            <label for="drawn_dia1">DRAWN DIA1</label>
+            <input id="drawn_dia1" type="text" pInputText formControlName="drawn_dia1" placeholder="Enter Drawn Dia1" />
+          </div>
+                <!-- Additional Fields -->
+            <div class="field col-12 sm:col-4">
+                <label for="group">Group</label>
+                <div class="flex align-items-center">
+                    <p-dropdown
+                        id="group"
+                        class="flex-grow-1"
+                        [options]="groupOptions"
+                        formControlName="prod_group"
+                        appendTo="body"
+                        placeholder="Select Group"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter="true"
+                    ></p-dropdown>
+                    <p-progressSpinner *ngIf="loadingGroups" styleClass="w-2rem h-2rem" />
+                </div>
+                </div>
+                <div class="field col-12 sm:col-4">
+                <label for="seg2">Seg-2</label>
+                <div class="flex align-items-center">
+                    <p-dropdown
+                        id="seg2"
+                        class="flex-grow-1"
+                        [options]="seg2Options"
+                        formControlName="seg2"
+                        appendTo="body"
+                        placeholder="Select Seg-2"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter="true"
+                    ></p-dropdown>
+                    <p-progressSpinner *ngIf="loadingSeg2" styleClass="w-2rem h-2rem" />
+                </div>
+                </div>
+              <div class="field col-12 sm:col-4">
+                <label for="seg3">Seg-3</label>
+                <div class="flex align-items-center">
+                    <p-dropdown
+                        id="seg3"
+                        class="flex-grow-1"
+                        [options]="seg3Options"
+                        formControlName="seg3"
+                        appendTo="body"
+                        placeholder="Select Seg-3"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter="true"
+                    ></p-dropdown>
+                    <p-progressSpinner *ngIf="loadingSeg3" styleClass="w-2rem h-2rem" />
+                </div>
+              </div>
+        
+      
+          <div class="field col-12 sm:col-4">
+            <label for="special_remarks">Special Remarks</label>
+            <input id="special_remarks" type="text" pInputText formControlName="special_remarks" placeholder="Enter Special Remarks" />
+          </div>
+      
+          <div class="field col-12 sm:col-4">
+            <label for="bom">BOM</label>
+            <input id="bom" type="text" pInputText formControlName="bom" placeholder="Enter BOM" />
+          </div>
+      
+          <div class="field col-12 sm:col-4">
+            <label for="rm_component">RM Component</label>
+            <input id="rm_component" type="text" pInputText formControlName="rm_component" placeholder="Enter RM Component" />
+          </div>
+      </div>  
+        
+  
+      
+      <p-button type="button" label="Clear" [outlined]="true" (onClick)="clearAdvanceFilter()" class="mr-2" />
+      <p-button type="submit" [loading]="loadingAdvanceFilter" [disabled]="loadingAdvanceFilter || !enableAdvSearch" label="Submit" />
+  </form>
+</p-dialog>

@@ -1,0 +1,91 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <!-- <h4>Main file history feature will comming soon.</h4> -->
+            <h4>Module Wise - Machine Wise Monthly Report</h4>
+        </div>
+        <div class="col-12">
+            <form [formGroup]="filterForm">
+                <div class="grid">
+                  <div class="col-12 flex align-items-center py-0">
+                    <!-- Filter for Module -->
+                    <label for="module_name">Modules :</label>
+                    <div class="flex align-items-center">
+                      <p-multiSelect 
+                        [options]="moduleOptions" 
+                        class="flex-grow-1"
+                        formControlName="module_name"
+                        optionLabel="name" 
+                        placeholder="Select Modules"
+                        (onChange)="moduleChanged($event)" />
+                      <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem" />
+                    </div>
+                  </div>
+              
+                  <div class="col-12 flex align-items-center py-0">
+                    <!-- Filter for Machine Name -->
+                    <label for="machine_1_name">Machines:</label>
+                    <div class="flex align-items-center">
+                      <p-multiSelect 
+                        [options]="machineOptions" 
+                        class="flex-grow-1"
+                        formControlName="machine_1_name"
+                        [group]="true"
+                        display="chip"
+                        placeholder="Select Machines"
+                        (onChange)="onFilterChange()"
+                        (onSelectAllChange)="onFilterChange()" />
+                      <p-progressSpinner *ngIf="loadingMachines" styleClass="w-2rem h-2rem" />
+                    </div>
+                  </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12">
+            
+            <p-table styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"  [loading]="loadingReport" [value]="pivotData" [tableStyle]="{ 'min-width': '50rem' }">
+              <ng-template pTemplate="header">
+                  <tr [ngClass]="bg-blue-400">
+                    <th>SN</th>
+                    <th class="bg-blue-400">Module Name</th>
+                    <th class="bg-blue-400">Machine Name</th>
+                    <th class="bg-blue-400">Pending Qty</th>
+                    <!-- <th class="bg-blue-400">Drawn Dia 1</th>
+                    <th class="bg-blue-400">Material Number</th>
+                    <th class="bg-blue-400">Material Description</th>
+                    <th class="bg-blue-400">W/O</th>
+                    <th class="bg-blue-400">Segment</th>
+                    <th class="bg-blue-400">Customer</th>
+                    <th class="bg-blue-400">Sum of To Forge Qty</th>
+                    <th class="bg-blue-400">Sum of To Forge Wt</th>
+                    <th class="bg-blue-400">Sum of To Forge RM Wt</th> -->
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-group let-rowIndex="rowIndex">
+                  <tr [ngClass]="{ 'bg-cyan-100': group.module_name === 'Total'}">
+                    <td>{{ rowIndex+1 }}</td>
+                    <td>{{ group.module_name }}</td>
+                    <td>{{ group.machine_1_name }}</td>
+                    <td>{{ group.pending_qty }}</td>
+                    <!-- <td>{{ group.drawn_dia1 }}</td>
+                    <td>{{ group.materialNumber }}</td>
+                    <td>{{ group.materialDescription }}</td>
+                    <td>{{ group.sequenceNumber }}</td>
+                    <td>{{ group.sap_segment_name }}</td>
+                    <td>{{ group.customer }}</td>
+                    <td>{{ group.to_forge_qty }}</td>
+                    <td>{{ group.to_forge_wt }}</td>
+                    <td>{{ group.to_forge_rm_wt }}</td> -->
+                    <!-- <ng-container *ngFor="let machine of filteredMachines">
+                      <td>{{ group.machines[machine]?.to_forge_qty || 0 }}</td>
+                      <td>{{ group.machines[machine]?.to_forge_wt || 0 }}</td>
+                      <td>{{ group.machines[machine]?.to_forge_rm_wt || 0 }}</td>
+                    </ng-container> -->
+                  </tr>
+              </ng-template>
+            </p-table>
+              
+        </div>
+    </div>
+</div>

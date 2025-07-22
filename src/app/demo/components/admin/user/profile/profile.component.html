@@ -1,0 +1,89 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-fieldset legend="Update Profile" [toggleable]="false">
+                <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" autocomplete="off">
+                    <p-messages 
+                        [(value)]="messages" 
+                        [enableService]="false" 
+                        [closable]="true" />
+                    <div class="p-fluid grid">
+                
+                        <!-- salutation Dropdown -->
+                        <div class="field col-12  sm:col-2">
+                            <label for="salutation">Salutation <span class="text-red-500">*</span></label>
+                            <p-dropdown
+                            id="salutation"
+                            [options]="salutationOptions"
+                            formControlName="salutation"
+                            placeholder="Select salutation"
+                            optionLabel="label"
+                            optionValue="value"
+                            ></p-dropdown>
+                            <small *ngIf="submitted && profileForm.controls['salutation'].invalid" class="p-error">
+                            salutation is required.
+                            </small>
+                        </div>
+                  
+                      <!-- Name -->
+                      <div class="field col-12 sm:col-4">
+                        <label for="name">Name <span class="text-red-500">*</span></label>
+                        <input id="name" type="text" pInputText formControlName="name" placeholder="Enter Name" />
+                        <small *ngIf="submitted && profileForm.controls['name'].invalid" class="p-error">
+                          Name is required.
+                        </small>
+                      </div>
+                  
+                      <!-- Email -->
+                      <div class="field col-12 sm:col-6">
+                        <label for="email">Email <span class="text-red-500">*</span></label>
+                        <input id="email" type="email" pInputText formControlName="email" placeholder="Enter Email" />
+                        <small *ngIf="submitted && profileForm.controls['email'].invalid" class="p-error">
+                          Valid Email is required.
+                        </small>
+                      </div>
+                  
+                      <!-- Employee ID -->
+                      <div class="field col-12 sm:col-4">
+                        <label for="empId">Employee ID <span class="text-red-500">*</span></label>
+                        <input id="empId" type="text" pInputText formControlName="emp_id" placeholder="Enter Employee ID" />
+                        <small *ngIf="submitted && profileForm.controls['emp_id'].invalid" class="p-error">
+                          Employee ID is required.
+                        </small>
+                      </div>
+                
+                      <!-- Role Dropdown -->
+                      <div class="field col-12 sm:col-4">
+                        <label for="role">Role <span class="text-red-500">*</span></label>
+                        <p-dropdown
+                          id="role"
+                          [options]="roleOptions"
+                          formControlName="role"
+                          placeholder="Select Role"
+                          optionLabel="label"
+                          optionValue="value"
+                        ></p-dropdown>
+                        <small *ngIf="submitted && profileForm.controls['role'].invalid" class="p-error">
+                          Role is required.
+                        </small>
+                      </div>      
+                      
+                      <!-- Submit Button -->
+                      <!-- <div class="field col-12 sm:col-12">
+                            <button [disabled]="changePasswordForm.invalid || loading" type="submit" [loading]="loading" pButton pRipple label="Change" class="block p-3 text-xl mb-5 mt-5"></button>
+                        </div> -->
+                        
+                    </div>
+                    <div class="flex align-items-center">
+                        <button type="submit" [loading]="loading" pButton pRipple [disabled]="profileForm.invalid || loading" label="Update" class=""></button>
+                        <div *ngIf="loadingProfile" class="ml-3">
+                            <p-progressSpinner 
+                                    styleClass="w-2rem h-2rem"  />
+                        </div>
+                    </div>
+                </form>
+            </p-fieldset>
+        </div>
+    </div>
+</div>

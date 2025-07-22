@@ -1,0 +1,135 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="p-2 flex justify-content-between">
+                <div>
+                    <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddPMDialog()" class="mr-2" />
+                    <p-button icon="pi pi-filter"  (onClick)="showFilterDrawer()" />
+                </div>
+                <div class="flex align-items-center">
+                    <div *ngIf="productMasterFileStatus" class="flex align-items-center">
+                        <div *ngIf="productMasterFileStatus?.status === 'completed' && productMasterFileStatus?.total_failed_records > 0" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">Completed</span>
+                            <p-button [title]="'Total Failed Records: '+productMasterFileStatus?.total_failed_records" severity="danger" icon="pi pi-download" [loading]="loadingPMFailedRecords" class="mr-2" (onClick)="loadPMFailedRecords()" />
+                        </div>
+                        <div *ngIf="productMasterFileStatus?.status === 'completed' && productMasterFileStatus?.total_failed_records <= 0" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">No File Error</span>
+                        </div>
+                        <div *ngIf="productMasterFileStatus?.status === 'pending'" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">Pending</span>
+                            <p-button title="Validate File" label="Validate" [loading]="loadingValidatePMFile" class="mr-2" (onClick)="validatePMFile()" />
+                        </div>
+                        <div *ngIf="productMasterFileStatus?.status !== 'completed' && productMasterFileStatus?.status !== 'pending' && productMasterFileStatus?.status !== 'failed'" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">Processing</span>
+                            <p-button title="Reload File Status" icon="pi pi-refresh" [loading]="loadingPMFileStatus" class="mr-2" (onClick)="loadPMFileUploadStatus()" />
+                        </div>
+                    </div>
+                    <p-button *ngIf="(productMasterFileStatus?.status === 'completed' || productMasterFileStatus?.status === 'failed') && productMasterFileStatus?.total_failed_records <= 0" icon="pi pi-upload" label="Upload PM" class="mr-2" (onClick)="uploadPMFile()" />
+                    <p-button title="Download Product Master Template" icon="pi pi-download" [loading]="loadingDPMTemplate" (onClick)="downloadPMTemplate()" />
+                </div>
+            </div>
+            <p-table [loading]="loadingPMD" [value]="productMasterData" [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SN</th>
+                        <th class="sap_file_color">Order</th>
+                        <th class="sap_file_color">Material Number</th>
+                        <th class="sap_file_color">Material Number with Process</th>
+                        <th class="sap_file_color">Material description</th>
+                        <th class="sap_file_color">Unit of measure (=GMEIN)</th>
+                        <th class="input_fields_color">Machine Name</th>
+                        <th class="input_fields_color">Machine-1</th>
+
+                        <th class="machine_master_color">Responsible </th>
+                        <th class="machine_master_color">Module</th>
+                        <th class="input_fields_color">Segment</th>
+                        <th class="input_fields_color">Cheese Wt</th>
+                        <th class="input_fields_color">Finish </th>
+                        <th class="input_fields_color">Finish Wt.</th>
+                        <th class="input_fields_color">Size</th>
+                        <th class="input_fields_color">Group</th>
+                        <th class="input_fields_color">Length</th>
+                        <th class="input_fields_color">SPEC</th>
+                        <th class="input_fields_color">ROD DIA1.</th>
+                        <th class="input_fields_color">DRAWN DIA.1</th>
+                        <th class="input_fields_color">Condition of Raw material </th>
+                        <th class="input_fields_color">Seg-2</th>
+                        <th class="input_fields_color">Seg-3</th>
+                        <th class="input_fields_color">SPECIAL REMARKS</th>
+                        <th class="input_fields_color">BOM </th>
+                        <th class="input_fields_color">RM Component</th>
+
+
+                        <th>Added At</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pmd let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex+1 }}</td>
+                        <td>{{ pmd.order_number }}</td>
+                        <td>{{ pmd.material_number }}</td>
+                        <td>{{ pmd.material_number_for_process }}</td>
+                        <td>{{ pmd.material_description }}</td>
+                        <td>{{ pmd.unit_of_measure }}</td>
+                        <td>{{ pmd.machine_name }}</td>
+                        <td>{{ pmd.machine_1 }}</td>
+
+                        <td>{{ pmd.responsible_name }}</td>
+                        <td>{{ pmd.module_name }}</td>
+                        <td>{{ pmd.segment_name }}</td>
+                        <td>{{ pmd.cheese_wt }}</td>
+                        <td>{{ pmd.finish_name }}</td>
+                        <td>{{ pmd.finish_wt }}</td>
+                        <td>{{ pmd.size }}</td>
+                        <td>{{ pmd.group_name }}</td>
+                        <td>{{ pmd.length }}</td>
+                        <td>{{ pmd.spec }}</td>
+                        <td>{{ pmd.rod_dia1 }}</td>
+                        <td>{{ pmd.drawn_dia1 }}</td>
+                        <td>{{ pmd.condition_of_rm }}</td>
+                        <td>{{ pmd.seg2_name }}</td>
+                        <td>{{ pmd.seg3_name }}</td>
+                        <td>{{ pmd.special_remarks }}</td>
+                        <td>{{ pmd.bom }}</td>
+                        <td>{{ pmd.rm_component }}</td>
+
+
+                        <td>{{ pmd.created_at | date:'shortDate' }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <p-paginator 
+                (onPageChange)="onPageChange($event)" *ngIf="pagination"
+                [first]="'0'"
+                [rows]="pagination.per_page" 
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} - {last} of {totalRecords}"
+                [totalRecords]="pagination.total"  />
+        </div>
+
+        <!-- <div class="col-12">
+            <ag-grid-angular 
+               [rowData]="productMasterData" 
+               [columnDefs]="columnDefs" 
+               class="ag-theme-alpine"
+               style="width: 100%; height: 500px;">
+             </ag-grid-angular>
+        </div> -->
+    </div>
+</div>
+<p-dialog header="Add Product Master" [modal]="true" [(visible)]="visibleAddPMDialog" [style]="{ width: '90vw' }">
+    <app-add-product-master *ngIf="visibleAddPMDialog" (notifyParent)="onChildNotify($event)"></app-add-product-master>
+</p-dialog>
+
+
+<app-filter-product-master 
+    [productMasterForm]="productMasterForm"
+    (formDataChange)="onFormDataChange($event)"
+    (hideAdvanceFilter)="onHideAdvanceFilter()"
+    [enableAdvSearch]="enableAdvSearch"
+    (clearAdvFilter)="onClearAdvanceFilter()"
+    [loadingAdvanceFilter]="loadingAdvanceFilter"
+    [visibleFilterDrawer]="visibleFilterDrawer" (notifyParent)="onFilterNotify($event)"></app-filter-product-master>
+
+<p-toast />

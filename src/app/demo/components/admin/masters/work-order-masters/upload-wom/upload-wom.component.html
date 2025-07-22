@@ -1,0 +1,23 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-messages 
+                [(value)]="messages" 
+                [showTransitionOptions]="'500ms'" 
+                [hideTransitionOptions]="'500ms'" 
+                [enableService]="false" />
+            <form (submit)="onSubmit()" #uploadForm="ngForm">
+                <div class="col-12 text-center border-1 border-dashed border-primary">
+                    <input type="file" (change)="onFileChange($event)">
+                </div>
+                <div class="col-12 text-red-500" *ngIf="errorMessage">
+                    <small>{{ errorMessage }}</small>
+                </div>
+                <div class="col-12">
+                    <button [loading]="loading" pButton label="Submit" type="submit" [disabled]="!selectedFile"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

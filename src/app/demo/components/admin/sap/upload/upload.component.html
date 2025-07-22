@@ -1,0 +1,46 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="grid">
+    <div class="col-12">
+        <div class="card text-center" *ngIf="!SAPFileStatus">
+            <p-progressSpinner styleClass="w-2rem h-2rem" />
+        </div>
+        <div class="card" *ngIf="SAPFileStatus">
+            <div *ngIf="(SAPFileStatus?.status === 'completed' || SAPFileStatus?.status === 'failed')">
+                <p-messages 
+                    [(value)]="messages" 
+                    [showTransitionOptions]="'500ms'" 
+                    [hideTransitionOptions]="'500ms'" 
+                    [enableService]="false" />
+                <form (submit)="onSubmit()" #uploadForm="ngForm">
+                    <div class="col-12 text-center border-1 border-dashed border-primary">
+                        <input type="file" (change)="onFileChange($event)">
+                    </div>
+                    <div class="col-12 text-red-500" *ngIf="errorMessage">
+                        <small>{{ errorMessage }}</small>
+                    </div>
+                    <div class="col-12">
+                        <button [loading]="loading" pButton label="Submit" type="submit" class="mr-2" [disabled]="!selectedFile"></button>
+                        <p-button title="Download SAP Template" type="button" icon="pi pi-download" [loading]="loadingSAPTemplate" class="mr-2" (onClick)="downloadSAPTemplate()" />
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="SAPFileStatus">
+                <div *ngIf="SAPFileStatus?.status === 'completed' && SAPFileStatus?.total_failed_records > 0" class="flex align-items-center">
+                    <span class="mr-2 text-green-500">Completed</span>
+                    <p-button [title]="'Total Failed Records: '+SAPFileStatus?.total_failed_records" severity="danger" icon="pi pi-download" [loading]="loadingSAPFailedRecords" class="mr-2" (onClick)="loadSAPFailedRecords()" />
+                </div>
+                <div *ngIf="SAPFileStatus?.status === 'completed' && SAPFileStatus?.total_failed_records <= 0" class="flex align-items-center">
+                    <span class="mr-2 text-green-500">No File Error</span>
+                </div>
+                <div *ngIf="SAPFileStatus?.status === 'pending'" class="flex align-items-center">
+                    <span class="mr-2 text-green-500">Pending</span>
+                    <p-button title="Validate File" label="Validate" [loading]="loadingValidate" class="mr-2" (onClick)="validateSAPFile()" />
+                </div>
+                <div *ngIf="SAPFileStatus?.status !== 'completed' && SAPFileStatus?.status !== 'pending' && SAPFileStatus?.status !== 'failed'" class="flex align-items-center">
+                    <span class="mr-2 text-green-500">Processing</span>
+                    <p-button title="Reload File Status" icon="pi pi-refresh" [loading]="loadingSAPFileStatus" class="mr-2" (onClick)="getSAPFileStatus()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

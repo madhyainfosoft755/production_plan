@@ -1,0 +1,23 @@
+<div class="grid">
+    <div class="col-12">
+        <p-table [loading]="loadingRoles" [value]="roles" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>Employees</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-role let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{ rowIndex+1 }}</td>
+                    <td>{{ role.role }}</td>
+                    <td>
+                        <span *ngIf="role.employees !=0">Employees : {{ role.employees }}</span>
+                        <span *ngIf="role.employees ==0">{{ role.employees }}</span>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

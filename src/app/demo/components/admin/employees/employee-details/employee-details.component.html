@@ -1,0 +1,99 @@
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="p-fluid grid">
+
+        <!-- salutation Dropdown -->
+        <div class="field col-12  sm:col-2">
+            <label for="salutation">Salutation <span class="text-red-500">*</span></label>
+            <p-dropdown
+            id="salutation"
+            [options]="salutationOptions"
+            formControlName="salutation"
+            placeholder="Select salutation"
+            optionLabel="label"
+            optionValue="value"
+            ></p-dropdown>
+            <small *ngIf="submitted && employeeForm.controls['salutation'].invalid" class="p-error">
+            salutation is required.
+            </small>
+        </div>
+  
+      <!-- Name -->
+      <div class="field col-12 sm:col-4">
+        <label for="name">Name <span class="text-red-500">*</span></label>
+        <input id="name" type="text" pInputText formControlName="name" placeholder="Enter Name" />
+        <small *ngIf="submitted && employeeForm.controls['name'].invalid" class="p-error">
+          Name is required.
+        </small>
+      </div>
+  
+      <!-- Email -->
+      <div class="field col-12 sm:col-6">
+        <label for="email">Email <span class="text-red-500">*</span></label>
+        <input id="email" type="email" pInputText formControlName="email" placeholder="Enter Email" />
+        <small *ngIf="submitted && employeeForm.controls['email'].invalid" class="p-error">
+          Valid Email is required.
+        </small>
+      </div>
+  
+      <!-- Employee ID -->
+      <div class="field col-12 sm:col-4">
+        <label for="empId">Employee ID <span class="text-red-500">*</span></label>
+        <input id="empId" type="text" pInputText formControlName="emp_id" placeholder="Enter Employee ID" />
+        <small *ngIf="submitted && employeeForm.controls['emp_id'].invalid" class="p-error">
+          Employee ID is required.
+        </small>
+      </div>
+
+      <!-- Role Dropdown -->
+      <div class="field col-12 sm:col-4">
+        <label for="role">Role <span class="text-red-500">*</span></label>
+        <p-dropdown
+          id="role"
+          [options]="roleOptions"
+          formControlName="role"
+          placeholder="Select Role"
+          optionLabel="label"
+          optionValue="value"
+        ></p-dropdown>
+        <small *ngIf="submitted && employeeForm.controls['role'].invalid" class="p-error">
+          Role is required.
+        </small>
+      </div>
+  
+      <!-- Password -->
+      <div class="field col-12 sm:col-6">
+        <label for="password">Password <span class="text-red-500">*</span></label>
+        <input id="password" type="password" pPassword formControlName="password" placeholder="Enter Password" />
+        <small *ngIf="submitted && employeeForm.controls['password'].invalid" class="p-error">
+          Password is required (min 6 characters).
+        </small>
+      </div>
+  
+      <!-- Confirm Password -->
+      <div class="field col-12 sm:col-6">
+        <label for="confirmPassword">Confirm Password <span class="text-red-500">*</span></label>
+        <input
+          id="confirmPassword"
+          type="password"
+          pPassword
+          formControlName="confirm_password"
+          placeholder="Confirm Password"
+        />
+        <small *ngIf="submitted && employeeForm.controls['confirm_password'].invalid" class="p-error">
+          Confirm Password is required.
+        </small>
+        <small *ngIf="submitted && employeeForm.controls['confirm_password'].hasError('mismatch')" class="p-error">
+          Passwords must match.
+        </small>
+      </div>
+  
+      
+      
+      <!-- Submit Button -->
+      <div class="field col-12 sm:col-3">
+        <button pButton type="submit" [loading]="loading" [disabled]="loading">Submit</button>
+      </div>
+  
+    </div>
+  </form>
+  

@@ -1,0 +1,204 @@
+<p-tabView>
+    <p-tabPanel header="Forged Today">
+        <!-- <div *ngIf="data.week1 != null; else setupWeek1Target"> -->
+            <form [formGroup]="forgedTodayForm" (ngSubmit)="forgedTodaySubmit()" *ngIf="data.final_pending_qty > 0; else noNeedToForge">
+                <div class="p-fluid grid">
+                    <!-- Forging Commit Week -->
+                    <div class="field col-12 sm:col-4">
+                        <label for="forged-so-far">Forged Today</label>
+                        <input
+                            id="forged-so-far"
+                            type="number"
+                            pInputText
+                            formControlName="forged_so_far"
+                            placeholder="To Forge Qty"
+                        />
+                        <span>Value should be from 0 to {{data.final_pending_qty}}</span>
+                        <small *ngIf="submitted && toForgeForm.controls['forged_so_far'].invalid" class="p-error">
+                            Error
+                        </small>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="field col-12 sm:col-4">
+                        <p-button type="submit" label="Submit" [disabled]="forgedTodayLoading" />
+                    </div>
+                </div>
+            </form> 
+            <ng-template #noNeedToForge>
+                <strong>Forging target achieved.</strong>
+            </ng-template>
+        <!-- </div> -->
+        <!-- <ng-template #setupWeek1Target>
+            <strong>Please setup week1 target first</strong>
+        </ng-template> -->
+    </p-tabPanel>
+    <p-tabPanel header="Update">
+        <form [formGroup]="toForgeForm" (ngSubmit)="onSubmitForgeForm()">
+            <div class="p-fluid grid">
+                <!-- Forging Commit Week -->
+                <div class="field col-12 sm:col-4">
+                    <label for="to-forge">To Forge <span>Current Qty : {{data.final_pending_qty}}</span></label>
+                    <input
+                        id="to-forge"
+                        type="number"
+                        pInputText
+                        formControlName="to_forge"
+                        placeholder="To Forge Qty"
+                    />
+                    <span>You can update from 0 to {{maxToForgeQty}}</span>
+                    <small *ngIf="submitted && toForgeForm.controls['to_forge'].invalid" class="p-error">
+                        Error
+                    </small>
+                </div>
+                <!-- Submit Button -->
+                <div class="field col-12 sm:col-4">
+                    <p-button type="submit" label="Submit" [disabled]="toForgeLoading" />
+                </div>
+            </div>
+        </form>    
+    </p-tabPanel>
+    <p-tabPanel header="Weekly Planning">
+        <div class="week1" *ngIf="data.week1 != null">
+            <span>Week 1 : {{data.week1}}</span>
+        </div>
+        <div class="week2" *ngIf="data.week2 != null">
+            <span>Week 2 : {{data.week2}}</span>
+        </div>
+        <div class="week3" *ngIf="data.week3 != null">
+            <span>Week 3 : {{data.week3}}</span>
+        </div>
+        <div class="week4" *ngIf="data.week4 != null">
+            <span>Week 4 : {{data.week4}}</span>
+        </div>
+        <form [formGroup]="weekForgePlanningForm" (ngSubmit)="onSubmitWeekForgePlnForm()" *ngIf="data.week1 === null || data.week2 === null || data.week3 === null || data.week4 === null">
+            <div class="p-fluid grid">
+                <!-- Forging Commit Week -->
+                <div class="field col-12 sm:col-4">
+                    <label for="forge-qty">This Week Plan Qty</label>
+                    <input
+                        id="forge-qty"
+                        type="number"
+                        pInputText
+                        formControlName="forge_qty"
+                        placeholder="To Forge Qty"
+                    />
+                    <span>You can update from 0 to {{maxWeeklyPlanningQty}}</span>
+                    <small *ngIf="submitted && toForgeForm.controls['forge_qty'].invalid" class="p-error">
+                        Error
+                    </small>
+                </div>
+                <!-- Submit Button -->
+                <div class="field col-12 sm:col-4">
+                    <p-button type="submit" label="Submit" [disabled]="weekForgePlanningLoading" />
+                </div>
+            </div>
+        </form> 
+    </p-tabPanel>
+    <p-tabPanel header="Old Form">
+        <form [formGroup]="updateThisMonthForm" (ngSubmit)="onSubmit()">
+            <div class="p-fluid grid">
+                <!-- Forging Commit Week -->
+                <div class="field col-12 sm:col-4">
+                    <label for="forgingCommitWeek">Forging Commit Week</label>
+                    <input
+                        id="forgingCommitWeek"
+                        type="number"
+                        pInputText
+                        formControlName="forge_commite_week"
+                        placeholder="Enter Forging Commit Week"
+                    />
+                    <small *ngIf="submitted && updateThisMonthForm.controls['forge_commite_week'].invalid" class="p-error">
+                        Forging Commit Week is required and must be a number.
+                    </small>
+                </div>
+        
+                <!-- This Month Forged Qty -->
+                <div class="field col-12 sm:col-4">
+                    <label for="forgedQty">This Month Forged Qty</label>
+                    <input
+                        id="forgedQty"
+                        type="number"
+                        pInputText
+                        formControlName="this_month_forge_qty"
+                        placeholder="Enter Forged Quantity"
+                    />
+                    <small *ngIf="submitted && updateThisMonthForm.controls['this_month_forge_qty'].invalid" class="p-error">
+                        Forged Quantity is required and must be a number.
+                    </small>
+                </div>
+        
+                <!-- Plan NO. OF M/C -->
+                <div class="field col-12 sm:col-4">
+                    <label for="planNoOfMC">Plan NO. OF M/C</label>
+                    <input
+                        id="planNoOfMC"
+                        type="number"
+                        pInputText
+                        formControlName="plan_no_of_mc"
+                        placeholder="Enter Number of M/C"
+                    />
+                    <small *ngIf="submitted && updateThisMonthForm.controls['plan_no_of_mc'].invalid" class="p-error">
+                        Plan NO. OF M/C is required and must be a number.
+                    </small>
+                </div>
+        
+                <!-- Special Remarks -->
+                <div class="field col-12">
+                    <label for="specialRemarks">Special Remarks</label>
+                    <textarea
+                        id="specialRemarks"
+                        pInputTextarea
+                        formControlName="special_remarks"
+                        rows="3"
+                        placeholder="Enter Special Remarks"
+                    ></textarea>
+                </div>
+        
+                <!-- RM Delivery Date -->
+                <div class="field col-12 sm:col-4">
+                    <label for="rmDeliveryDate">RM Delivery Date</label>
+                    <p-calendar
+                        id="rmDeliveryDate"
+                        formControlName="rm_delivery_date"
+                        placeholder="Select RM Delivery Date"
+                        appendTo="body"
+                    ></p-calendar>
+                </div>
+        
+                <!-- Advance Final RM Wt. -->
+                <div class="field col-12 sm:col-4">
+                    <label for="rmWeight">Advance Final RM Wt.</label>
+                    <input
+                        id="rmWeight"
+                        type="number"
+                        pInputText
+                        formControlName="advance_final_rm_wt"
+                        placeholder="Enter RM Weight"
+                    />
+                    <small *ngIf="submitted && updateThisMonthForm.controls['advance_final_rm_wt'].invalid" class="p-error">
+                        RM Weight is required and must be a number.
+                    </small>
+                </div>
+        
+                <!-- RM Allocation Priority -->
+                <div class="field col-12 sm:col-4">
+                    <label for="rmPriority">RM Allocation Priority</label>
+                    <p-dropdown
+                        id="rmPriority"
+                        [options]="priorityOptions"
+                        formControlName="rm_allocation_priority"
+                        placeholder="Select Priority"
+                        optionLabel="label"
+                        optionValue="value"
+                        appendTo="bodys"
+                    ></p-dropdown>
+                </div>
+        
+                <!-- Submit Button -->
+                <div class="field col-12 sm:col-4">
+                    <p-button type="submit" label="Submit" [disabled]="loading" />
+                </div>
+            </div>
+        </form>    
+    </p-tabPanel>
+</p-tabView>

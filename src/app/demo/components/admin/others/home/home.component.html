@@ -1,0 +1,45 @@
+<!-- <h1>Home Component</h1> -->
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<router-outlet></router-outlet>
+<p-tabView>
+    <p-tabPanel header="Finish" [selected]="true">
+        <app-finish></app-finish>
+    </p-tabPanel>
+    <p-tabPanel header="Groups">
+        <app-groups></app-groups>
+    </p-tabPanel>
+    <p-tabPanel header="Module">
+        <app-modules></app-modules>
+    </p-tabPanel>
+    <p-tabPanel header="Shifts">
+        <app-shifts></app-shifts>
+    </p-tabPanel>
+    <!-- <p-tabPanel header="Plant">
+        <app-plant></app-plant>
+    </p-tabPanel> -->
+    <!-- <p-tabPanel header="Process">
+        <app-process></app-process>
+    </p-tabPanel> -->
+    <p-tabPanel header="roles">
+        <app-roles></app-roles>
+    </p-tabPanel>
+    <p-tabPanel header="Seg 2">
+        <app-seg2></app-seg2>
+    </p-tabPanel>
+    <p-tabPanel header="Seg 3">
+        <app-seg3></app-seg3>
+    </p-tabPanel>
+    <p-tabPanel header="Segments">
+        <app-segments></app-segments>
+    </p-tabPanel>
+    <!-- <p-tabPanel header="Unit Of Measure">
+        <app-unit-of-measure></app-unit-of-measure>
+    </p-tabPanel> -->
+    <p-tabPanel header="Surface Treatment">
+        <app-surface-treatment></app-surface-treatment>
+    </p-tabPanel>
+    <p-tabPanel header="Template Passwords">
+        <app-master-templates-password></app-master-templates-password>
+    </p-tabPanel>
+
+</p-tabView>

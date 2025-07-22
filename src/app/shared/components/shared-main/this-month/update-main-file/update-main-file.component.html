@@ -1,0 +1,181 @@
+<div *ngIf="isRmUser !== null">
+    <form *ngIf="!isRmUser" [formGroup]="updateAdminFieldsForm" (ngSubmit)="onSubmit()">
+
+        <div class="p-fluid grid m-0">
+            <!-- Increase Qty -->
+            <div class="field mb-0 col-12 sm:col-4" *ngIf="data?.length === 1">
+                <label for="to-forge">To Forge <span>Current Qty : {{data[0].final_pending_qty}}</span></label>
+                <input
+                    id="to-forge"
+                    (input)="checkNumberInput('to_forge')"
+                    pInputText
+                    formControlName="to_forge"
+                    placeholder="To Forge Qty"
+                />
+                <span>You can update from 0 to {{maxToForgeQty}}</span>
+                <small *ngIf="submitted && toForgeForm.controls['to_forge'].invalid" class="p-error">
+                    Error
+                </small>
+            </div>
+            <!-- Monthly Plan -->
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="monthly-plan">Monthly Plan</label>
+                <p-autoComplete
+                    id="monthly-plan"
+                    formControlName="monthly_plan"
+                    [suggestions]="filteredSuggestions"
+                    (completeMethod)="filterSuggestions('monthly_plan', $event)"
+                    [dropdown]="true"
+                    placeholder="Monthly Plan"
+                    ></p-autoComplete>
+            </div>
+            <!-- Monthly Fix Plan -->
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="monthly-fix-plan">Monthly Fix Plan</label>
+                <p-autoComplete
+                    id="monthly-fix-plan"
+                    formControlName="monthly_fix_plan"
+                    [suggestions]="filteredSuggestions"
+                    (completeMethod)="filterSuggestions('monthly_fix_plan', $event)"
+                    [dropdown]="true"
+                    placeholder="Monthly Fix Plan"
+                    ></p-autoComplete>
+            </div>
+
+            <!-- Weekly Plan -->
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="weekly-plan">Weekly Plan</label>
+                <p-autoComplete
+                    id="weekly-plan"
+                    formControlName="forge_commite_week"
+                    [suggestions]="filteredSuggestions"
+                    (completeMethod)="filterSuggestions('forge_commite_week', $event)"
+                    [dropdown]="true"
+                    placeholder="Weekly Plan"
+                    ></p-autoComplete>
+            </div>
+
+            <!-- Priority List -->
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="priority-plan">Priority List</label>
+                <p-autoComplete
+                    id="priority-plan"
+                    formControlName="priority_list"
+                    [suggestions]="filteredSuggestions"
+                    (completeMethod)="filterSuggestions('priority_list', $event)"
+                    [dropdown]="true"
+                    placeholder="Priority"
+                    ></p-autoComplete>
+            </div>
+
+            <!-- Surface Treatment Process -->
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="surface-treatment-process">Surface Treatment Process</label>
+                <p-dropdown
+                    id="surface-treatment-process"
+                    class="flex-grow-1"
+                    [options]="STPOptions"
+                    [filter]="true"
+                    filterBy="name"
+                    formControlName="surface_treatment_process"
+                    placeholder="Select"
+                    optionLabel="name"
+                    optionValue="id"
+                    appendTo="body"
+                ></p-dropdown>
+            </div>
+    
+            <!-- Special Remarks -->
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="specialRemarks">Special Remarks</label>
+                <p-autoComplete
+                    id="specialRemarks"
+                    formControlName="special_remarks"
+                    [suggestions]="filteredSuggestions"
+                    (completeMethod)="filterSuggestions('special_remarks', $event)"
+                    [dropdown]="true"
+                    placeholder="Special Remarks"
+                    ></p-autoComplete>
+            </div>
+    
+            <!-- Submit Button -->
+            <div class="field mb-0 col-12 sm:col-4 align-self-end">
+                <p-button type="submit" label="Submit" [disabled]="loading" />
+            </div>
+        </div>
+    </form> 
+
+    <div class="grid mb-2 mt-2" *ngIf="sapRmData">
+        <div class="col-3" *ngFor="let val of sapRmData">
+            <div>{{ val.date }}</div>
+            <div>{{ val.allocation }}</div>
+        </div>
+    </div>
+    <form *ngIf="isRmUser" [formGroup]="updateRMFieldsForm" (ngSubmit)="onSubmitRMForm()">
+        <div class="p-fluid grid m-0">
+            <div class="field mb-0 col-12 sm:col-6" style="border: 2px solid orange">
+                <label>RM Delivery</label>
+                <div class="flex">
+                    <p-calendar
+                        id="rmDeliveryDate"
+                        formControlName="rm_delivery_date"
+                        placeholder="RM Delivery Date"
+                        appendTo="body"
+                        class="mr-2"
+                        style="width: 140px"
+                    ></p-calendar>
+                    <div class="flex align-items-center">
+                        <label class="mr-2"><span class="text-red-500">OR</span> RM is Ready</label>
+                        <p-checkbox 
+                            id="rmDelivery"
+                            formControlName="rm_delivery"
+                            [binary]="true"
+                            inputId="binary" /> 
+                    </div>
+                </div>
+            </div>
+            <div class="field mb-0 col-12 sm:col-3">
+                <label for="rmCorrection">RM Correction</label>
+                <input
+                    id="rmCorrection"
+                    pInputText
+                    (input)="checkNumberInput1('rm_correction')"
+                    formControlName="rm_correction"
+                    placeholder="RM Correction"
+                />
+            </div>
+            <div class="field mb-0 col-12 sm:col-3" *ngIf="data?.length === 1 && today.getDay() !== 6">
+                <label for="rm-date">{{ today | date : 'short'}}</label>
+                <input
+                    id="rm-date"
+                    pInputText
+                    (input)="checkNumberInput1('rm_date')"
+                    formControlName="rm_date"
+                />
+            </div>
+            <!-- <div class="field mb-0 col-12 sm:col-4">
+                <label for="adFinalRMwt">Advance Final RM Wt.</label>
+                <input
+                    id="adFinalRMwt"
+                    pInputText
+                    formControlName="advance_final_rm_wt"
+                    placeholder="Enter Advance Final RM Wt"
+                />
+            </div>
+            <div class="field mb-0 col-12 sm:col-4">
+                <label for="rmAllocationPriority">RM Allocation Priority</label>
+                <input
+                    id="rmAllocationPriority"
+                    pInputText
+                    formControlName="rm_allocation_priority"
+                    placeholder="Enter Allocation Priority"
+                />
+            </div> -->
+
+            <!-- Submit Button -->
+            <div class="field mb-0 col-12 sm:col-4 align-self-end">
+                <p-button type="submit" label="Submit" [disabled]="loading" />
+            </div>
+        </div>
+    </form>
+</div>

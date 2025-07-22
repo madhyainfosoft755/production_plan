@@ -1,0 +1,127 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12 mb-2">
+             <p-dropdown
+                    id="module-id"
+                    class="mr-2"
+                    [options]="moduleOptions"
+                    [(ngModel)]="module_id"
+                    appendTo="body"
+                    placeholder="Select Module"
+                    optionLabel="label"
+                    optionValue="id"
+                    [showClear]="true" 
+                    filter="true"
+                    filterBy="name"
+                    [group]="true"
+                    (onChange)="onModuleChange($event)"
+                >
+                    <ng-template let-group pTemplate="group">
+                        <div class="flex align-items-center">
+                            <span>{{ group.label }}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem mr-2" />
+                <p-button *ngIf="savedModules !== null && savedModules === false" (click)="completeWeeklyReportForMoudle()" [disabled]="isCompleteDisabled" label="Mark Complete" [loading]="loadingMarkComplete" />
+                <p-button *ngIf="savedModules !== null && savedModules === true" label="Export" [loading]="loadingDownload" />
+                <p-button *ngIf="savedModules == null && savedModules === true" label="ExportAll" [loading]="loadingDownload" />
+        </div>
+        <div class="col-12 pt-0">
+            <p-table #dt1 [rowHover]="true" dataKey="id" [value]="weeklyPlanningData" [loading]="loadingWPD" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped"
+            [globalFilterFields]="['plant', 'work_order_db', 'customer', 'responsible_person_name1', 'segment_name', 'marketing_person_name1', 'reciving_date', 'delivery_date', 'quality_inspection_required', 'created_at']">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <!-- <th>SN</th> -->
+                        <th style="min-width:8rem">Single M/C /Shift M/C Capacity </th>
+                        <th style="min-width:8rem">Capacity</th>
+                        <th style="min-width:8rem" class="machine-color">M/C-NAME</th>
+                        <th style="min-width:8rem" class="machine-color">No.OF M/C</th>
+                        <th style="min-width:8rem" class="machine-color">Plan NO. OF M/C</th>
+                        <th style="min-width:8rem" class="machine-color">SPEED</th>
+                        <th style="min-width:8rem" class="machine-color">No. of shift</th>
+                        <th style="min-width:8rem" class="machine-color">% of efficiency</th>
+                        <th style="width: 3rem" class="color-1">No. Of Days Booking </th>
+                        <th style="min-width:8rem" class="color-1">Pending Wt.</th>
+                        <th style="min-width:8rem" class="color-2">NO. OF DAY (Weekly Planning)</th>
+                        <th style="min-width:8rem" class="color-2"> Allocated Product Wt</th>
+                        <th style="min-width:8rem" class="color-3">RM No Able to Consider M/C Book  / TPM</th>
+                        <th style="min-width:8rem" class="color-3">RM No Able to Consider Due to M/C development  / M/C B/D</th>
+                        <th style="min-width:10rem" class="color-4">GAP</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+                    <tr [ngClass]="{
+                        'total-row': row.machine_name === 'Total',
+                        'bg-red-200': row.machine_name !== 'Total' && row.no_of_days_booking > 6
+                        }" (click)="openEditModel(row)">
+                        <!-- <td>{{ rowIndex+1 }}</td> -->
+                        <td>{{ row.single_mc_shift_capacity }}</td>
+                        <td>{{ row.capacity }}</td>
+                        <td>{{ row.machine_name }}</td>
+                        <td>{{ row.no_of_machines  }}</td>
+                        <td>{{ row.plan_no_of_machine }}</td>
+                        <td>{{ row.machine_speed  }}</td>
+                        <td>{{ row.no_of_shift }}</td>
+                        <td>{{ row.per_of_efficiency }}</td>
+                        <td>
+                            {{ row.no_of_days_booking }}
+                        </td>
+                        <td>{{ row.pending_wt }}</td>
+                        <td>{{ row.no_of_day_weekly_planning }}</td>
+                        <td>{{ row.allocated_product_wt }}</td>
+                        <td>{{ row.rm_tpm_booking }}</td>
+                        <td>{{ row.rm_due_to_development }}</td>
+                        <td>{{ row.gap }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <p-paginator 
+            (onPageChange)="onPageChange($event)" *ngIf="pagination"
+            [first]="'0'"
+            [rows]="pagination.per_page" 
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} - {last} of {totalRecords}"
+            [totalRecords]="pagination.total"  />
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Update" [modal]="true" [(visible)]="visibleEditDialog" [style]="{ width: '20rem' }">
+    <form [formGroup]="updateWeeklyReportForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid grid m-0">
+            <!-- Increase Qty -->
+            <div class="field mb-0 col-12">
+                <label for="rm-tpm-booking">RM No Able to Consider M/C Book  / TPM</label>
+                <input
+                    id="rm-tpm-booking"
+                    (input)="checkNumberInput('rm_tpm_booking')"
+                    pInputText
+                    formControlName="rm_tpm_booking"
+                />
+            </div>
+            <div class="field mb-0 col-12">
+                <label for="rm-due-to-development">RM No Able to Consider Due to M/C development  / M/C B/D</label>
+                <input
+                    id="rm-due-to-development"
+                    (input)="checkNumberInput('rm_due_to_development')"
+                    pInputText
+                    formControlName="rm_due_to_development"
+                />
+            </div>
+            <div class="field mb-0 col-12">
+                <label for="gap">GAP</label>
+                <input
+                    id="gap"
+                    (input)="checkNumberInput('gap')"
+                    pInputText
+                    formControlName="gap"
+                />
+            </div>
+            <div class="field mb-0 col-12">
+                <p-button type="submit" label="Submit" [loading]="loadingSubmit" />
+            </div>
+        </div>
+    </form>
+</p-dialog>

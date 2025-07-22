@@ -1,0 +1,83 @@
+
+<div class="p-fluid grid m-0">
+    <div class="col-12">
+        <label for="work-order">Work Order <span class="text-red-500">*</span></label>
+        <div class="flex align-items-center justify-content-between">
+            <div class="flex align-items-center">
+                <p-inputGroup class="mr-2">
+                    <p-dropdown
+                        id="work-order"
+                        class="flex-grow-1"
+                        [options]="workOrderDB"
+                        [filter]="true"
+                        filterBy="work_order_db"
+                        [(ngModel)]="selectedWorkOrder"
+                        placeholder="Select"
+                        optionLabel="work_order_db"
+                        optionValue="id"
+                        appendTo="body"
+                        styleClass="w-15rem"
+                    ></p-dropdown>
+                    <button pButton class="border-left" type="button" [disabled]="!WOInfo" [loading]="loadingWOInfo" icon="pi pi-info" (click)="addPart()" ></button>
+                </p-inputGroup>
+                <p-progressSpinner *ngIf="loadingWODB" styleClass="w-2rem h-2rem" />
+            </div>
+            <p-button type="button" label="Add" (click)="addPart()" />
+        </div>
+    </div>
+
+    <div class="col-12">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div formArrayName="parts" class="p-fluid grid">
+                <div *ngFor="let part of parts.controls; let i = index" [formGroupName]="i" class="flex align-items-end p-0 col-12">
+                    <div class="col-12 sm:col-3 pb-0">
+                        <label>Part Number</label>
+                        <p-inputGroup>
+                            <input pInputText formControlName="part_number" />
+                            <button pButton type="button" [disabled]="!partNumberInfo[i]" [loading]="loadingPartInfo[i]" icon="pi pi-info" (click)="addPart()" ></button>
+                        </p-inputGroup>
+                        <small class="text-red-500" *ngIf="part.get('part_number').touched && part.get('part_number').hasError('required')">
+                            Part number is required
+                        </small>
+                        <small class="text-red-500" *ngIf="part.get('part_number').hasError('notFound')">
+                            Part number not found in database
+                        </small>
+                    </div>
+
+                    <div class="col-12 sm:col-3 pb-0">
+                        <label>Quantity</label>
+                        <input pInputText type="number" formControlName="quantity" />
+                        <small class="text-red-500" *ngIf="part.get('quantity').touched && part.get('quantity').hasError('required')">
+                            Quantity is required
+                        </small>
+                        <small class="text-red-500" *ngIf="part.get('quantity').hasError('pattern')">
+                            Must be a valid number
+                        </small>
+                    </div>
+
+                    <!-- <div class="col-12 sm:col-3 pb-0">
+                        <label>Finish</label>
+                        <p-dropdown
+                            id="finish"
+                            class="flex-grow-1"
+                            [options]="finish"
+                            [filter]="true"
+                            filterBy="name"
+                            formControlName="finish"
+                            placeholder="Select"
+                            optionLabel="name"
+                            optionValue="id"
+                            appendTo="body"
+                        ></p-dropdown>
+                    </div> -->
+                    <div class="col-12 sm:col-3 pb-0 remove-btn">
+                        <p-button type="button" label="Remove" (click)="removePart(i)" *ngIf="parts.length > 1" />
+                    </div>
+                </div>
+            </div>
+
+            <p-button [loading]="loadingSubmit" [disabled]="loadingSubmit" styleClass="w-15rem mt-2" type="submit" label="Submit" />
+        </form>
+
+    </div>
+</div>

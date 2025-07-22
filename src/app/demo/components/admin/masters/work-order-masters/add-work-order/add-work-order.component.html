@@ -1,0 +1,208 @@
+<form [formGroup]="workOrderForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid grid">
+      <!-- Plant -->
+      <div class=" col-12 sm:col-2">
+        <label for="plant">Plant <span class="text-red-500">*</span></label>
+        <input
+          id="plant"
+          type="text"
+          pInputText
+          maxlength="5"
+          [value]="'MP01'"
+          [disabled]="true"
+          placeholder="Enter Plant"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['plant'].invalid" class="p-error">
+          Plant is required.
+        </small>
+      </div>
+
+      <!-- Work Order DB -->
+      <div class=" col-12 sm:col-4">
+        <label for="workOrderDb">Work Order <span class="text-red-500">*</span></label>
+        <input
+          id="workOrderDb"
+          type="text"
+          pInputText
+          minlength="5"
+          maxlength="6"
+          formControlName="work_order_db"
+          placeholder="Enter 5 characters"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['work_order_db'].invalid" class="p-error">
+          Work Order must have 5 or 6 characters.
+        </small>
+      </div>
+
+      <!-- Customer -->
+      <div class=" col-12 sm:col-6">
+        <label for="customer">Customer <span class="text-red-500">*</span></label>
+        <p-autoComplete
+          id="customer"
+          formControlName="customer"
+          placeholder="Enter Customer"
+          [suggestions]="suggestions"
+          (completeMethod)="search($event)"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['customer'].invalid" class="p-error">
+          Customer is required.
+        </small>
+        <!-- <ul *ngIf="suggestions.length > 0" class="suggestion-list">
+          <li *ngFor="let suggestion of suggestions" (click)="selectCustomer(suggestion)">
+            {{ suggestion }}
+          </li>
+        </ul> -->
+      </div>
+  
+      <!-- Segment Dropdown -->
+      <div class=" col-12 sm:col-4">
+        <label for="segment">Segment <span class="text-red-500">*</span></label>
+        <div class="flex align-items-center">
+          <p-dropdown
+            id="segment"
+            class="flex-grow-1"
+            [options]="segmentOptions"
+            [filter]="true"
+            filterBy="name"
+            formControlName="segment"
+            placeholder="Select Segment"
+            optionLabel="name"
+            optionValue="id"
+            appendTo="body"
+          ></p-dropdown>
+          <p-progressSpinner *ngIf="loadingSegment" styleClass="w-2rem h-2rem" />
+        </div>
+        <small *ngIf="submitted && workOrderForm.controls['segment'].invalid" class="p-error">
+          Segment is required.
+        </small>
+      </div>
+
+
+      <!-- Responsible Person Dropdown -->
+      <div class=" col-12 sm:col-4">
+        <label for="responsible">Responsible Person <span class="text-red-500">*</span></label>
+        <div class="flex align-items-center">
+          <input
+            id="responsible"
+            type="text"
+            pInputText
+            formControlName="responsible_person_name"
+            placeholder="Responsible Person"
+          />
+        </div>
+        <small *ngIf="submitted && workOrderForm.controls['responsible_person'].invalid" class="p-error">
+          Responsible person is required.
+        </small>
+      </div>
+
+
+      <!-- Responsible Person Dropdown -->
+      <div class=" col-12 sm:col-4">
+        <label for="marketing">Marketing Person <span class="text-red-500">*</span></label>
+        <div class="flex align-items-center">
+          <input
+            id="marketing"
+            type="text"
+            pInputText
+            formControlName="marketing_person_name"
+            placeholder="Marketing Person"
+          />
+        </div>
+        <small *ngIf="submitted && workOrderForm.controls['marketing_person'].invalid" class="p-error">
+          Marketing person is required.
+        </small>
+      </div>
+
+
+      <!-- Reciving Date -->
+      <div class=" col-12 sm:col-4">
+        <label for="reciving_date">Reciving Date <span class="text-red-500">*</span></label>
+        <p-calendar
+          id="reciving_date"
+          formControlName="reciving_date"
+          placeholder="Enter Reciving Date"
+          appendTo="body" dateFormat="dd-mm-yy"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['reciving_date'].invalid" class="p-error">
+          Reciving date is required.
+        </small>
+      </div>
+
+
+      <!-- Delivery Date -->
+      <div class=" col-12 sm:col-4">
+        <label for="delivery_date">Delivery Date <span class="text-red-500">*</span></label>
+        <p-calendar
+          id="delivery_date"
+          formControlName="delivery_date"
+          placeholder="Enter Delivery Date"
+          appendTo="body" dateFormat="dd-mm-yy"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['delivery_date'].invalid" class="p-error">
+          Delivery date is required.
+        </small>
+      </div>
+  
+    
+  
+      <!-- Quality Inspection Required (InputSwitch) -->
+      <div class=" col-4">
+        <div class="flex align-items-center">
+          <label for="qualityInspection" class="pr-2">Quality Inspection Required</label>
+          <p-inputSwitch
+            id="qualityInspection"
+            formControlName="quality_inspection_required"
+            [trueValue]="1"
+            [falseValue]="0"
+          ></p-inputSwitch>
+        </div>
+      </div>
+
+      <div class=" col-12 sm:col-4">
+        <label for="wo_add_date">WO Adding Date <span class="text-red-500">*</span></label>
+        <p-calendar
+          id="wo_add_date"
+          formControlName="wo_add_date"
+          placeholder="WO Adding Date"
+          appendTo="body" dateFormat="dd-mm-yy"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['wo_add_date'].invalid" class="p-error">
+          Work Order adding date is required.
+        </small>
+      </div>
+
+      <div class=" col-12 sm:col-4">
+        <label for="no_of_items">No. Of Items <span class="text-red-500">*</span></label>
+        <input
+          id="no_of_items"
+          type="text"
+          pInputText
+          formControlName="no_of_items"
+          placeholder="No. Of Items"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['no_of_items'].invalid" class="p-error">
+          No. of items are required.
+        </small>
+      </div>
+
+      <div class=" col-12 sm:col-4">
+        <label for="weight">Weight <span class="text-red-500">*</span></label>
+        <input
+          id="weight"
+          type="text"
+          pInputText
+          formControlName="weight"
+          placeholder="Weight"
+        />
+        <small *ngIf="submitted && workOrderForm.controls['weight'].invalid" class="p-error">
+          Weight is required.
+        </small>
+      </div>
+  
+      <!-- Submit Button -->
+      <div class=" col-12 sm:col-4">
+        <p-button type="submit" label="Submit" [disabled]="loading" />
+      </div>
+    </div>
+</form>
+  

@@ -1,0 +1,35 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="p-2">
+                <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddEmployeeDialog()" />
+            </div>
+            <p-table [loading]="loadingED" [value]="employeesData" [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SN</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Employee Id</th>
+                        <th>Role</th>
+                        <th>Added At</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-employee let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex+1 }}</td>
+                        <td>{{ employee.salutation }}. {{ employee.name }}</td>
+                        <td>{{ employee.email_add }}</td>
+                        <td>{{ employee.emp_id }}</td>
+                        <td>{{ employee.role }}</td>
+                        <td>{{ employee.created_at.date | date:'shortDate' }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog header="Add Employee" [modal]="true" [(visible)]="visibleAddEmployeeDialog" [style]="{ width: '50vw' }">
+    <app-employee-details *ngIf="visibleAddEmployeeDialog" (notifyParent)="onChildNotify($event)"></app-employee-details>
+</p-dialog>

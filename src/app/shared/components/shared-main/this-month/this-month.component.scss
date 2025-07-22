@@ -1,0 +1,29 @@
+
+.sap_file_color{
+    background-color: rgb(192, 192, 192);
+}
+
+.input_fields_color{
+    background-color: #35c4dc;
+}
+
+.machine_master_color{
+    background-color: tomato;
+}
+
+.wo_master_color{
+    background-color: #00A36C;
+}
+
+.product_master_color{
+    background-color: #6495ED;
+}
+
+.calc_fields_color{
+    background-color: #FDDA0D;
+}
+
+:host ::ng-deep p-breadcrumb nav{
+    background-color: transparent !important;
+    border: none !important;
+}

@@ -1,0 +1,25 @@
+
+<form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid grid">
+        <!-- Project Name -->
+        <div class="field col-12">
+        <label for="customerName">Name <span class="text-red-500">*</span></label>
+        <input id="customerName" type="text" pInputText  formControlName="customerName" />
+        <small *ngIf="submitted && customerForm.controls['customerName'].invalid" class="p-error">
+            Customer Name is required.
+        </small>
+        </div>
+    
+        <!-- Project Description -->
+        <div class="field col-12">
+        <label for="description">Description</label>
+        <textarea id="description" pInputTextarea  formControlName="description" rows="3" class="w-full" placeholder="Enter about customer"></textarea>
+        </div>
+    
+        <!-- Submit Button -->
+        <div class="field col-12">
+        <p-button type="submit" label="Submit" [disabled]="loading" />
+        </div>
+    </div>
+    </form>
+             

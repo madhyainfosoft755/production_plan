@@ -1,0 +1,345 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="p-2 flex justify-content-between mb-2">
+                <div>
+                    <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddWOMasterDialog()" class="mr-2" />
+                    <p-button icon="pi pi-filter"  (onClick)="showFilterDrawer()" class="mr-2"/>
+                    <!-- Segment Dropdown -->
+                    <p-dropdown
+                        id="date_type"
+                        [(ngModel)]="dateType"
+                        [options]="dateTypes"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Select Date Filter"
+                        class="w-full mr-2"
+                        ></p-dropdown>
+                    <p-calendar 
+                        [(ngModel)]="rangeDates" 
+                        selectionMode="range" 
+                        [readonlyInput]="true" class="mr-2" dateFormat="dd-mm-yy" />
+                    <p-button label="Go" (onClick)="onSubmitFilter()" [disabled]="rangeDates[0] === null || rangeDates[1]===null" class="mr-2" />
+                    <p-button label="Add Parts" (onClick)="shoeAddPartDialog()" />
+                </div>
+                <div class="flex align-items-center">
+                    <div *ngIf="workOrderMasterFileStatus" class="flex align-items-center">
+                        <div *ngIf="workOrderMasterFileStatus?.status === 'completed' && workOrderMasterFileStatus?.total_failed_records > 0" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">Completed</span>
+                            <p-button [title]="'Total Failed Records: '+workOrderMasterFileStatus?.total_failed_records" severity="danger" icon="pi pi-download" [loading]="loadingWOMFailedRecords" class="mr-2" (onClick)="loadWOMFailedRecords()" />
+                        </div>
+                        <div *ngIf="workOrderMasterFileStatus?.status === 'completed' && workOrderMasterFileStatus?.total_failed_records <= 0" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">No File Error</span>
+                        </div>
+                        <div *ngIf="workOrderMasterFileStatus?.status === 'pending'" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">Pending</span>
+                            <p-button title="Validate File" label="Validate" [loading]="loadingValidateWOMFile" class="mr-2" (onClick)="validateWOMFile()" />
+                        </div>
+                        <div *ngIf="workOrderMasterFileStatus?.status !== 'completed' && workOrderMasterFileStatus?.status !== 'pending' && workOrderMasterFileStatus?.status !== 'failed'" class="flex align-items-center">
+                            <span class="mr-2 text-green-500">Processing</span>
+                            <p-button title="Reload File Status" icon="pi pi-refresh" [loading]="loadingWOMFileStatus" class="mr-2" (onClick)="loadWorkOrderFileUploadStatus()" />
+                        </div>
+                    </div>
+                    <p-button *ngIf="(workOrderMasterFileStatus?.status === 'completed' || workOrderMasterFileStatus?.status === 'failed') && workOrderMasterFileStatus?.total_failed_records <= 0" icon="pi pi-upload" label="Upload WOM" class="mr-2" (onClick)="uploadWOMFile()" />
+                    <p-button title="Download Work Order Master Template" icon="pi pi-download" [loading]="loadingDWOMTemplate" (onClick)="downloadWOMTemplate()" />
+                </div>
+            </div>
+            <p-table #dt1 dataKey="id" [value]="workOrderMaster" [loading]="loadingWOMD" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped"
+            [globalFilterFields]="['plant', 'work_order_db', 'customer', 'responsible_person_name1', 'segment_name', 'marketing_person_name1', 'reciving_date', 'delivery_date', 'quality_inspection_required', 'created_at']">
+                <!-- <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (onClick)="clear(dt1)" />
+                        <span class="p-input-icon-left ml-auto">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" [(ngModel)]="searchValue" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                        </span>
+                    </div>
+                </ng-template> -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SN</th>
+                        <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Plant
+                                <!-- <p-columnFilter type="text" field="plant" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Work Order
+                                <!-- <p-columnFilter type="text" field="work_order_db" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Customer
+                                <!-- <p-columnFilter type="text" field="customer" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Responsible Person
+                                <!-- <p-columnFilter type="text" field="responsible_person_name1" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Segment
+                                <!-- <p-columnFilter type="text" field="segment_name" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Marketing Person
+                                <!-- <p-columnFilter type="text" field="marketing_person_name1" display="menu" /> -->
+                            </div>
+                        </th>
+
+                        <!-- <th style="min-width:15rem">
+                            <div class="flex align-items-center">
+                                Agent
+                                <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                    <ng-template pTemplate="header">
+                                        <div class="px-3 pt-3 pb-0">
+                                            <span class="font-bold">Agent Picker</span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-multiSelect [ngModel]="value" [options]="representatives" placeholder="Any" (onChange)="filter($event.value)" optionLabel="name">
+                                            <ng-template let-option pTemplate="item">
+                                                <div class="inline-block vertical-align-middle">
+                                                    <img [alt]="option.label" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ option.image }}" width="24" class="vertical-align-middle" />
+                                                    <span class="ml-1 mt-1">{{ option.name }}</span>
+                                                </div>
+                                            </ng-template>
+                                        </p-multiSelect>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th> -->
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                Receiving Date
+                                <!-- <p-columnFilter type="date" field="reciving_date" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                Delivery Date
+                                <!-- <p-columnFilter type="date" field="delivery_date" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="width: 3rem">
+                            <div class="flex align-items-center">
+                                <span title="Quality Inspection Required">QIR</span>
+                                <!-- <p-columnFilter type="boolean" field="quality_inspection_required" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                WO Add Date
+                                <!-- <p-columnFilter type="date" field="created_at" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                No. Of Items
+                                <!-- <p-columnFilter type="date" field="created_at" display="menu" /> -->
+                            </div>
+                        </th>
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                Weight
+                                <!-- <p-columnFilter type="date" field="created_at" display="menu" /> -->
+                            </div>
+                        </th>
+                        <!-- <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                Balance
+                                <p-columnFilter type="numeric" field="balance" display="menu" currency="USD" />
+                            </div>
+                        </th>
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                Status
+                                <p-columnFilter field="status" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                            <ng-template let-option pTemplate="item">
+                                                <p-tag [value]="option.value" [severity]="getSeverity(option.label)" />
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width:10rem">
+                            <div class="flex align-items-center">
+                                Activity
+                                <p-columnFilter field="activity" matchMode="between" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                    <ng-template pTemplate="filter" let-filter="filterCallback">
+                                        <p-slider [(ngModel)]="activityValues" [range]="true" (onSlideEnd)="filter($event.values)" styleClass="m-3" />
+                                        <div class="flex align-items-center px-2">
+                                            <span>{{ activityValues[0] }}</span>
+                                            <span>{{ activityValues[1] }}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th> -->
+                        
+                    </tr>
+                </ng-template>
+                <!-- <ng-template pTemplate="header">
+                    <tr>
+                        <th>SN</th>
+                        <th>Plant</th>
+                        <th>Work Order</th>
+                        <th>Customer</th>
+                        <th>Responsible Person</th>
+                        <th>Segment</th>
+                        <th>Marketing Person</th>
+                        <th>Reciving Date</th>
+                        <th>Delivery Date</th>
+                        <th>Quality Inspection Required</th>
+                        <th>Added At</th>
+                    </tr>
+                </ng-template> -->
+                <ng-template pTemplate="body" let-workorder let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex+1 }}</td>
+                        <td>{{ workorder.plant }}</td>
+                        <td>{{ workorder.work_order_db | uppercase }}</td>
+                        <td>{{ workorder.customer }}</td>
+                        <td>{{ workorder.responsible_person_name ? workorder.responsible_person_name : workorder.responsible_person_name1  }}</td>
+                        <td>{{ workorder.segment_name }}</td>
+                        <td>{{ workorder.marketing_person_name ? workorder.marketing_person_name : workorder.marketing_person_name1  }}</td>
+                        <td>{{ workorder.reciving_date| date:'longDate' }}</td>
+                        <td>{{ workorder.delivery_date| date:'longDate' }}</td>
+                        <td>
+                            <span [class]="'customer-badge status-' + workorder.quality_inspection_required_status">{{workorder.quality_inspection_required==="1"? 'Yes':'No'}}</span>
+                        </td>
+                        <td>{{ workorder.wo_add_date | date:'medium' }}</td>
+                        <td>{{ workorder.no_of_items }}</td>
+                        <td>{{ workorder.weight }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <p-paginator 
+            (onPageChange)="onPageChange($event)" *ngIf="pagination"
+            [first]="'0'"
+            [rows]="pagination.per_page" 
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} - {last} of {totalRecords}"
+            [totalRecords]="pagination.total"  />
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Add Work Order" [modal]="true" [(visible)]="visibleAddWOMasterDialog" [style]="{ width: '50vw' }">
+    <app-add-work-order *ngIf="visibleAddWOMasterDialog" (notifyParent)="onChildNotify($event)"></app-add-work-order>
+</p-dialog>
+
+
+<p-sidebar [(visible)]="visibleFilterDrawer" position="right" styleClass="w-20rem">
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+            <span class="font-bold">
+                Advance Filter
+            </span>
+        </div>
+    </ng-template>
+    <form [formGroup]="workOrderFilterForm" (ngSubmit)="onSubmitFilter()" class="flex advance-filter flex-column gap-2 max-w-md mx-auto ">
+
+        <!-- Work Order DB -->
+        <div class="flex flex-column">
+            <label for="work_order_db" class="mb-1">Work Order DB</label>
+            <input
+            id="work_order_db"
+            type="text"
+            pInputText
+            formControlName="work_order_db"
+            maxlength="6"
+            (input)="capitalizeInput('work_order_db')"
+            />
+            <!-- <small class="text-red-500" *ngIf="workOrderFilterForm.get('work_order_db')?.touched && workOrderFilterForm.get('work_order_db')?.invalid">
+            Work Order DB is required (max 6 chars).
+            </small> -->
+        </div>
+
+        <!-- Customer -->
+        <div class="flex flex-column">
+            <label for="customer" class="mb-1">Customer</label>
+            <input
+            id="customer"
+            type="text"
+            pInputText
+            maxlength="255"
+            formControlName="customer"
+            />
+            <!-- <small class="text-red-500" *ngIf="workOrderFilterForm.get('customer')?.touched && workOrderFilterForm.get('customer')?.invalid">
+            Customer is required (max 255 chars).
+            </small> -->
+        </div>
+
+        <!-- Responsible Person -->
+        <div class="flex flex-column">
+            <label for="responsible_person_name" class="mb-1">Responsible Person Name</label>
+            <input
+            id="responsible_person_name"
+            type="text"
+            pInputText
+            maxlength="255"
+            formControlName="responsible_person_name"
+            />
+            <!-- <small class="text-red-500" *ngIf="workOrderFilterForm.get('responsible_person_name')?.touched && workOrderFilterForm.get('responsible_person_name')?.invalid">
+            Required (max 255 chars).
+            </small> -->
+        </div>
+
+        <!-- Segment Dropdown -->
+        <div class="flex flex-column">
+            <label for="segment_id" class="mb-1">Segment</label>
+            <p-dropdown
+            id="segment_id"
+            formControlName="segment_id"
+            [options]="segments"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select Segment"
+            class="w-full"
+            ></p-dropdown>
+            <!-- <small class="text-red-500" *ngIf="workOrderFilterForm.get('segment_id')?.touched && workOrderFilterForm.get('segment_name')?.invalid">
+            Segment is required.
+            </small> -->
+        </div>
+
+        <!-- Marketing Person Name -->
+        <div class="flex flex-column">
+            <label for="marketing_person_name" class="mb-1">Marketing Person Name</label>
+            <input
+            id="marketing_person_name"
+            type="text"
+            pInputText
+            maxlength="255"
+            formControlName="marketing_person_name"
+            />
+            <!-- <small class="text-red-500" *ngIf="workOrderFilterForm.get('marketing_person_name')?.touched && workOrderFilterForm.get('marketing_person_name')?.invalid">
+            Required (max 255 chars).
+            </small> -->
+        </div>
+
+        <div class="flex justify-content-between mt-4">
+            <p-button label="Clear" [outlined]="true" (onClick)="clearAdvanceFilter()" />
+            <button [loading]="loadingAdvanceFilter" [disabled]="loadingAdvanceFilter || !enableAdvSearch" pButton type="submit" label="Submit" ></button>
+        </div>
+    </form>
+
+
+</p-sidebar>
+<p-toast />
+
+<p-dialog header="Add Part Numbers" [modal]="true" [(visible)]="visibleAddPartsDialog" [style]="{ width: '80vw' }">
+    <app-add-part-number *ngIf="visibleAddPartsDialog" (notifyParent)="onPartsChildNotify($event)"></app-add-part-number>
+</p-dialog>

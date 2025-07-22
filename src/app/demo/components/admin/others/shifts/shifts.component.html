@@ -1,0 +1,22 @@
+<div class="grid">
+    <div class="col-12">
+        <p-table [loading]="loadingShifts" [value]="shifts" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>From Time</th>
+                    <th>To Time</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-shift let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{ rowIndex+1 }}</td>
+                    <td>Shift - {{ shift.number }}</td>
+                    <td>{{ shift.from_time }}</td>
+                    <td>{{ shift.to_time }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
