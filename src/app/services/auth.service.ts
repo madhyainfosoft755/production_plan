@@ -106,7 +106,7 @@ export class AuthService {
       _token: string;
       name: string;
       emp_id: string;
-      role: number;
+      role: string;
     } | null = userDataJSON ? JSON.parse(userDataJSON) : null;
     if (!userData) {
       return;
@@ -136,26 +136,6 @@ export class AuthService {
     //   }
     // })
 
-  }
-
-  role(id: number){
-    if(id == 1){
-        return 'admin';
-    }
-    else if(id == 2){
-        return 'forging';
-    }
-    else if(id == 3){
-        return 'heating';
-    }
-    else if(id == 4){
-      return 'finish';
-    }
-    else if(id == 5){
-      return 'rm';
-    } else {
-      return null;
-    }
   }
 
 }

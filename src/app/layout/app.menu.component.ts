@@ -32,7 +32,7 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Home',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: [`/${this.authService.role(this.user.role)}`] }
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: [`/${this.user.role.toLowerCase()}`] }
                 ]
             },
             {
@@ -54,19 +54,19 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Main File',
                 items: [
-                    { label: 'This Month', icon: 'pi pi-angle-right', routerLink: [`/${this.authService.role(this.user.role)}/mainfile`], badge: 'NEW' },
-                    // { label: 'Report', icon: 'pi pi-angle-right', routerLink: [`/${this.authService.role(this.user.role)}/mainfile/history`] },
-                    { label: 'Daily Update', icon: 'pi pi-angle-right', routerLink: [`/${this.authService.role(this.user.role)}/mainfile/daily-update`], visible: !this.user.isRM },
-                    { label: 'Weekly Planning', icon: 'pi pi-angle-right', routerLink: [`/${this.authService.role(this.user.role)}/mainfile/weekly-planning`], visible: (!this.user.isRM && !this.user.isForging) },
+                    { label: 'This Month', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile`], badge: 'NEW' },
+                    // { label: 'Report', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/history`] },
+                    { label: 'Daily Update', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/daily-update`], visible: !this.user.isRM },
+                    { label: 'Weekly Planning', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/weekly-planning`], visible: (!this.user.isRM && !this.user.isForging) },
                 ]
             },
             {
                 label: 'UI Components',
                 items: [
-                    { label: 'Module-machine Wise Monthly', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.authService.role(this.user.role)}/mainfile/history`] },
-                    { label: 'Segment Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.authService.role(this.user.role)}/reports/report2`] },
-                    { label: 'Groutp Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.authService.role(this.user.role)}/reports/report3`] },
-                    { label: 'Module-Machine Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.authService.role(this.user.role)}/reports/report4`] },
+                    { label: 'Module-machine Wise Monthly', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/history`] },
+                    { label: 'Segment Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report2`] },
+                    { label: 'Groutp Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report3`] },
+                    { label: 'Module-Machine Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report4`] },
                 ],
                 visible: this.user.isAdmin 
             },

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/api';
 import { ApiService } from 'src/app/services/api.service';
+import { ConstantService } from 'src/app/services/constant.service';
 
 @Component({
   selector: 'app-profile',
@@ -18,11 +19,11 @@ export class ProfileComponent implements OnInit {
 
   // Role Dropdown Options
   roleOptions = [
-    { label: 'Admin', value: 1 },
-    { label: 'Forging', value: 2 },
-    { label: 'Heating', value: 3 },
-    { label: 'Finish', value: 4 },
-    { label: 'RM', value: 5 }
+    { label: this.constantService.ADMIN, value: this.constantService.ADMIN },
+    { label: this.constantService.FORGING, value: this.constantService.FORGING },
+    { label: this.constantService.HEATING, value: this.constantService.HEATING },
+    { label: this.constantService.FINISH, value: this.constantService.FINISH },
+    { label: this.constantService.RM, value: this.constantService.RM }
   ];
 
   // Dropdown Options
@@ -34,7 +35,7 @@ export class ProfileComponent implements OnInit {
     { label: 'Prof.', value: 'Prof.' }
   ];
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private constantService: ConstantService) {
     this.profileForm = this.fb.group(
       {
         salutation: ['Mr.', Validators.required],
@@ -64,7 +65,7 @@ export class ProfileComponent implements OnInit {
           name: res.data.name,
           email: res.data.email_add,
           emp_id: res.data.emp_id,
-          role: parseInt(res.data.role)
+          role: res.data.role
         });
         this.loadingProfile = false;
       }, 

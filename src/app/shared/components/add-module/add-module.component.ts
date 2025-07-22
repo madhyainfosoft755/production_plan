@@ -34,7 +34,7 @@ export class AddModuleComponent implements OnInit {
     this.loadingResponsibles = true;
     this.adminApiService.get_all_employees().subscribe({
       next: (res: any)=>{
-        this.responsibleOptions = res.data.map(value => ({...value, label: `${value.name} - ${this.authService.role(value.role)}`}));
+        this.responsibleOptions = res.data.map(value => ({...value, label: `${value.name} - ${value.role.toLowerCase()}`}));
         this.loadingResponsibles = false;
       }, 
       error: (err: any)=>{

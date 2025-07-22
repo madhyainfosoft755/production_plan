@@ -5,14 +5,14 @@ interface CUser{
     name: string;
     emp_id: string;
     token: string;
-    role: number;
+    role: string;
 }
 
 export class User {
     id: number;
     name: string;
     email: string;
-    role: number;
+    role: string;
     emp_id: string;
     private _token: string;
 
@@ -40,23 +40,23 @@ export class User {
     }
 
     public get isAdmin() {
-        return this.role == 1;
+        return this.role == 'ADMIN';
     }
 
     public get isForging() {
-      return this.role == 2;
+      return this.role == 'FORGING';
     }
 
     public get isHeating() {
-        return this.role == 3;
+        return this.role == 'HEATING';
     }
 
     public get isFinish() {
-        return this.role == 4;
+        return this.role == 'FINISH';
     }
 
     public get isRM() {
-      return this.role == 5;
+      return this.role == 'RM';
     }
 
 

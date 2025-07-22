@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         this.authService.currentUser.subscribe({
             next: (user) => {
               if (user){
-                this.router.navigate([`/${this.authService.role(user.role)}`]);
+                this.router.navigate([`/${user.role.toLowerCase()}`]);
               }
             }
         });
@@ -86,7 +86,7 @@ export class LoginComponent implements OnInit {
                             localStorage.removeItem('UNBRAKO_PPC_rememberedCredentials');
                         }
                         this.loading = false;
-                        this.router.navigate([`/${this.authService.role(data.role)}`]);
+                        this.router.navigate([`/${data.role.toLowerCase()}`]);
                     },
                     error: (error: any) => {
                         this.loading = false;

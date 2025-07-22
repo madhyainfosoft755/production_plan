@@ -11,10 +11,12 @@
                         <th>SN</th>
                         <th>Process</th>
                         <th>Machine Name</th>
-                        <th>Machine-1</th>
+                        <th>Capacity</th>
                         <th>No.OF M/C</th>
                         <th>Speed</th>
                         <th>No. Of Shift</th>
+                        <th>Plan No of M/C</th>
+                        <th>% of Efficiency</th>
                         <th>Added At</th>
                         <!-- <th>Action</th> -->
                     </tr>
@@ -24,13 +26,15 @@
                         <td>{{ rowIndex+1 }}</td>
                         <td>{{ machine.process }}</td>
                         <!-- <td><a [routerLink]="['/machines/machine-details', machine.id]">{{ machine.machine_name }}</a></td> -->
-                        <td>{{ machine.machine_name }}</td>
-                        <td>{{ machine.machine_1 }}</td>
+                        <td>{{ machine.name }}</td>
+                        <td>{{ machine.capacity }}</td>
                         <td>{{ machine.no_of_mc }}</td>
                         <td>{{ machine.speed }}</td>
                         <td>
-                            <span *ngFor="let shift of machine.shifts" class="border-1 border-primary-500 p-2 border-round m-2">Shift-{{shift.number}}</span>
+                            {{ machine.no_of_shift }}
                         </td>
+                        <td>{{ machine.plan_no_of_mc }}</td>
+                        <td>{{ machine.per_of_efficiency }}</td>
                         <td>{{ machine.created_at | date:'shortDate' }}</td>
                         <!-- <td>
                             <button (click)="navigateToMachineDetails(machine.id)">Edit</button>

@@ -19,6 +19,7 @@ interface ExportColumn {
 
 import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { ConstantService } from 'src/app/services/constant.service';
 
 @Component({
   selector: 'app-sort-icons',
@@ -108,7 +109,8 @@ export class ThisMonthComponent implements OnInit {
     private unbrakoPPCommonService: UnbrakoPPCommonService,
     private excelService: ExcelService,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private constantService: ConstantService
   ){}
 
   ngOnInit() :void {
@@ -270,8 +272,8 @@ export class ThisMonthComponent implements OnInit {
     this.authService.currentUser.subscribe({
           next: (user) => {
             if (user){
-              this.userRole = String(user.role);
-              this.isRmUser = String(user.role) == '5';
+              this.userRole = user.role;
+              this.isRmUser = user.role == this.constantService.RM;
             }
           }
       });
@@ -570,7 +572,7 @@ export class ThisMonthComponent implements OnInit {
 
   showUpdateForm(){
     console.log(this.selectedRecords.length)
-    if(this.selectedRecords.length && ((this.userRole == '5' && this.today.getDay() !== 6) || this.userRole == '1')){
+    if(this.selectedRecords.length && ((this.userRole == this.constantService.RM && this.today.getDay() !== 6) || this.userRole == this.constantService.ADMIN)){
       this.visibleAdminUpdateDialog = true;
     }
   }
