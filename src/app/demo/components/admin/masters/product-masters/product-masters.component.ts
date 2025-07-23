@@ -163,6 +163,7 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
           this.messageService.add({ severity: 'warn', summary: 'Information', detail: 'No Record Found' });
         }
         this.loadPMFileUploadStatus();
+        this.load_machines();
         this.loadingValidatePMFile = false;
       }, 
       error: (err: any)=>{

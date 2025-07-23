@@ -130,6 +130,7 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
           this.messageService.add({ severity: 'warn', summary: 'Information', detail: 'No Record Found' });
         }
         this.loadWorkOrderFileUploadStatus();
+        this.loadData();
         this.loadingValidateWOMFile = false;
       }, 
       error: (err: any)=>{
