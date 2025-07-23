@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 
@@ -7,17 +7,18 @@ import { AdminApiService } from 'src/app/services/adminapi.service';
   templateUrl: './machine-details.component.html',
   styleUrl: './machine-details.component.scss'
 })
-export class MachineDetailsComponent implements OnInit {
+export class MachineDetailsComponent implements OnInit, OnChanges {
   @Output() notifyParent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() selectedMachine: any;
   machineForm: FormGroup;
   loading = false;
   backendErrors: any = {};
 
   // Role Dropdown Options
   processOptions = [
-    { label: 'Forging', value: 1 },
-    { label: 'Heating', value: 2 },
-    { label: 'Finish', value: 3 }
+    { label: 'Forging', value: 'Forging' },
+    { label: 'Heating', value: 'Heating' },
+    { label: 'Finish', value: 'Finish' }
   ];
 
   shiftOptions = [
@@ -30,19 +31,17 @@ export class MachineDetailsComponent implements OnInit {
     this.machineForm = this.fb.group(
       {
         name: ['', Validators.required],
-        no_of_mc: [0, [Validators.required, , Validators.min(0), Validators.max(10)]],
+        no_of_mc: ['', [Validators.required, , Validators.min(0)]],
         speed: ['', Validators.required],
-        process: [null],
-        machine_rev: this.fb.array([]) // Dynamic form fields
+        process: ['', Validators.required],
+        capacity: ['', [Validators.required, Validators.min(1)]],
+        no_of_shift: ['', [Validators.required, Validators.min(1)]],
+        plan_no_of_mc: ['', [Validators.required, Validators.min(1)]],
+        per_of_efficiency: ['', [Validators.required, Validators.min(1)]],
       });
   }
 
   ngOnInit(): void {
-    this.updateMachineRevFields();
-    // Listen for changes in no_of_mc field
-    this.machineForm.get('no_of_mc')?.valueChanges.subscribe(() => {
-      this.updateMachineRevFields();
-    });
 
     // Monitor the 'name' field for validity changes
     this.machineForm.controls['name'].valueChanges.subscribe(() => {
@@ -54,38 +53,42 @@ export class MachineDetailsComponent implements OnInit {
     });
   }
 
-  // Transform input to uppercase
-  onNameInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    input.value = input.value.toUpperCase();
-    this.machineForm.controls['name'].setValue(input.value, { emitEvent: false });
-    this.machineRev.controls.forEach((control, index) => {
-      control.patchValue({ machineName: `${input.value}-${index + 1}` });
-    });
-  }
 
-  // Update machine_rev fields dynamically
-  private updateMachineRevFields(): void {
-    const noOfMachines = this.machineForm.get('no_of_mc')?.value || 0;
-
-    while (this.machineRev.length < noOfMachines && noOfMachines<=10) {
-      this.machineRev.push(
-        // this.fb.control(`Machine-${this.machineRev.length + 1}`, Validators.required)
-        this.fb.group({
-          machineName: this.fb.control(`${this.machineForm.value.name}-${this.machineRev.length + 1}`, Validators.required),
-          shifts: this.fb.control([1,2,3], Validators.required), // Add shifts control for multi-select
-        })
-      );
-    }
-
-    while (this.machineRev.length > noOfMachines) {
-      this.machineRev.removeAt(this.machineRev.length - 1);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedMachine']) {
+      this.selectedMachine = changes['selectedMachine'].currentValue;
+      if(this.selectedMachine){
+        this.machineForm.patchValue({
+          name: this.selectedMachine?.name || '',
+          no_of_mc: this.selectedMachine?.no_of_mc || '',
+          speed: this.selectedMachine?.speed || '',
+          process: this.selectedMachine?.process || '',
+          capacity: this.selectedMachine?.capacity || '',
+          no_of_shift: this.selectedMachine?.no_of_shift || '',
+          plan_no_of_mc: this.selectedMachine?.plan_no_of_mc || '',
+          per_of_efficiency: this.selectedMachine?.per_of_efficiency || '',
+        });
+      } else {
+      
+      }
     }
   }
+
+
+  checkNumberInput(controlName: string) {
+      const control = this.machineForm.get(controlName);
+      const value = control?.value;
+      // console.log(value)
+      if (value !== null && value !== undefined) {
+          const numericValue = value.toString().replace(/[^0-9]/g, '');
+          control?.setValue(numericValue, { emitEvent: false });
+          // console.log(control.value)
+      }
+  }
+
 
   // convenience getter for easy access to form fields
   get f() { return this.machineForm.controls; }
-  get machineRev() { return this.machineForm.get('machine_rev') as FormArray; }
 
   // Submit Form
   onSubmit(): void {
@@ -96,18 +99,32 @@ export class MachineDetailsComponent implements OnInit {
     }
     
     this.loading = true;
-
-    this.adminApiService.add_machine(this.machineForm.value).subscribe({
-      next: (res)=>{
-        this.loading = false;
-        // Emit an event with a message or any data
-        this.notifyParent.emit(true);
-      }, 
-      error: (err)=>{
-        this.backendErrors = err.error.errors;
-        this.loading = false;
-        console.log(err);
-      }
-    });
+    if(this.selectedMachine){
+      this.adminApiService.update_machine(this.selectedMachine.id, this.machineForm.value).subscribe({
+        next: (res)=>{
+          this.loading = false;
+          // Emit an event with a message or any data
+          this.notifyParent.emit(true);
+        }, 
+        error: (err)=>{
+          this.backendErrors = err.error.errors;
+          this.loading = false;
+          console.log(err);
+        }
+      });
+    } else {
+      this.adminApiService.add_machine(this.machineForm.value).subscribe({
+        next: (res)=>{
+          this.loading = false;
+          // Emit an event with a message or any data
+          this.notifyParent.emit(true);
+        }, 
+        error: (err)=>{
+          this.backendErrors = err.error.errors;
+          this.loading = false;
+          console.log(err);
+        }
+      });
+    }
   }
 }

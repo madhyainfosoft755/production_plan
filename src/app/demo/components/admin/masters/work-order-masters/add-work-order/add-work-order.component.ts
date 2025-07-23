@@ -143,6 +143,7 @@ export class AddWorkOrderComponent implements OnInit {
     this.submitted = true;
     console.log(this.workOrderForm.value);
     if (this.workOrderForm.invalid) {
+      this.workOrderForm.markAllAsTouched();
       return;
     }
 

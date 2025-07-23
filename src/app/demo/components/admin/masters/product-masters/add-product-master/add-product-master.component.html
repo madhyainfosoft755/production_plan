@@ -44,11 +44,11 @@
             </small>
           </div>
           <div class="field col-12 sm:col-4">
-            <label for="material_number">Material Number for <u class="text-primary">{{selectedProcess?.label}}</u><span class="text-red-500">*</span></label>
+            <label for="material_number2">Material Number for <u class="text-primary">{{selectedProcess?.label}}</u><span class="text-red-500">*</span></label>
             <input type="text" pInputText [disabled]="true" placeholder="Material Number" [value]="material_no_for_process" />
           </div>
           <div class="field col-12">
-            <label for="material_number">Process<span class="text-red-500">*</span></label>
+            <label for="process">Process<span class="text-red-500">*</span></label>
             <label>
               <input
                 type="radio"
@@ -110,7 +110,7 @@
             <small *ngIf="submitted && productMasterForm.controls['machine'].invalid" class="p-error">Machine Name is required.</small>
           </div>
           <div class="field col-12 sm:col-4">
-            <label for="finish_wt">Module</label>
+            <label for="machine_module_name">Module</label>
             <div class="flex align-items-center">
               <p-dropdown
                 id="machine_module_name"
@@ -130,7 +130,7 @@
             <!-- <input [disabled]="true" type="text" pInputText [value]="productMasterForm.controls['seg2']?.value?.value" /> -->
           </div>
           <div class="field col-12 sm:col-4">
-            <label for="finish_wt">Responsible</label>
+            <label for="responsible_person">Responsible</label>
             <input [disabled]="true" type="text" pInputText [value]="responsible_person || materialNumberInfo?.responsible_name" />
           </div>
         </div>

@@ -173,7 +173,7 @@ export class AdminApiService {
   }
 
   addProductMaster(data: any): Observable<any>{
-    return this.http.post(`${this.baseUrl}product-master`, data);
+    return this.http.post(`${this.baseUrl}add-product-master`, data);
   }
 
   getMachineModules(machine_rev_id: string): Observable<any>{

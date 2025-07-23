@@ -1,123 +1,119 @@
-<form [formGroup]="machineForm" (ngSubmit)="onSubmit()" autocomplete="off">
-    <div class="p-fluid grid">
-  
-      <!-- Name -->
-      <div class="field col-12 sm:col-6">
-        <label for="name">Name <span class="text-red-500">*</span></label>
-        <input id="name" type="text" pInputText formControlName="name" (input)="onNameInput($event)" placeholder="Enter Name" (focus)="backendErrors=undefined" />
-        <small *ngIf="f['name'].touched && f['name'].errors?.['required']" class="p-error">
-          Name is required.
-        </small>
-        <small *ngIf="backendErrors?.name" class="p-error">
-          {{ backendErrors.name }}
-        </small>
-      </div>
-
-      <!-- Process Dropdown -->
-      <div class="field col-12 sm:col-6">
-        <label for="process">Process <span class="text-red-500">*</span></label>
-        <p-dropdown
-          id="process"
-          [options]="processOptions"
-          formControlName="process"
-          placeholder="Select Process"
-          optionLabel="label"
-          optionValue="value"
-          min="0"
-        ></p-dropdown>
-        <small *ngIf="f['process'].touched && f['process'].errors?.['required']" class="p-error">
-          Process is required.
-        </small>
-        <small *ngIf="f['no_of_mc'].touched && f['no_of_mc'].errors?.['min']" class="p-error">
-          No of machines cannot be less than 0.
-        </small>
-      </div>
-
-      <div class="field col-12 sm:col-6">
-        <label for="speed">Speed <span class="text-red-500">*</span></label>
-        <input
-          id="speed"
-          type="text"
-          pInputText
-          formControlName="speed"
-          placeholder="Enter machine speed"
-        />
-      </div>
-  
-      <div class="field col-12 sm:col-6" *ngIf="f['name'].valid">
-        <label for="no_of_mc">No. Of Machines <span class="text-red-500">*</span></label>
-        <p-inputNumber min="0" max="10" id="no_of_mc" type="number" formControlName="no_of_mc" placeholder="" />
-        <small *ngIf="f['no_of_mc'].touched && f['no_of_mc'].errors?.['required']" class="p-error">
-          No of machines is required
-        </small>
-        <small *ngIf="f['no_of_mc'].touched && f['no_of_mc'].errors?.['max']" class="p-error">
-          Max number should be 10.
-        </small>
-      </div>
-
-  
-      <!-- Dynamic Fields for Machine Revision -->
-      <!-- <div class="field col-12">
-        <label for="machine_rev">Machine Names</label>
-        <div *ngFor="let rev of machineRev.controls; let i = index" class="p-inputgroup">
-          <input
-            [value]="rev.value"
-            readonly
-            pInputText
-            placeholder="Machine Revision"
-          />
-        </div>
-      </div> -->
-
-      <!-- Dynamic Fields for Machine Revision -->
-      <div formArrayName="machine_rev"  class="field col-12">
-        <label for="machine_rev">Machines</label>
-        <div *ngFor="let rev of machineRev.controls; let i = index" [formGroupName]="i" class="grid">
-          <div class="field col-12 sm:col-6">
-
-            <input
-              id="machineRev-{{ i }}"
-              type="text"
-              formControlName="machineName"
-              pInputText
-              placeholder="Enter Machine Revision"
-              />
-              <!-- [value]="machineForm.get('name')?.value" -->
-            <small *ngIf="rev.get('machineName')?.touched && rev.get('machineName')?.invalid" class="p-error">
-              Revision is required.
+<div class="p-fluid grid m-0">
+  <div class="col-12">
+    <form [formGroup]="machineForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="p-fluid grid">
+      
+          <!-- Name -->
+          <div class="field col-12 sm:col-4">
+            <label for="name">Name <span class="text-red-500">*</span></label>
+            <input id="name" type="text" pInputText formControlName="name" placeholder="Enter Name" (focus)="backendErrors=undefined" />
+            <small *ngIf="f['name'].touched && f['name'].errors?.['required']" class="p-error">
+              Required.
+            </small>
+            <small *ngIf="backendErrors?.name" class="p-error">
+              {{ backendErrors.name }}
             </small>
           </div>
-
-          <div class="field col-12 sm:col-6">
-
-            <!-- Shift Multi-Select Dropdown -->
-            <p-multiSelect
-              id="shifts-{{ i }}"
-              [options]="shiftOptions"
-              formControlName="shifts"
-              placeholder="Select Shifts"
-              display="chip"
+    
+          <!-- Process Dropdown -->
+          <div class="field col-12 sm:col-4">
+            <label for="process">Process <span class="text-red-500">*</span></label>
+            <p-dropdown
+              id="process"
+              [options]="processOptions"
+              formControlName="process"
+              placeholder="Select Process"
               optionLabel="label"
               optionValue="value"
-            ></p-multiSelect>
-            <small *ngIf="rev.get('shifts')?.touched && rev.get('shifts')?.invalid" class="p-error">
-              At least one shift is required.
+              min="0"
+            ></p-dropdown>
+            <small *ngIf="f['process'].touched && f['process'].errors?.['required']" class="p-error">
+              Required.
+            </small>
+            <small *ngIf="f['no_of_mc'].touched && f['no_of_mc'].errors?.['min']" class="p-error">
+              No of machines cannot be less than 0.
             </small>
           </div>
-        </div>
-        <!-- <div *ngIf="rev.invalid && rev.touched" class="error">
-          Revision is required.
-        </div> -->
-
-
-      </div>
+    
+          <div class="field col-12 sm:col-4">
+            <label for="speed">Speed <span class="text-red-500">*</span></label>
+            <input
+              id="speed"
+              type="text"
+              pInputText
+              formControlName="speed"
+              placeholder="Enter machine speed"
+              (input)="checkNumberInput('speed')"
+            />
+            <small *ngIf="f['speed'].touched && f['speed'].errors?.['required']" class="p-error">
+              Required
+            </small>
+          </div>
       
-
-      <!-- Submit Button -->
-      <div class="field col-12 sm:col-3">
-        <button [disabled]="machineForm.invalid || loading" type="submit" [loading]="loading" pButton pRipple label="Submit" class=""></button>
-      </div>
-  
-    </div>
-  </form>
+          <div class="field col-12 sm:col-4">
+            <label for="no_of_mc">No. Of Machines <span class="text-red-500">*</span></label>
+            <input pInputText id="no_of_mc" pInputText formControlName="no_of_mc" placeholder="No. Of Machines" (input)="checkNumberInput('no_of_mc')" />
+            <small *ngIf="f['no_of_mc'].touched && f['no_of_mc'].errors?.['required']" class="p-error">
+              Required
+            </small>
+            <small *ngIf="f['no_of_mc'].touched && f['no_of_mc'].errors?.['max']" class="p-error">
+              Max number should be 10.
+            </small>
+          </div>
+    
+    
+          <div class="field col-12 sm:col-4">
+            <label for="capacity">Capacity <span class="text-red-500">*</span></label>
+            <input pInputText id="capacity" pInputText formControlName="capacity" placeholder="Capacity" (input)="checkNumberInput('capacity')"/>
+            <small *ngIf="f['capacity'].touched && f['capacity'].errors?.['required']" class="p-error">
+              Required
+            </small>
+            <small *ngIf="f['capacity'].touched && f['capacity'].errors?.['max']" class="p-error">
+              Max number should be 10.
+            </small>
+          </div>
+    
+          <div class="field col-12 sm:col-4">
+            <label for="no_of_shift">No. Of Shift <span class="text-red-500">*</span></label>
+            <input pInputText id="no_of_shift" pInputText formControlName="no_of_shift" placeholder="No. Of Shift" (input)="checkNumberInput('no_of_shift')"/>
+            <small *ngIf="f['no_of_shift'].touched && f['no_of_shift'].errors?.['required']" class="p-error">
+              Required
+            </small>
+            <small *ngIf="f['no_of_shift'].touched && f['no_of_shift'].errors?.['max']" class="p-error">
+              Max number should be 10.
+            </small>
+          </div>
+    
+          <div class="field col-12 sm:col-4">
+            <label for="plan_no_of_mc">Plan No. of M/C <span class="text-red-500">*</span></label>
+            <input pInputText id="plan_no_of_mc" pInputText formControlName="plan_no_of_mc" placeholder="Plan No. of M/C" (input)="checkNumberInput('plan_no_of_mc')"/>
+            <small *ngIf="f['plan_no_of_mc'].touched && f['plan_no_of_mc'].errors?.['required']" class="p-error">
+              Required
+            </small>
+            <small *ngIf="f['plan_no_of_mc'].touched && f['plan_no_of_mc'].errors?.['max']" class="p-error">
+              Max number should be 10.
+            </small>
+          </div>
+    
+          <div class="field col-12 sm:col-4">
+            <label for="per_of_efficiency">% of Efficiency <span class="text-red-500">*</span></label>
+            <input pInputText id="per_of_efficiency" pInputText formControlName="per_of_efficiency" placeholder="% of Efficiency" (input)="checkNumberInput('per_of_efficiency')"/>
+            <small *ngIf="f['per_of_efficiency'].touched && f['per_of_efficiency'].errors?.['required']" class="p-error">
+              Required
+            </small>
+            <small *ngIf="f['per_of_efficiency'].touched && f['per_of_efficiency'].errors?.['max']" class="p-error">
+              Max number should be 10.
+            </small>
+          </div>
+          
+    
+          <!-- Submit Button -->
+          <div class="field  align-self-end col-12 sm:col-3">
+            <button [disabled]="machineForm.invalid || loading" type="submit" [loading]="loading" pButton pRipple label="{{selectedMachine ? 'Update' : 'Add New'}}" class=""></button>
+          </div>
+      
+        </div>
+    </form>
+  </div>
+</div>
   

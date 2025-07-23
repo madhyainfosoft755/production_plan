@@ -2,7 +2,7 @@
   <form [formGroup]="productMasterForm" (ngSubmit)="onSubmit()">
       <div class="p-fluid grid">
           <div class="field col-12 sm:col-4">
-              <label for="material_number">Order</label>
+              <label for="order_number">Order</label>
               <input id="order_number" formControlName="order_number" type="text" pInputText placeholder="Enter Order" />
           </div>
           <div class="field col-12 sm:col-4">
@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="field col-12 sm:col-4">
-            <label for="finish_wt">Module</label>
+            <label for="machine_module_name">Module</label>
             <div class="flex align-items-center">
               <p-dropdown
                 id="machine_module_name"

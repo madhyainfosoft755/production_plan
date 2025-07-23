@@ -68,8 +68,8 @@ export class AddMachineMasterComponent implements OnInit {
         
           // Add the current item to the group's items
           group.items.push({
-            label: curr.machine_rev,
-            value: curr.rev_id,
+            label: curr.machine_name,
+            value: curr.machine_id,
           });
         
           return acc;

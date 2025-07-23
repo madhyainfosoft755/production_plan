@@ -68,8 +68,7 @@ export class HistoryComponent implements OnInit {
         "module_id": "6",
         "seg2_id": "3",
         "seg3_id": "3",
-        "machine_1_name": "254L-2",
-        "machine_name": "254L",
+        "machine_name": "254L-2",
         "machine_speed": "35",
         "no_of_mc": "1",
         "module_name": "BOLT-3",
@@ -142,8 +141,7 @@ export class HistoryComponent implements OnInit {
         "module_id": "6",
         "seg2_id": "4",
         "seg3_id": "4",
-        "machine_1_name": "204L-BOLT-3-1",
-        "machine_name": "204L-BOLT-3",
+        "machine_name": "204L-BOLT-3-1",
         "machine_speed": "45",
         "no_of_mc": "2",
         "module_name": "BOLT-3",
@@ -216,8 +214,7 @@ export class HistoryComponent implements OnInit {
         "module_id": "6",
         "seg2_id": "4",
         "seg3_id": "4",
-        "machine_1_name": "204L-BOLT-3-1",
-        "machine_name": "204L-BOLT-3",
+        "machine_name": "204L-BOLT-3-1",
         "machine_speed": "45",
         "no_of_mc": "2",
         "module_name": "BOLT-3",
@@ -290,8 +287,7 @@ export class HistoryComponent implements OnInit {
         "module_id": "7",
         "seg2_id": "1",
         "seg3_id": "1",
-        "machine_1_name": "41B6S-1",
-        "machine_name": "41B6S",
+        "machine_name": "41B6S-1",
         "machine_speed": "50",
         "no_of_mc": "1",
         "module_name": "NUT",
@@ -364,8 +360,7 @@ export class HistoryComponent implements OnInit {
         "module_id": "2",
         "seg2_id": "2",
         "seg3_id": "2",
-        "machine_1_name": "300T-1",
-        "machine_name": "300T",
+        "machine_name": "300T-1",
         "machine_speed": "50",
         "no_of_mc": "2",
         "module_name": "WASHER",
@@ -408,7 +403,7 @@ export class HistoryComponent implements OnInit {
     ];
     this.filterForm = this.fb.group({
       module_name: [''],
-      machine_1_name: ['']
+      machine_name: ['']
     });
     this.getModules();
   }
@@ -450,7 +445,7 @@ export class HistoryComponent implements OnInit {
     console.log(this.filterForm.value);
     this.loadingReport = true;
     const moduleIds = this.filterForm.get('module_name')?.value.map(val=>val.id);
-    const machineRevIds = this.filterForm.get('machine_1_name')?.value;
+    const machineRevIds = this.filterForm.get('machine_name')?.value;
     this.adminApiService.machineWiseModuleWiseMonthlyReport({moduleIds, machineRevIds}).subscribe({
       next: (res) => {
         this.loadingReport = false;
@@ -522,7 +517,7 @@ export class HistoryComponent implements OnInit {
     let filteredData = [...this.data];
     console.log([...this.data])
     const moduleNames = this.filterForm.get('module_name')?.value.map(val=>val.id);
-    const machineNames = this.filterForm.get('machine_1_name')?.value;
+    const machineNames = this.filterForm.get('machine_name')?.value;
     console.log(moduleNames);
     console.log(machineNames)
     // Apply filters
@@ -532,7 +527,7 @@ export class HistoryComponent implements OnInit {
       filteredData = filteredData.filter(item => moduleNames.includes(item.module_id));
     }
     if (machineNames && machineNames.length > 0) {
-      // filteredData = filteredData.filter(item => machineNames.includes(item.machine_1_name));
+      // filteredData = filteredData.filter(item => machineNames.includes(item.machine_name));
       filteredData = filteredData.filter(item => machineNames.includes(item.machine_id));
     }
 
@@ -562,17 +557,17 @@ export class HistoryComponent implements OnInit {
       }
 
       // Aggregate machine data (sum to_forge_qty, to_forge_wt, to_forge_rm_wt)
-      if (!group.machines[item.machine_1_name]) {
-        group.machines[item.machine_1_name] = {
+      if (!group.machines[item.machine_name]) {
+        group.machines[item.machine_name] = {
           to_forge_qty: 0,
           to_forge_wt: 0,
           to_forge_rm_wt: 0
         };
       }
 
-      group.machines[item.machine_1_name].to_forge_qty += item.to_forge_qty;
-      group.machines[item.machine_1_name].to_forge_wt += item.to_forge_wt;
-      group.machines[item.machine_1_name].to_forge_rm_wt += item.to_forge_rm_wt;
+      group.machines[item.machine_name].to_forge_qty += item.to_forge_qty;
+      group.machines[item.machine_name].to_forge_wt += item.to_forge_wt;
+      group.machines[item.machine_name].to_forge_rm_wt += item.to_forge_rm_wt;
     });
 
     return pivot;

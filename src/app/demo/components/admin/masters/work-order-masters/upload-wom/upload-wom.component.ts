@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Message } from 'primeng/api';
 
 @Component({
-  selector: 'app-upload',
+  selector: 'app-upload-wom',
   templateUrl: './upload-wom.component.html',
   styles: ``
 })

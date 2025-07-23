@@ -31,7 +31,7 @@
                             <p-button 
                                 icon="pi pi-pencil" 
                                 label="Update" 
-                                *ngIf="((userRole == '5' && today.getDay() !== 6) || userRole == '1')"
+                                *ngIf="((isRmUser && today.getDay() !== 6) || isAdminUser)"
                                 size="small"
                                 [disabled]="!selectedRecords.length"
                                 (onClick)="showUpdateForm()" />

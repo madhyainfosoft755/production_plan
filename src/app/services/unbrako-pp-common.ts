@@ -148,7 +148,7 @@ export class UnbrakoPPCommonService {
         group = { label: curr.machine_name, value: curr.machine_id, items: [] };
         acc.push(group);
       }
-      group.items.push({ label: curr.machine_rev, value: curr.rev_id });
+      group.items.push({ label: curr.machine_name, value: curr.machine_id });
       return acc;
     }, []);
   }

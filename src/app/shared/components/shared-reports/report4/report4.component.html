@@ -25,12 +25,12 @@
               
                   <div class="col-12 flex align-items-center py-0">
                     <!-- Filter for Machine Name -->
-                    <label for="machine_1_name">Machines:</label>
+                    <label for="machine_name">Machines:</label>
                     <div class="flex align-items-center">
                       <p-multiSelect 
                         [options]="machineOptions" 
                         class="flex-grow-1"
-                        formControlName="machine_1_name"
+                        formControlName="machine_name"
                         [group]="true"
                         display="chip"
                         placeholder="Select Machines"
@@ -66,7 +66,7 @@
                   <tr [ngClass]="{ 'bg-cyan-100': group.module_name === 'Total'}">
                     <td>{{ rowIndex+1 }}</td>
                     <td>{{ group.module_name }}</td>
-                    <td>{{ group.machine_1_name }}</td>
+                    <td>{{ group.machine_name }}</td>
                     <td>{{ group.pending_qty }}</td>
                     <!-- <td>{{ group.drawn_dia1 }}</td>
                     <td>{{ group.materialNumber }}</td>

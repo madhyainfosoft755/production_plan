@@ -12,6 +12,7 @@ export class MachinesComponent implements OnInit {
   loadingMD: boolean = false;
   visibleAddMachineDialog: boolean = false;
   breadcrumbItems: any[];
+  selectedMachine: any;
   constructor(
     private adminApiService: AdminApiService,
     private router: Router
@@ -39,6 +40,7 @@ export class MachinesComponent implements OnInit {
   }
 
   showAddMachineDialog(){
+    this.selectedMachine = null;
     this.visibleAddMachineDialog = true;
   }
 
@@ -52,5 +54,10 @@ export class MachinesComponent implements OnInit {
       this.load_machines();
       this.visibleAddMachineDialog = false; // Close the dialog or perform any action
     }
+  }
+
+  showMachineEdit(machine: any){
+    this.selectedMachine = machine;
+    this.visibleAddMachineDialog = true;
   }
 }

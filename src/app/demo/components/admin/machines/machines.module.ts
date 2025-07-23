@@ -16,14 +16,12 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { MachinesRoutingModule } from './machines-routing.module';
 import { MachinesComponent } from './machines.component';
 import { MachineDetailsComponent } from './machine-details/machine-details.component';
-import { UpdateMachineComponent } from './update-machine/update-machine.component';
 
 
 @NgModule({
   declarations: [
     MachinesComponent,
-    MachineDetailsComponent,
-    UpdateMachineComponent
+    MachineDetailsComponent
   ],
   imports: [
     CommonModule,

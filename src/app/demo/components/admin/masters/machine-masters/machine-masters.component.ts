@@ -18,7 +18,6 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
     process: string, 
     product: string|null, 
     machine: string, 
-    machine_1: string|null, 
     responsible: string,
     module: string,
     no_of_mc: number|null,
@@ -58,7 +57,6 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
     ];
     this.machinesFilterForm = this.fb.group({
       machines: [null],
-      machine_1: [null],
       modules: [null]
     });
     this.initialAdvSearchValues = this.machinesFilterForm.value;

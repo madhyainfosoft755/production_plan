@@ -90,7 +90,7 @@
             placeholder="Responsible Person"
           />
         </div>
-        <small *ngIf="submitted && workOrderForm.controls['responsible_person'].invalid" class="p-error">
+        <small *ngIf="submitted && workOrderForm.controls['responsible_person_name'].invalid" class="p-error">
           Responsible person is required.
         </small>
       </div>
@@ -108,7 +108,7 @@
             placeholder="Marketing Person"
           />
         </div>
-        <small *ngIf="submitted && workOrderForm.controls['marketing_person'].invalid" class="p-error">
+        <small *ngIf="submitted && workOrderForm.controls['marketing_person_name'].invalid" class="p-error">
           Marketing person is required.
         </small>
       </div>
@@ -201,7 +201,7 @@
   
       <!-- Submit Button -->
       <div class=" col-12 sm:col-4">
-        <p-button type="submit" label="Submit" [disabled]="loading" />
+        <p-button type="submit" [disabled]="workOrderForm.invalid" label="Submit" [disabled]="loading" />
       </div>
     </div>
 </form>

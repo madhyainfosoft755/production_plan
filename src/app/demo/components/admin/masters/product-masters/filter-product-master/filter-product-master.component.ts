@@ -131,7 +131,7 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
               group = { label: curr.machine_name, value: curr.machine_id, items: [] };
               acc.push(group);
             }
-            group.items.push({ label: curr.machine_rev, value: curr.rev_id });
+            group.items.push({ label: curr.machine_name, value: curr.machine_id });
             return acc;
           }, []);
           this.loadingMachines = false;
@@ -244,8 +244,8 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
         
           // Add the current item to the group's items
           group.items.push({
-            label: curr.machine_rev,
-            value: curr.rev_id,
+            label: curr.machine_name,
+            value: curr.machine_id,
           });
         
           return acc;

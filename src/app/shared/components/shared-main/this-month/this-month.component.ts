@@ -100,7 +100,7 @@ export class ThisMonthComponent implements OnInit {
   selectedRecords: any[] = [];
   @ViewChildren('op') overlayPanels: QueryList<OverlayPanel>;
   today = new Date();
-  userRole = '';
+  isAdminUser : boolean | null = null;
   sapRmData: any[] = [];
   isRmUser : boolean | null = null;
   
@@ -152,7 +152,6 @@ export class ThisMonthComponent implements OnInit {
     //     { field: 'drawn_dia1', header: 'DRAWN DIA.1'},
     //     { field: 'no_of_mc', header: 'No.OF M/C'},
     //     { field: 'machine_name', header: 'M/C-NAME'},
-    //     { field: 'machine_1_name', header: 'M/C-1 NAME'},
     //     { field: 'machine_speed', header: 'SPEED'},
     //     { field: 'seg2_name', header: 'Seg-2'},
     //     { field: 'seg3_name', header: 'Seg-3'},
@@ -226,7 +225,6 @@ export class ThisMonthComponent implements OnInit {
       // { field: 'group_id', header: 'Group ID' },
       { field: 'group_name', header: 'Group' },
       { field: 'machine_name', header: 'M/C-NAME' },
-      { field: 'machine_1_name', header: 'M/C-1 NAME' },
       { field: 'no_of_machines', header: 'No.OF M/C' },
       { field: 'cheese_wt', header: 'Cheese Wt' },
       { field: 'size', header: 'Size' },
@@ -272,8 +270,8 @@ export class ThisMonthComponent implements OnInit {
     this.authService.currentUser.subscribe({
           next: (user) => {
             if (user){
-              this.userRole = user.role;
               this.isRmUser = user.role == this.constantService.RM;
+              this.isAdminUser = user.role == this.constantService.ADMIN;
             }
           }
       });
@@ -572,7 +570,7 @@ export class ThisMonthComponent implements OnInit {
 
   showUpdateForm(){
     console.log(this.selectedRecords.length)
-    if(this.selectedRecords.length && ((this.userRole == this.constantService.RM && this.today.getDay() !== 6) || this.userRole == this.constantService.ADMIN)){
+    if(this.selectedRecords.length && ((this.isRmUser && this.today.getDay() !== 6) || this.isAdminUser)){
       this.visibleAdminUpdateDialog = true;
     }
   }
