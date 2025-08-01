@@ -33,7 +33,7 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
     { headerName: 'Material description', field: 'material_description', filter: true , pivot: true, enablePivot: true },
     { headerName: 'Unit of measure (=GMEIN)', field: 'unit_of_measure', filter: true , pivot: true, enablePivot: true },
     { headerName: 'Machine Name', field: 'machine_name', filter: true , pivot: true, enablePivot: true },
-    { headerName: 'Machine-1', field: 'machine_1', filter: true , pivot: true, enablePivot: true },
+    // { headerName: 'Machine-1', field: 'machine_1', filter: true , pivot: true, enablePivot: true },
     { headerName: 'Responsible ', field: 'responsible_name', filter: true , pivot: true, enablePivot: true },
     { headerName: 'Module', field: 'module_name', filter: true , pivot: true, enablePivot: true },
     { headerName: 'Segment', field: 'segment_name', filter: true , pivot: true, enablePivot: true },
@@ -122,7 +122,7 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
     this.loadingPMFileStatus = true;
     this.adminApiService.getPMFileUploadStatus().subscribe({
       next: (res: any)=>{
-        this.productMasterFileStatus = res.data;
+        this.productMasterFileStatus = res.data ?? {status: 'completed', total_failed_records: 0};
         this.loadingPMFileStatus = false;
       }, 
       error: (err: any)=>{

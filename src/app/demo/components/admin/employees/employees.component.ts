@@ -7,10 +7,14 @@ import { AdminApiService } from 'src/app/services/adminapi.service';
   styleUrl: './employees.component.scss'
 })
 export class EmployeesComponent implements OnInit {
-  employeesData!: any;
+  employeesData: any[] = [];
+  employee: any = null;
+  blockedEmployeesData: any[] = [];
+  activeEmployeesData: any[] = [];
   loadingED: boolean = false;
   visibleAddEmployeeDialog: boolean = false;
   breadcrumbItems: any[];
+  current = true;
   constructor(
     private adminApiService: AdminApiService
   ){}
@@ -26,7 +30,10 @@ export class EmployeesComponent implements OnInit {
     this.loadingED = true;
     this.adminApiService.get_all_employees().subscribe({
       next: (res: any)=>{
-        this.employeesData = res.data;
+        this.employeesData = res.data.filter(val=>val.active);
+        this.activeEmployeesData = res.data.filter(val=>val.active);
+        this.blockedEmployeesData = res.data.filter(val=>!val.active);
+        this.current = true;
         this.loadingED = false;
       }, 
       error: (err: any)=>{
@@ -36,7 +43,23 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
+  showBlockedEmployees(){
+    this.current = false;
+    this.employeesData = structuredClone(this.blockedEmployeesData);
+  } 
+
+  showActiveEmployees(){
+    this.current = true;
+    this.employeesData = structuredClone(this.activeEmployeesData);
+  }
+
   showAddEmployeeDialog(){
+    this.employee = null;
+    this.visibleAddEmployeeDialog = true;
+  }
+
+  editEmployee(employee: any){
+    this.employee = employee;
     this.visibleAddEmployeeDialog = true;
   }
 

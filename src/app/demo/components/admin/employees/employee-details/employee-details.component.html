@@ -59,9 +59,21 @@
           Role is required.
         </small>
       </div>
+
+      <div class="field col-12 sm:col-4" *ngIf="employee">
+        <div class="flex align-items-center">
+          <label for="active" class="pr-2">Active</label>
+          <p-inputSwitch
+            id="active"
+            formControlName="active"
+            [trueValue]="1"
+            [falseValue]="0"
+          ></p-inputSwitch>
+        </div>
+      </div>
   
       <!-- Password -->
-      <div class="field col-12 sm:col-6">
+      <div class="field col-12 sm:col-6" *ngIf="!employee">
         <label for="password">Password <span class="text-red-500">*</span></label>
         <input id="password" type="password" pPassword formControlName="password" placeholder="Enter Password" />
         <small *ngIf="submitted && employeeForm.controls['password'].invalid" class="p-error">
@@ -70,7 +82,7 @@
       </div>
   
       <!-- Confirm Password -->
-      <div class="field col-12 sm:col-6">
+      <div class="field col-12 sm:col-6" *ngIf="!employee">
         <label for="confirmPassword">Confirm Password <span class="text-red-500">*</span></label>
         <input
           id="confirmPassword"

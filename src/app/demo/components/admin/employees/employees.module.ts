@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { PasswordModule } from 'primeng/password';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
     DialogModule,
     DropdownModule,
     PasswordModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    InputSwitchModule
   ]
 })
 export class EmployeesModule { }

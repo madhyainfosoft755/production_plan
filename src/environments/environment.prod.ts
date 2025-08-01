@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseURL: 'https://unbrako-production-plan.com/',
+  apiBaseURL: 'https://192.168.8.10:8080/',
   imgPrefix: ""
 };

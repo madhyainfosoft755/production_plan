@@ -54,7 +54,7 @@ export class UploadComponent implements OnInit {
     this.adminApiService.getSAPFileStatus().subscribe({
       next: (response) => {
         console.log(response)
-        this.SAPFileStatus = response.data;
+        this.SAPFileStatus = response.data ?? {status: 'completed'} ;
         this.loadingSAPFileStatus = false;
       },
       error: (error) => {

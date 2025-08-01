@@ -2,10 +2,14 @@
 <div class="card">
     <div class="grid">
         <div class="col-12">
-            <div class="p-2">
+            <div class="p-2 flex justify-content-between">
                 <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddEmployeeDialog()" />
+                <span class="p-buttonset">
+                    <p-button label="Active" (onClick)="showActiveEmployees()" [disabled]="current"/>
+                    <p-button label="Blocked" (onClick)="showBlockedEmployees()" [disabled]="!current"/>
+                </span>
             </div>
-            <p-table [loading]="loadingED" [value]="employeesData" [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table [rowHover]="true" [loading]="loadingED" [value]="employeesData" [tableStyle]="{ 'min-width': '50rem' }">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>SN</th>
@@ -17,7 +21,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-employee let-rowIndex="rowIndex">
-                    <tr>
+                    <tr (click)="editEmployee(employee)">
                         <td>{{ rowIndex+1 }}</td>
                         <td>{{ employee.salutation }}. {{ employee.name }}</td>
                         <td>{{ employee.email_add }}</td>
@@ -31,5 +35,5 @@
     </div>
 </div>
 <p-dialog header="Add Employee" [modal]="true" [(visible)]="visibleAddEmployeeDialog" [style]="{ width: '50vw' }">
-    <app-employee-details *ngIf="visibleAddEmployeeDialog" (notifyParent)="onChildNotify($event)"></app-employee-details>
+    <app-employee-details [employee]="employee" *ngIf="visibleAddEmployeeDialog" (notifyParent)="onChildNotify($event)"></app-employee-details>
 </p-dialog>

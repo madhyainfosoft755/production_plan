@@ -19,7 +19,7 @@ import { authInterceptor } from './interceptors/auth.interceptor';
     imports: [AppRoutingModule, AppLayoutModule],
     providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
-        { provide: LocationStrategy, useClass: PathLocationStrategy },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, DatePipe
     ],

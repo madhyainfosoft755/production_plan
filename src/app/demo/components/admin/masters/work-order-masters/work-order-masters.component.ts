@@ -89,7 +89,7 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     this.loadingWOMFileStatus = true;
     this.adminApiService.getWorkOrderFileUploadStatus().subscribe({
       next: (res: any)=>{
-        this.workOrderMasterFileStatus = res.data;
+        this.workOrderMasterFileStatus = res.data ?? {status: 'completed', total_failed_records: 0};
         this.loadingWOMFileStatus = false;
       }, 
       error: (err: any)=>{

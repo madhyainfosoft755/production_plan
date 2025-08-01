@@ -340,6 +340,10 @@ export class AdminApiService {
     return this.http.post(`${this.baseUrl}register/`, data);
   }
 
+  updateUserByAmin(id: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}user/update/${id}`, data);
+  }
+
   forgot_password(data: {email: string}): Observable<any>{
     return this.http.post(`${this.baseUrl}forgot-password/`, data);
   }
