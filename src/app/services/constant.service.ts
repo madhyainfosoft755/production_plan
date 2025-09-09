@@ -7,11 +7,11 @@ export class ConstantService {
   constructor() { }
 
   readonly ADMIN = 'ADMIN';
-  readonly FORGING = 'FORGING';
-  readonly HEATING = 'HEATING';
-  readonly FINISH = 'FINISH';
-  readonly RM = 'RM';
+  readonly USER = 'USER';
+  readonly PLANNER = 'PLANNER';
+  readonly MASTER = 'MASTER';
+  readonly VIEWER = 'VIEWER';
 
   // You can also group roles if needed
-  readonly ALL_ROLES = [this.ADMIN, this.FORGING, this.HEATING, this.FINISH, this.RM];
+  readonly ALL_ROLES = [this.ADMIN, this.USER, this.PLANNER, this.MASTER, this.VIEWER];
 }

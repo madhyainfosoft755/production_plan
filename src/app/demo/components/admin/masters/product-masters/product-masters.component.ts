@@ -135,15 +135,25 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   loadPMFailedRecords(){
     this.loadingPMFailedRecords = true;
     this.adminApiService.getPMFailedRecords().subscribe({
-      next: (res: Blob)=>{
-        // if(res?.status === "failed"){
-        //   this.messageService.add({ severity: 'warn', summary: 'Information', detail: 'No Record Found' });
-        // } else {
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(res);
-          a.download = 'FailedProductMasterRecords.xlsx';
-          a.click();
-        // }
+      next: (response)=>{
+
+        const blob = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        console.log(contentDisposition)
+        let filename = 'FailedProductMasterRecords.xlsx'; // default fallback
+        if (contentDisposition) {
+          const matches = /filename="([^"]+)"/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
+        }
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+
+        URL.revokeObjectURL(a.href); // clean up
 
         this.loadPMFileUploadStatus();
         this.loadingPMFailedRecords = false;
@@ -243,11 +253,24 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   downloadPMTemplate(){
     this.loadingDPMTemplate = true;
     this.adminApiService.download_pm_template().subscribe({
-      next: (blob: Blob)=>{
+      next: (response)=>{
+        const blob = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        console.log(contentDisposition)
+        let filename = 'ProductMasterTemplate.xlsx'; // default fallback
+        if (contentDisposition) {
+          const matches = /filename="([^"]+)"/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
+        }
+
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'ProductMasterTemplate.xlsx';
+        a.download = filename;
         a.click();
+
+        URL.revokeObjectURL(a.href); // clean up
         this.loadingDPMTemplate = false;
       }, 
       error: (err: any)=>{

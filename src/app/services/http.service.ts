@@ -30,7 +30,7 @@ export class HttpService {
   }
 
   getBlob(url: string) {
-    return this.http.get(url, { responseType: 'blob' }) as Observable<any>;
+    return this.http.get(url, { responseType: 'blob', observe: 'response' }) as Observable<any>;
   }
 
   post(url: string, model: any, options: any=null) {

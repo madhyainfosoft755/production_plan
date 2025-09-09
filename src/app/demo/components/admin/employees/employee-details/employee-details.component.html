@@ -1,4 +1,5 @@
-<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" autocomplete="off">
+<div class="flex gap-2">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" autocomplete="off">
     <div class="p-fluid grid">
 
         <!-- salutation Dropdown -->
@@ -16,7 +17,7 @@
             salutation is required.
             </small>
         </div>
-  
+
       <!-- Name -->
       <div class="field col-12 sm:col-4">
         <label for="name">Name <span class="text-red-500">*</span></label>
@@ -25,7 +26,7 @@
           Name is required.
         </small>
       </div>
-  
+
       <!-- Email -->
       <div class="field col-12 sm:col-6">
         <label for="email">Email <span class="text-red-500">*</span></label>
@@ -34,7 +35,7 @@
           Valid Email is required.
         </small>
       </div>
-  
+
       <!-- Employee ID -->
       <div class="field col-12 sm:col-4">
         <label for="empId">Employee ID <span class="text-red-500">*</span></label>
@@ -54,6 +55,7 @@
           placeholder="Select Role"
           optionLabel="label"
           optionValue="value"
+          appendTo="body"
         ></p-dropdown>
         <small *ngIf="submitted && employeeForm.controls['role'].invalid" class="p-error">
           Role is required.
@@ -71,7 +73,7 @@
           ></p-inputSwitch>
         </div>
       </div>
-  
+
       <!-- Password -->
       <div class="field col-12 sm:col-6" *ngIf="!employee">
         <label for="password">Password <span class="text-red-500">*</span></label>
@@ -80,7 +82,7 @@
           Password is required (min 6 characters).
         </small>
       </div>
-  
+
       <!-- Confirm Password -->
       <div class="field col-12 sm:col-6" *ngIf="!employee">
         <label for="confirmPassword">Confirm Password <span class="text-red-500">*</span></label>
@@ -98,14 +100,32 @@
           Passwords must match.
         </small>
       </div>
-  
+
       
       
       <!-- Submit Button -->
       <div class="field col-12 sm:col-3">
-        <button pButton type="submit" [loading]="loading" [disabled]="loading">Submit</button>
+        <p-button type="submit" label="Submit" [loading]="loading" [disabled]="loading" />
       </div>
-  
+
     </div>
   </form>
+  <div class="">
+    <!-- permissions: {id: number, code: string, description: string}[] | null = null; -->
+    <h3 class="mb-3">Permissions</h3>
+    <div *ngIf="permissions && permissions.length > 0; else noPermissions">
+      <ul class="list-none p-0 m-0">
+        <li *ngFor="let perm of permissions" class="mb-2">
+          <div class="p-field-checkbox">
+            <p-checkbox [disabled]="disabledPermissions.includes(perm.code)" [label]="perm.description" 
+            [value]="perm.code" [(ngModel)]="empPermissions" [ngModelOptions]="{standalone: true}"></p-checkbox>
+            </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noPermissions>
+      <p>No permissions available.</p>
+    </ng-template>
+  </div>
+</div>
   

@@ -20,10 +20,10 @@ export class ProfileComponent implements OnInit {
   // Role Dropdown Options
   roleOptions = [
     { label: this.constantService.ADMIN, value: this.constantService.ADMIN },
-    { label: this.constantService.FORGING, value: this.constantService.FORGING },
-    { label: this.constantService.HEATING, value: this.constantService.HEATING },
-    { label: this.constantService.FINISH, value: this.constantService.FINISH },
-    { label: this.constantService.RM, value: this.constantService.RM }
+    { label: this.constantService.USER, value: this.constantService.USER },
+    { label: this.constantService.PLANNER, value: this.constantService.PLANNER },
+    { label: this.constantService.MASTER, value: this.constantService.MASTER },
+    { label: this.constantService.VIEWER, value: this.constantService.VIEWER }
   ];
 
   // Dropdown Options

@@ -32,6 +32,8 @@ import { AddSeg2Component } from 'src/app/shared/components/add-seg-2/add-seg-2.
 import { ShiftsComponent } from './shifts/shifts.component';
 import { SurfaceTreatmentComponent } from './surface-treatment/surface-treatment.component';
 import { MasterTemplatePasswordsComponent } from './master-templates-password/master-templates-password.component';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 @NgModule({
@@ -58,6 +60,7 @@ import { MasterTemplatePasswordsComponent } from './master-templates-password/ma
     CommonModule,
     OthersRoutingModule,
     TabViewModule,
+    InputTextModule,
     TableModule,
     ButtonModule,
     DialogModule,
@@ -68,7 +71,8 @@ import { MasterTemplatePasswordsComponent } from './master-templates-password/ma
     AddModuleComponent,
     AddGroupComponent,
     AddSTPComponent,
-    BreadcrumbModule
+    BreadcrumbModule,
+    FormsModule
   ]
 })
 export class OthersModule { }

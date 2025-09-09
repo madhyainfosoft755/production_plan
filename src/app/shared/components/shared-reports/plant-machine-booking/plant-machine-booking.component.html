@@ -1,0 +1,79 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <!-- <h4>Main file history feature will comming soon.</h4> -->
+            <h4>Plant Machine Booking</h4>
+        </div>
+        <!-- <div class="col-12">
+            <form [formGroup]="filterForm">
+                <div class="grid">
+                  <div class="col-12 flex align-items-center py-0">
+                    <label for="module_name">Modules :</label>
+                    <div class="flex align-items-center">
+                      <p-multiSelect 
+                        [options]="moduleOptions" 
+                        class="flex-grow-1"
+                        formControlName="module_name"
+                        optionLabel="name" 
+                        placeholder="Select Modules"
+                        (onChange)="moduleChanged($event)" />
+                      <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem" />
+                    </div>
+                  </div>
+              
+                  <div class="col-12 flex align-items-center py-0">
+                    <label for="machine_name">Machines:</label>
+                    <div class="flex align-items-center">
+                      <p-multiSelect 
+                        [options]="machineOptions" 
+                        class="flex-grow-1"
+                        formControlName="machine_name"
+                        [group]="true"
+                        display="chip"
+                        placeholder="Select Machines"
+                        (onChange)="onFilterChange()"
+                        (onSelectAllChange)="onFilterChange()" />
+                      <p-progressSpinner *ngIf="loadingMachines" styleClass="w-2rem h-2rem" />
+                    </div>
+                  </div>
+                </div>
+            </form>
+        </div> -->
+        <div class="col-12">
+            
+            <p-table styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"  [loading]="loadingReport" [value]="transformedData" [tableStyle]="{ 'min-width': '50rem' }">
+              <ng-template pTemplate="header">
+                  <tr [ngClass]="bg-blue-400">
+                    <th>SN</th>
+                    <th>Module Name</th>
+                    <th>Machine Name</th>
+                    <th>No. of Machines</th>
+                    <th>No. of Shifts</th>
+                    <th>Total Days Booking</th>
+                    <th>Total Pending WT</th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-group let-rowIndex="rowIndex">
+                  <tr [ngClass]="{ 'bg-cyan-100': group.machine_name === 'Subtotal'}">
+                    <td>{{ rowIndex+1 }}</td>
+                      <td>{{ group.module_name }}</td>
+                      <td>{{ group.machine_name === 'Subtotal' ? 'Total' : group.machine_name }}</td>
+                      <td>{{ group.no_of_machines }}</td>
+                      <td>{{ group.no_of_shift }}</td>
+                      <td>{{ group.total_days_booking }}</td>
+                      <td>{{ group.total_pending_wt }}</td>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="footer">
+                <tr>
+                  <td colspan="5" style="text-align: right; font-weight: bold;">Grand Totals</td>
+                  <td>{{ getTotal('total_days_booking') }}</td>
+                  <td>{{ getTotal('total_pending_wt') }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+              
+        </div>
+    </div>
+</div>

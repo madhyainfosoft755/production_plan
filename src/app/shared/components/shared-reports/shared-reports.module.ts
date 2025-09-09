@@ -21,13 +21,15 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CalendarModule } from 'primeng/calendar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TabViewModule } from 'primeng/tabview';
+import { PlantMachineBookingComponent } from './plant-machine-booking/plant-machine-booking.component';
 
 
 @NgModule({
   declarations: [
     Report2Component,
     Report3Component,
-    Report4Component
+    Report4Component,
+    PlantMachineBookingComponent
   ],
   imports: [
     CommonModule,

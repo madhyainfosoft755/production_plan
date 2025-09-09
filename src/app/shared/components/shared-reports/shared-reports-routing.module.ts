@@ -14,6 +14,10 @@ const routes: Routes = [
     path: 'report4',
     loadChildren: () => import('./report4/report4-routing.module').then(m => m.Report4RoutingModule)
   },
+  { path: 'plant-machine-booking', 
+              data: { role: ['ADMIN', 'VIEWER'], permission: 'AllReports' },
+    loadChildren: () => import('./plant-machine-booking/plant-machine-booking.module').then(m => m.PlantMachineBookingModule) 
+    }
 ];
 
 @NgModule({

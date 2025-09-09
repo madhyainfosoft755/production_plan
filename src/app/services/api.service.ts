@@ -65,6 +65,10 @@ export class ApiService {
   update_user(data: any): Observable<any>{
     return this.http.put(`${this.baseUrl}user/update`, data);
   }
+
+  getLogs(formattedDate: string, selectedType: string): Observable<any>{
+    return this.http.get(`${this.baseUrl}logs/date/${formattedDate}/${selectedType}`);
+  }
   
 
 }

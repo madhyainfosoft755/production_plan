@@ -102,15 +102,24 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
   loadWOMFailedRecords(){
     this.loadingWOMFailedRecords = true;
     this.adminApiService.getWorkOrderFailedRecords().subscribe({
-      next: (res: Blob)=>{
-        // if(res?.status === "failed"){
-        //   this.messageService.add({ severity: 'warn', summary: 'Information', detail: 'No Record Found' });
-        // } else {
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(res);
-          a.download = 'FailedWorkOrderMasterRecords.xlsx';
-          a.click();
-        // }
+      next: (response)=>{
+        const blob = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        console.log(contentDisposition)
+        let filename = 'FailedWorkOrderMasterRecords.xlsx'; // default fallback
+        if (contentDisposition) {
+          const matches = /filename="([^"]+)"/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
+        }
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+
+        URL.revokeObjectURL(a.href); // clean up
 
         this.loadWorkOrderFileUploadStatus();
         this.loadingWOMFailedRecords = false;
@@ -199,11 +208,24 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
   downloadWOMTemplate(){
     this.loadingDWOMTemplate = true;
     this.adminApiService.download_wom_template().subscribe({
-      next: (blob: Blob)=>{
+      next: (response)=>{
+        const blob = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        console.log(contentDisposition)
+        let filename = 'WorkOrderMasterTemplate.xlsx'; // default fallback
+        if (contentDisposition) {
+          const matches = /filename="([^"]+)"/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
+        }
+
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'WorkOrderMasterTemplate.xlsx';
+        a.download = filename;
         a.click();
+
+        URL.revokeObjectURL(a.href); // clean up
         this.loadingDWOMTemplate = false;
       }, 
       error: (err: any)=>{

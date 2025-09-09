@@ -86,6 +86,7 @@ export class LoginComponent implements OnInit {
                             localStorage.removeItem('UNBRAKO_PPC_rememberedCredentials');
                         }
                         this.loading = false;
+                        console.log(`/${data.role.toLowerCase()}`);
                         this.router.navigate([`/${data.role.toLowerCase()}`]);
                     },
                     error: (error: any) => {

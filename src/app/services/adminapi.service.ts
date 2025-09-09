@@ -58,6 +58,14 @@ export class AdminApiService {
     return this.http.post(`${this.baseUrl}get-sap-data?page=${page}`, filters);
   }
 
+  get_segment_wise_data(): Observable<any>{
+    return this.http.get(`${this.baseUrl}get-segment-wise-data`);
+  }
+
+  get_seg3_wise_data(): Observable<any>{
+    return this.http.get(`${this.baseUrl}get-seg3-wise-data`);
+  }
+
   get_sap_rm_data(sap_id: string): Observable<any>{
     return this.http.post(`${this.baseUrl}get-sap-rm-data`, {sap_id});
   }
@@ -140,8 +148,12 @@ export class AdminApiService {
     return this.http.get(`${this.baseUrl}surface-treatment-process`);
   }
 
-  get_master_template_passwords(): Observable<any>{
-    return this.http.get(`${this.baseUrl}get-master-template-passwords`);
+  get_master_template_passwords(templateVal: string): Observable<any>{
+    return this.http.get(`${this.baseUrl}get-master-template-passwords/${templateVal}`);
+  }
+
+  release_templage(templateVal: string): Observable<any>{
+    return this.http.get(`${this.baseUrl}release-template/${templateVal}`);
   }
 
   loadSAPFilterSuggestions(): Observable<any>{
@@ -162,6 +174,10 @@ export class AdminApiService {
 
   upload_sap(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}transfer-and-upload`, data);
+  }
+
+  generating_main_file(): Observable<any>{
+    return this.http.post(`${this.baseUrl}sap-generate-main-file`, {});
   }
 
   upload_wom(data: any): Observable<any>{
@@ -301,6 +317,10 @@ export class AdminApiService {
 
   get_all_modules(): Observable<any>{
     return this.http.get(`${this.baseUrl}modules`);
+  }
+
+  plant_machine_booking(): Observable<any>{
+    return this.http.get(`${this.baseUrl}get-plant-machine-booking`);
   }
 
   get_temp_module_shift_data(): Observable<any>{

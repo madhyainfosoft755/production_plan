@@ -1,1 +1,5 @@
 <router-outlet></router-outlet>
+<div class="auth-loader" *ngIf="isAuthenticating">
+  <p>Authenticating, please wait...</p>
+  <i class="pi pi-spin pi-spinner"></i>
+</div>

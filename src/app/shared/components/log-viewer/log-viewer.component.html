@@ -1,0 +1,38 @@
+<div class=" card p-fluid">
+  <div class="field">
+    <label for="logDate">Select Type</label>
+    <p-dropdown 
+        [options]="logFileTypes" 
+        [(ngModel)]="selectedType" 
+        optionLabel="lavel"
+        optionValue="value" 
+        placeholder="Select Type" />
+  </div>
+  <div class="field">
+    <label for="logDate">Select Log Date</label>
+    <p-calendar
+      [(ngModel)]="selectedDate"
+      inputId="logDate"
+      dateFormat="yy-mm-dd"
+      showIcon="true"
+      [showButtonBar]="true"
+    ></p-calendar>
+  </div>
+
+  <div class="field">
+    <button pButton type="button" label="Fetch Log" icon="pi pi-search" (click)="fetchLog()" [disabled]="loading"></button>
+  </div>
+
+  <div *ngIf="loading" class="mt-3 text-center">
+    <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
+    <p>Loading log...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="p-error mt-2">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="logContent" class="log-container mt-3">
+    <pre>{{ logContent }}</pre>
+  </div>
+</div>

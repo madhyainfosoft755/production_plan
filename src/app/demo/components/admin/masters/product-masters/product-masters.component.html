@@ -25,7 +25,7 @@
                             <p-button title="Reload File Status" icon="pi pi-refresh" [loading]="loadingPMFileStatus" class="mr-2" (onClick)="loadPMFileUploadStatus()" />
                         </div>
                     </div>
-                    <p-button *ngIf="(productMasterFileStatus?.status === 'completed' || productMasterFileStatus?.status === 'failed') && productMasterFileStatus?.total_failed_records <= 0" icon="pi pi-upload" label="Upload PM" class="mr-2" (onClick)="uploadPMFile()" />
+                    <p-button *ngIf="(productMasterFileStatus?.status === 'completed' && productMasterFileStatus?.total_failed_records <= 0) || productMasterFileStatus?.status === 'failed'" icon="pi pi-upload" label="Upload PM" class="mr-2" (onClick)="uploadPMFile()" />
                     <p-button title="Download Product Master Template" icon="pi pi-download" [loading]="loadingDPMTemplate" (onClick)="downloadPMTemplate()" />
                 </div>
             </div>

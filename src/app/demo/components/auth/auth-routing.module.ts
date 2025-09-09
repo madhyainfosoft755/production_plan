@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
             loadChildren: () => import('./reset-password/reset-password.module').then(m => m.ResetPasswordModule) 
         },
         { path: 'forgot-password', loadChildren: () => import('./forgot-password/forgot-password.module').then(m => m.ForgotPasswordModule) },
-        { path: '**', redirectTo: '/notfound' }
+        // { path: '**', redirectTo: '/notfound' }
     ])],
     exports: [RouterModule]
 })

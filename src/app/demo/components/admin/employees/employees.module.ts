@@ -10,11 +10,12 @@ import { DialogModule } from 'primeng/dialog';
 import { EmployeesRoutingModule } from './employees-routing.module';
 import { EmployeesComponent } from './employees.component';
 import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { PasswordModule } from 'primeng/password';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     CommonModule,
     EmployeesRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
     TableModule,
     ButtonModule,
     InputTextModule,
@@ -34,7 +36,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     DropdownModule,
     PasswordModule,
     BreadcrumbModule,
-    InputSwitchModule
+    InputSwitchModule,
+    CheckboxModule
   ]
 })
 export class EmployeesModule { }

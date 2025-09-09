@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { ConstantService } from 'src/app/services/constant.service';
 
@@ -11,17 +11,35 @@ import { ConstantService } from 'src/app/services/constant.service';
 export class EmployeeDetailsComponent implements OnInit, OnChanges {
   @Output() notifyParent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() employee: any;
+  @Input() permissions: {id: number, code: string, description: string}[] | null = null;
   employeeForm: FormGroup;
   submitted = false;
   loading = false;
+  empPermissions: string[] = [];
+
+  // Permissions that should be disabled (based on role)
+  disabledPermissions: string[] = [];
+  // In employee-details.component.ts
+  // private _incommingUserPermission: string[] = [];
+  @Input() readonly incommingUserPermission: string[] | null = null;
+  // @Input()  set incommingUserPermission(value: string[] | null) {
+  //   // Only set it once if it's not already set
+  //   if (!this._incommingUserPermission.length && value?.length) {
+  //     this._incommingUserPermission = [...value]; // Make a copy
+  //   }
+  // }
+
+  // get incommingUserPermission(): string[] {
+  //   return this._incommingUserPermission;
+  // }
 
   // Role Dropdown Options
   roleOptions = [
     { label: this.constantService.ADMIN, value: this.constantService.ADMIN },
-    { label: this.constantService.FORGING, value: this.constantService.FORGING },
-    { label: this.constantService.HEATING, value: this.constantService.HEATING },
-    { label: this.constantService.FINISH, value: this.constantService.FINISH },
-    { label: this.constantService.RM, value: this.constantService.RM }
+    { label: this.constantService.USER, value: this.constantService.USER },
+    { label: this.constantService.PLANNER, value: this.constantService.PLANNER },
+    { label: this.constantService.MASTER, value: this.constantService.MASTER },
+    { label: this.constantService.VIEWER, value: this.constantService.VIEWER }
   ];
 
   // Dropdown Options
@@ -32,6 +50,43 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
     { label: 'Dr.', value: 'Dr.' },
     { label: 'Prof.', value: 'Prof.' }
   ];
+
+  onRoleChange(role: string) {
+    // Set selected permissions (array of permission IDs)
+    this.empPermissions = [];
+    console.log(this.empPermissions)
+    if(role && role === this.employee?.role){
+      this.empPermissions = structuredClone(this.incommingUserPermission || []);
+    }
+    console.log(this.incommingUserPermission)
+    console.log(this.empPermissions)
+
+    // Example: disable certain permission IDs for specific roles
+    const roleBasedDisabled = {
+      PLANNER: ['FullControlOnMainFile', 'ManageWeeklyPlanning'], // disable permission IDs 1 and 2 for PLANNER
+      USER: ['AddDailyUpdates'],
+      VIEWER: ['AllReports'],
+      MASTER: ['UploadSAPFile','FullControlOnMasters', 'ViewLogs'],
+      ADMIN: ['UploadSAPFile','FullControlOnMasters', 'ManageWeeklyPlanning', 'AddDailyUpdates', 'AllReports',
+          'ManageWorkOrderMaster', 'ManageProductMaster', 'ManageMachineMaster', 'ManageOthers', 'FullControlOnMainFile', 'ViewLogs'
+      ]
+    };
+
+    this.disabledPermissions = roleBasedDisabled[role] || [];
+
+      // Pre-check permissions that are going to be disabled
+    this.disabledPermissions.forEach(id => {
+      if (!this.empPermissions.includes(id)) {
+        this.empPermissions.push(id);
+      }
+    });
+    console.log(this.disabledPermissions);
+    // Optionally uncheck disabled permissions
+    // this.empPermissions = this.empPermissions.filter(
+    //   (id) => !this.disabledPermissions.includes(id)
+    // );
+    console.log(this.empPermissions)
+  }
 
   constructor(private fb: FormBuilder, private adminApiService: AdminApiService, private constantService: ConstantService) {
     this.employeeForm = this.fb.group(
@@ -45,6 +100,10 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
         role: ['', Validators.required]
       }
     );
+    this.employeeForm.setValidators(this.matchPasswords());
+    this.employeeForm.get('role')?.valueChanges.subscribe((role) => {
+      this.onRoleChange(role);
+    });
   }
 
   togglePasswordRequired(isRequired: boolean): void {
@@ -81,6 +140,10 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
           role: this.employee?.role || '',
           active: Number(this.employee?.active || 0)
         });
+        
+        console.log(this.employee)
+        // Update disabled permissions based on role
+        this.onRoleChange(this.employee.role || '');
       } else {
         this.removeActiveField();
       }
@@ -121,27 +184,43 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
         Validators.required
       ])
     );
-    this.employeeForm.setValidators(this.matchPasswords);
+    this.employeeForm.setValidators(this.matchPasswords());
     this.employeeForm.updateValueAndValidity();
   }
 
   // Validator to match passwords
-  matchPasswords() {
-    return (formGroup: FormGroup) => {
-      if (this.employeeForm.contains('password') && this.employeeForm.contains('confirm_password')) {
-        const passwordControl = formGroup.controls['password'];
-        const confirmPasswordControl = formGroup.controls['confirm_password'];
-  
-        if (confirmPasswordControl.errors && !confirmPasswordControl.errors['mismatch']) {
-          return;
-        }
-  
-        if (passwordControl.value !== confirmPasswordControl.value) {
-          confirmPasswordControl.setErrors({ mismatch: true });
-        } else {
-          confirmPasswordControl.setErrors(null);
+  matchPasswords(): ValidatorFn {
+    return (formGroup: FormGroup): ValidationErrors | null => {
+      const passwordControl = formGroup.get('password');
+      const confirmPasswordControl = formGroup.get('confirm_password');
+
+      if (!passwordControl || !confirmPasswordControl) {
+        return null;
+      }
+
+      const password = passwordControl.value;
+      const confirmPassword = confirmPasswordControl.value;
+
+      if (confirmPasswordControl.errors && !confirmPasswordControl.errors['mismatch']) {
+        return null; // let other errors show
+      }
+
+      if (password !== confirmPassword) {
+        confirmPasswordControl.setErrors({ mismatch: true });
+      } else {
+        // Only clear 'mismatch' error
+        const errors = confirmPasswordControl.errors;
+        if (errors) {
+          delete errors['mismatch'];
+          if (Object.keys(errors).length === 0) {
+            confirmPasswordControl.setErrors(null);
+          } else {
+            confirmPasswordControl.setErrors(errors);
+          }
         }
       }
+
+      return null;
     };
   }
 
@@ -157,7 +236,7 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
     this.loading = true;
 
     if(this.employee){
-      this.adminApiService.updateUserByAmin(this.employee.id, this.employeeForm.value).subscribe({
+      this.adminApiService.updateUserByAmin(this.employee.id, {...this.employeeForm.value, permissions: this.empPermissions}).subscribe({
         next: (res)=>{
           this.loading = false;
           // Emit an event with a message or any data
@@ -169,7 +248,7 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
         }
       });
     } else {
-      this.adminApiService.register(this.employeeForm.value).subscribe({
+      this.adminApiService.register({...this.employeeForm.value, permissions: this.empPermissions}).subscribe({
         next: (res)=>{
           this.loading = false;
           // Emit an event with a message or any data

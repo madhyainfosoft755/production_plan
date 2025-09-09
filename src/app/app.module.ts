@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { DatePipe, HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { CommonModule, DatePipe, HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,7 +16,7 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
-    imports: [AppRoutingModule, AppLayoutModule],
+    imports: [CommonModule, AppRoutingModule, AppLayoutModule],
     providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
         { provide: LocationStrategy, useClass: HashLocationStrategy },

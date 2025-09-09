@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MainRoutingModule } from './forging-main-routing.module';
+import { MainRoutingModule } from './user-main-routing.module';
 import { ThisMonthComponent } from './this-month/this-month.component';
 import { HistoryComponent } from './history/history.component';
 import { SharedMainModule } from 'src/app/shared/components/shared-main/shared-main.module';
@@ -28,4 +28,4 @@ import { DailyUpdateComponent } from './daily-update/daily-update.component';
 
   ]
 })
-export class ForgingMainModule { }
+export class UserMainModule { }

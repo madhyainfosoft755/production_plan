@@ -17,8 +17,7 @@
                         class="flex-grow-1"
                         formControlName="module_name"
                         optionLabel="name" 
-                        placeholder="Select Modules"
-                        (onChange)="moduleChanged($event)" />
+                        placeholder="Select Modules" />
                       <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem" />
                     </div>
                   </div>
@@ -33,9 +32,7 @@
                         formControlName="machine_name"
                         [group]="true"
                         display="chip"
-                        placeholder="Select Machines"
-                        (onChange)="onFilterChange()"
-                        (onSelectAllChange)="onFilterChange()" />
+                        placeholder="Select Machines" />
                       <p-progressSpinner *ngIf="loadingMachines" styleClass="w-2rem h-2rem" />
                     </div>
                   </div>
@@ -65,14 +62,14 @@
               <ng-template pTemplate="body" let-group let-rowIndex="rowIndex">
                   <tr [ngClass]="{ 'bg-cyan-100': group.id === 'total'}">
                     <td>{{ rowIndex+1 }}</td>
-                    <td>{{ group.prod_group_name }}</td>
+                    <td>{{ group.group_name }}</td>
                     <td>{{ group.size }}</td>
                     <td>{{ group.spec }}</td>
                     <td>{{ group.drawn_dia1 }}</td>
                     <td>{{ group.materialNumber }}</td>
                     <td>{{ group.materialDescription }}</td>
-                    <td>{{ group.sequenceNumber }}</td>
-                    <td>{{ group.sap_segment_name }}</td>
+                    <td>{{ group.work_order }}</td>
+                    <td>{{ group.wom_segment_name }}</td>
                     <td>{{ group.customer }}</td>
                     <td>{{ group.to_forge_qty }}</td>
                     <td>{{ group.to_forge_wt }}</td>

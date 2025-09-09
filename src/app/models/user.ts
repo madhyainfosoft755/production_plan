@@ -6,6 +6,7 @@ interface CUser{
     emp_id: string;
     token: string;
     role: string;
+    permissions: string[] | null;
 }
 
 export class User {
@@ -14,6 +15,7 @@ export class User {
     email: string;
     role: string;
     emp_id: string;
+    permissions: string[] | null = null;
     private _token: string;
 
     constructor(current_user: CUser | null) {
@@ -25,6 +27,7 @@ export class User {
             this.role = current_user.role;
             this.emp_id = current_user.emp_id;
             this._token = current_user.token;
+            this.permissions = current_user.permissions;
         }
     }
 
@@ -43,20 +46,20 @@ export class User {
         return this.role == 'ADMIN';
     }
 
-    public get isForging() {
-      return this.role == 'FORGING';
+    public get isUSER() {
+      return this.role == 'USER';
     }
 
-    public get isHeating() {
-        return this.role == 'HEATING';
+    public get isPLANNER() {
+        return this.role == 'PLANNER';
     }
 
-    public get isFinish() {
-        return this.role == 'FINISH';
+    public get isMASTER() {
+        return this.role == 'MASTER';
     }
 
-    public get isRM() {
-      return this.role == 'RM';
+    public get isVIEWER() {
+      return this.role == 'VIEWER';
     }
 
 

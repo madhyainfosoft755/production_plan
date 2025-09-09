@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { MasterRoutingModule } from './master-routing.module';
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    MasterRoutingModule
   ]
 })
-export class ForgingModule { }
+export class MasterModule { }

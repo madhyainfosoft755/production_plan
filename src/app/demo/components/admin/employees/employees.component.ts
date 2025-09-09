@@ -15,6 +15,7 @@ export class EmployeesComponent implements OnInit {
   visibleAddEmployeeDialog: boolean = false;
   breadcrumbItems: any[];
   current = true;
+  permissions: {id: number, code: string, description: string}[] | null = null;
   constructor(
     private adminApiService: AdminApiService
   ){}
@@ -33,6 +34,7 @@ export class EmployeesComponent implements OnInit {
         this.employeesData = res.data.filter(val=>val.active);
         this.activeEmployeesData = res.data.filter(val=>val.active);
         this.blockedEmployeesData = res.data.filter(val=>!val.active);
+        this.permissions = res.permissions.map(val=>{ return {...val, id: Number(val.id)}});
         this.current = true;
         this.loadingED = false;
       }, 

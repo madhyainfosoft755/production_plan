@@ -34,6 +34,6 @@
         </div>
     </div>
 </div>
-<p-dialog header="Add Employee" [modal]="true" [(visible)]="visibleAddEmployeeDialog" [style]="{ width: '50vw' }">
-    <app-employee-details [employee]="employee" *ngIf="visibleAddEmployeeDialog" (notifyParent)="onChildNotify($event)"></app-employee-details>
+<p-dialog header="{{employee ? 'Update Employee' : 'Add Employee'}}" [modal]="true" [(visible)]="visibleAddEmployeeDialog" [style]="{ width: '75vw' }">
+    <app-employee-details [employee]="employee" [incommingUserPermission]="employee?.permissions" [permissions]="permissions" *ngIf="visibleAddEmployeeDialog" (notifyParent)="onChildNotify($event)"></app-employee-details>
 </p-dialog>

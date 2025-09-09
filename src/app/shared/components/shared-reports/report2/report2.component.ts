@@ -10,7 +10,7 @@ import { ExcelService } from 'src/app/services/excel.service';
 })
 export class Report2Component  implements OnInit {
   breadcrumbItems: any[];
-  data: any;
+  // data: any;
   loading_data: boolean = false;
   visibleMainFileDialog: boolean = false;
   selectedRow: any = null;
@@ -18,6 +18,10 @@ export class Report2Component  implements OnInit {
   rangeDates: Date[] | undefined;
   month_full_year: Date | undefined;
   selectedWeek: any | undefined;
+
+  columns: string[] = [];
+  rows: string[] = [];
+  data: any = {};
   
   constructor(
     private adminApiService: AdminApiService,
@@ -32,23 +36,26 @@ export class Report2Component  implements OnInit {
     });
     this.breadcrumbItems = [
       { label: 'Home', routerLink: '/' },
-      { label: 'Segment Wise Report' }
+      { label: 'Group Segment Report' }
     ];
     this.loadData();
   }
   
   loadData(params: any = {}){
     this.loading_data = true;
-    this.adminApiService.get_sap_data(params).subscribe({
+    this.adminApiService.get_seg3_wise_data().subscribe({
       next: (res: any)=>{
-        this.data = res.data.map((val: any)=> {
-          return this.unbrakoPPCommonService.SAPMainFileMapping(val);
-        });
-        console.log(this.data);
-        const fileName = 'MyExcelFile';
+        this.columns = res.columns;
+        this.rows = res.rows;
+        this.data = res.data;
+        // this.data = res.data.map((val: any)=> {
+        //   return this.unbrakoPPCommonService.SAPMainFileMapping(val);
+        // });
+        // console.log(this.data);
+        // const fileName = 'MyExcelFile';
         // this.excelService.generateExcelFile(fileName, this.data);
         this.loading_data = false;
-        this.generatePivotTable();
+        // this.generatePivotTable();
       }, 
       error: (err: any)=>{
         console.log(err);
@@ -162,6 +169,34 @@ export class Report2Component  implements OnInit {
     this.selectedWeek = undefined;
     this.rangeDates = undefined;
     this.loadData();
+  }
+
+
+
+  getRowTotal(row: string): number {
+    let total = 0;
+    for (let col of this.columns) {
+      total += this.data[row][col] || 0;
+    }
+    return total;
+  }
+
+  getColumnTotal(col: string): number {
+    let total = 0;
+    for (let row of this.rows) {
+      total += this.data[row][col] || 0;
+    }
+    return total;
+  }
+
+  getGrandTotal(): number {
+    let total = 0;
+    for (let row of this.rows) {
+      for (let col of this.columns) {
+        total += this.data[row][col] || 0;
+      }
+    }
+    return total;
   }
   
 }

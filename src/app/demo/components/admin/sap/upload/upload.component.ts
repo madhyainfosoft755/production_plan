@@ -31,6 +31,7 @@ export class UploadComponent implements OnInit {
   ];
   errorMessage: string = '';
   loading = false;
+  loadingMainFile = false;
   loadingSAPFileStatus = true;
   messages: Message[] | undefined;
   loadingValidate = false;
@@ -71,8 +72,8 @@ export class UploadComponent implements OnInit {
         if(response.status === "failed"){
           // this.messageService.add({ severity: 'warn', summary: 'Information', detail: 'No Record Found' });
         }
-        this.getSAPFileStatus();
         this.loadingValidate = false;
+        this.generating_main_file();
       },
       error: (error) => {
         this.loadingValidate = false;
@@ -83,11 +84,24 @@ export class UploadComponent implements OnInit {
   downloadSAPTemplate(){
     this.loadingSAPTemplate = true;
     this.adminApiService.download_sap_template().subscribe({
-      next: (blob: Blob)=>{
+      next: (response)=>{
+        const blob = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        console.log(contentDisposition)
+        let filename = 'SAPTemplate.xlsx'; // default fallback
+        if (contentDisposition) {
+          const matches = /filename="([^"]+)"/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
+        }
+
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'SAPTemplate.xlsx';
+        a.download = filename;
         a.click();
+
+        URL.revokeObjectURL(a.href); // clean up
         this.loadingSAPTemplate = false;
       }, 
       error: (err: any)=>{
@@ -100,15 +114,24 @@ export class UploadComponent implements OnInit {
   loadSAPFailedRecords(){
     this.loadingSAPFailedRecords = true;
     this.adminApiService.getSAPFailedRecords().subscribe({
-      next: (res: Blob)=>{
-        // if(res?.status === "failed"){
-        //   this.messageService.add({ severity: 'warn', summary: 'Information', detail: 'No Record Found' });
-        // } else {
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(res);
-          a.download = 'FailedSAPData.xlsx';
-          a.click();
-        // }
+      next: (response)=>{
+        const blob = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        console.log(contentDisposition)
+        let filename = 'FailedSAPData.xlsx'; // default fallback
+        if (contentDisposition) {
+          const matches = /filename="([^"]+)"/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
+        }
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+
+        URL.revokeObjectURL(a.href); // clean up
 
         this.getSAPFileStatus();
         this.loadingSAPFailedRecords = false;
@@ -260,6 +283,29 @@ export class UploadComponent implements OnInit {
         ]
         this.loading = false;
         console.error('File upload failed:', error);
+      }
+    });
+  }
+
+  generating_main_file(){
+    this.loadingMainFile = true;
+    // Replace 'your-api-url' with the actual endpoint
+    this.adminApiService.generating_main_file().subscribe({
+      next: (response) => {
+        this.messages = [
+            { severity: 'success', summary: 'Success', detail: 'File Generated Successfully.' },
+        ]
+        this.getSAPFileStatus();
+        this.loadingMainFile = false;
+        console.log('File uploaded successfully:', response);
+      },
+      error: (error) => {
+        this.messages = [
+            { severity: 'error', summary: 'Error', detail: error.statusText || 'File generation failed.' },
+        ]
+        this.getSAPFileStatus();
+        this.loadingMainFile = false;
+        console.error('File generation failed:', error);
       }
     });
   }

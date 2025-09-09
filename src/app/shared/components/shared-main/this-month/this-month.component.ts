@@ -270,7 +270,7 @@ export class ThisMonthComponent implements OnInit {
     this.authService.currentUser.subscribe({
           next: (user) => {
             if (user){
-              this.isRmUser = user.role == this.constantService.RM;
+              this.isRmUser = user.role == this.constantService.PLANNER;
               this.isAdminUser = user.role == this.constantService.ADMIN;
             }
           }

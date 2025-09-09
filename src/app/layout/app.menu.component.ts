@@ -25,6 +25,8 @@ export class AppMenuComponent implements OnInit {
             next: (user) => {
               if (user){
                 this.user = user;
+                this.user.permissions = this.user.permissions ?? [];
+                console.log(user)
               }
             }
         });
@@ -38,47 +40,50 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'SAP',
                 items: [
-                    { label: 'Upload SAP', icon: 'pi pi-file-import', routerLink: ['/admin/sap/upload'] },
+                    { label: 'Upload SAP', icon: 'pi pi-file-import', routerLink: [`/${this.user.role.toLowerCase()}/sap/upload`] },
                 ],
-                visible: this.user.isAdmin
+                visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('UploadSAPFile'))
             },
             {
                 label: 'Master',
                 items: [
-                    { label: 'Work Order Master', icon: 'pi pi-angle-right', routerLink: ['/admin/masters/work-order-master'], badge: 'NEW' },
-                    { label: 'Product Master', icon: 'pi pi-angle-right', routerLink: ['/admin/masters/product-master'] },
-                    { label: 'Machine Master', icon: 'pi pi-angle-right', routerLink: ['/admin/masters/machine-master'] },
+                    { label: 'Work Order Master', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/masters/work-order-master`], badge: 'NEW', visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ManageWorkOrderMaster')) },
+                    { label: 'Product Master', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/masters/product-master`], visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ManageProductMaster')) },
+                    { label: 'Machine Master', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/masters/machine-master`], visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ManageMachineMaster')) },
                 ],
-                visible: this.user.isAdmin
+                visible: (this.user.isAdmin || this.user.isMASTER || ['FullControlOnMasters', 'ManageWorkOrderMaster', 'ManageProductMaster', 'ManageMachineMaster'].some(p => this.user.permissions.includes(p)))
             },
             {
                 label: 'Main File',
                 items: [
-                    { label: 'This Month', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile`], badge: 'NEW' },
+                    { label: 'This Month', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile`], badge: 'NEW', visible: (this.user.isAdmin || this.user.isPLANNER || this.user.permissions.includes('FullControlOnMainFile')) },
                     // { label: 'Report', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/history`] },
-                    { label: 'Daily Update', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/daily-update`], visible: !this.user.isRM },
-                    { label: 'Weekly Planning', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/weekly-planning`], visible: (!this.user.isRM && !this.user.isForging) },
-                ]
+                    { label: 'Daily Update', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/daily-update`], visible: (this.user.isAdmin || this.user.isPLANNER || this.user.isUSER || this.user.permissions.includes('AddDailyUpdates')) },
+                    { label: 'Weekly Planning', icon: 'pi pi-angle-right', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/weekly-planning`], visible: (this.user.isAdmin || this.user.isPLANNER || this.user.permissions.includes('ManageWeeklyPlanning')) },
+                ],
+                visible: (this.user.isAdmin || this.user.isPLANNER || this.user.isUSER || ['FullControlOnMainFile', 'ManageWeeklyPlanning', 'AddDailyUpdates'].some(p => this.user.permissions.includes(p)))
             },
             {
-                label: 'UI Components',
+                label: 'Reports',
                 items: [
                     { label: 'Module-machine Wise Monthly', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/history`] },
-                    { label: 'Segment Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report2`] },
-                    { label: 'Groutp Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report3`] },
-                    { label: 'Module-Machine Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report4`] },
+                    { label: 'Group Segment', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report2`] },
+                    { label: 'Groutp Target', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report3`] },
+                    // { label: 'Module-Machine Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report4`] },
+                    { label: 'Plant Machine Booking', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/plant-machine-booking`] },
                 ],
-                visible: this.user.isAdmin 
+                visible: (this.user.isAdmin || this.user.isVIEWER || this.user.permissions.includes('AllReports'))
             },
             {
                 label: 'Manage',
                 items: [
-                    { label: 'Employees', icon: 'pi pi-users', routerLink: ['/admin/employees'], badge: 'NEW' },
+                    { label: 'Employees', icon: 'pi pi-users', routerLink: ['/admin/employees'], badge: 'NEW', visible: (this.user.isAdmin) },
                     // { label: 'Customers', icon: 'pi pi-users', routerLink: ['/admin/customers'], badge: 'NEW' },
-                    { label: 'Machines', icon: 'pi pi-fw pi-globe', routerLink: ['/admin/machines'] },
-                    { label: 'Others', icon: 'pi pi-fw pi', routerLink: ['/admin/others'] },
+                    { label: 'Machines', icon: 'pi pi-fw pi-globe', routerLink: [`/${this.user.role.toLowerCase()}/machines`], visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ManageMachineMaster')) },
+                    { label: 'Others', icon: 'pi pi-fw pi', routerLink: [`/${this.user.role.toLowerCase()}/others`], visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ManageOthers')) },
+                    { label: 'Logs', icon: 'pi pi-fw pi', routerLink: [`/${this.user.role.toLowerCase()}/logs`], visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ViewLogs')) },
                 ],
-                visible: this.user.isAdmin
+                visible: (this.user.isAdmin || this.user.isMASTER || this.user.permissions.includes('ManageOthers'))
             },
             // {
             //     label: 'External',

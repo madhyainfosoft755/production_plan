@@ -2,9 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChange
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { ForgingApiService } from 'src/app/services/forgingapi.service';
 import { UnbrakoPPCommonService } from 'src/app/services/unbrako-pp-common';
-// import { ForgingApiService } from 'src/app/services/forgnigapi.service';
 
 @Component({
   selector: 'app-update-main-file',
@@ -49,8 +47,7 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
   today = new Date();
 
   constructor(
-    private fb: FormBuilder, 
-    private forgingApiService: ForgingApiService, 
+    private fb: FormBuilder,
     private adminApiService: AdminApiService,
     private unbrakoPPCommonService: UnbrakoPPCommonService,
     private authService: AuthService

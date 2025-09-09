@@ -41,7 +41,7 @@
                             <p-button title="Reload File Status" icon="pi pi-refresh" [loading]="loadingWOMFileStatus" class="mr-2" (onClick)="loadWorkOrderFileUploadStatus()" />
                         </div>
                     </div>
-                    <p-button *ngIf="(workOrderMasterFileStatus?.status === 'completed' || workOrderMasterFileStatus?.status === 'failed') && workOrderMasterFileStatus?.total_failed_records <= 0" icon="pi pi-upload" label="Upload WOM" class="mr-2" (onClick)="uploadWOMFile()" />
+                    <p-button *ngIf="(workOrderMasterFileStatus?.status === 'completed' && workOrderMasterFileStatus?.total_failed_records <= 0) || workOrderMasterFileStatus?.status === 'failed'" icon="pi pi-upload" label="Upload WOM" class="mr-2" (onClick)="uploadWOMFile()" />
                     <p-button title="Download Work Order Master Template" icon="pi pi-download" [loading]="loadingDWOMTemplate" (onClick)="downloadWOMTemplate()" />
                 </div>
             </div>

@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ForgingApiService {
+export class UserApiService {
   baseUrl: string = environment.apiBaseURL+'api/';
 
   constructor(

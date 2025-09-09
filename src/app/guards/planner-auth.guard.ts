@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, tap, take } from 'rxjs/operators';
+import { map, tap, take, filter, timeout } from 'rxjs/operators';
 
 import { AuthService } from '../services/auth.service';
 
@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RMAuthGuard implements CanActivate {
+export class PlannerAuthGuard implements CanActivate {
 
   constructor(
     private authService: AuthService,
@@ -19,10 +19,12 @@ export class RMAuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       return this.authService.currentUser.pipe(
+        filter(user => user !== null),
+        timeout(5000), // wait until user is emitted
         take(1),
         map(user => {
           const isAuth = !!user;
-          if (isAuth && user.isRM) {
+          if (isAuth && user.isPLANNER) {
             // console.log(user)
             // console.log('Admin '+user.isAdmin)
             return true;
