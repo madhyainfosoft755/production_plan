@@ -73,8 +73,6 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('UNBRAKO_PPC_USER');
-    this.currentUser.next(null);
     return this.http.get(`${this.baseUrl}logout`).subscribe({
       next: () => {
         localStorage.removeItem('UNBRAKO_PPC_USER');
@@ -84,6 +82,10 @@ export class AuthService {
       },
       error: (err) => {
         console.error('Error logging out:', err);
+        localStorage.removeItem('UNBRAKO_PPC_USER');
+        this.accessToken = '';
+        this.currentUser.next(null);
+        this.router.navigate(['/auth/login']);
       }
     });
   }

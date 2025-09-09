@@ -4,6 +4,9 @@ import { inject } from '@angular/core';
 import { take, exhaustMap, catchError  } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
+// Global flag to ensure logout is only triggered once
+let logoutTriggered = false;
+
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
   next: HttpHandlerFn
@@ -27,7 +30,8 @@ export const authInterceptor: HttpInterceptorFn = (
       return next(modifiedReq).pipe(
         catchError((error) => {
           // Check if the error status is 401
-          if (error.status === 401) {
+          if (error.status === 401 && !logoutTriggered) {
+            logoutTriggered = true;
             // Call the logout function from AuthService
             authService.logout();
           }
