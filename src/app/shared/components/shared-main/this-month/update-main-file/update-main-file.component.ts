@@ -73,11 +73,13 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
   }
 
   addToForgeField() {
-    if (this.updateAdminFieldsForm.contains('to_forge')) {
+  console.log('addToForgeField');
+
+    if (this.updateAdminFieldsForm.contains('to_forge_limit_inc')) {
       return;
     }
     this.updateAdminFieldsForm.addControl(
-      'to_forge',
+      'to_forge_limit_inc',
       this.fb.control('', [
         Validators.min(0),
         Validators.max(this.maxToForgeQty)
@@ -116,7 +118,6 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
   }
 
   filterSuggestions(controlName: string, event: any){
-    console.log(event);
     const query = event.query.toLowerCase();
     this.filteredSuggestions = this.suggestions[controlName].filter(item =>
       item.toLowerCase().includes(query)
@@ -124,8 +125,8 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
   }
 
   removeToForgeField() {
-    if (this.updateAdminFieldsForm.contains('to_forge')) {
-      this.updateAdminFieldsForm.removeControl('to_forge');
+    if (this.updateAdminFieldsForm.contains('to_forge_limit_inc')) {
+      this.updateAdminFieldsForm.removeControl('to_forge_limit_inc');
     }
   }
 
@@ -140,8 +141,8 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
       this.data = changes['data'].currentValue;
       this.sap_ids = this.data.map(val => Number(val.sap_id));
       if(this.data.length === 1){
+        console.log(this.data);
         this.maxToForgeQty = Math.floor((+this.data[0].final_pending_qty * 0.1))
-        console.log('Data changed from:', changes['data'].previousValue, 'to:', changes['data'].currentValue);
         this.addToForgeField();
         if(this.isRmUser){
           this.addRMDateField();
@@ -163,7 +164,6 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
         this.sapRmData = res.data;
       }, 
       error: (err: any)=>{
-        console.log(err);
       }
     });
   }
@@ -183,11 +183,9 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
           priority_list: res.priority_list && res.priority_list.length > 0 ? res.priority_list : [],
           special_remarks: res.special_remarks && res.special_remarks.length > 0 ? res.special_remarks : [],
         }
-        console.log(this.filteredSuggestions)
         this.loadingFilterSuggestion = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingFilterSuggestion = false;
       }
     });
@@ -196,7 +194,6 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
   onSubmit(): void {
     this.submitted = true;
     if (this.updateAdminFieldsForm.valid && !this.isRmUser) {
-      console.log('Form Submitted:', this.updateAdminFieldsForm.value);
       // Perform further operations like API calls here
       this.loadingSubmit = true;
       this.adminApiService.update_buld_admin_fields({sap_ids: this.sap_ids, ...this.updateAdminFieldsForm.value}).subscribe({
@@ -205,7 +202,6 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
           this.loadingSubmit = false;
         }, 
         error: (err: any)=>{
-          console.log(err);
           this.loadingSubmit = false;
         }
       });
@@ -215,7 +211,6 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
   onSubmitRMForm(){
     this.loadingSubmit = true;
     if (this.updateRMFieldsForm.valid && this.isRmUser) {
-      console.log('Form Submitted:', this.updateRMFieldsForm.value);
       // Perform further operations like API calls here
       
       this.adminApiService.update_sap_rm_data({sap_ids: this.sap_ids, ...this.updateRMFieldsForm.value}).subscribe({
@@ -223,8 +218,7 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
           this.notifyParent.emit(res);   
           this.loadingSubmit = false;
         }, 
-        error: (err: any)=>{
-          console.log(err);          
+        error: (err: any)=>{    
           this.loadingSubmit = false;
         }
       });

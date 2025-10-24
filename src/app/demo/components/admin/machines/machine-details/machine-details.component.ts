@@ -78,11 +78,9 @@ export class MachineDetailsComponent implements OnInit, OnChanges {
   checkNumberInput(controlName: string) {
       const control = this.machineForm.get(controlName);
       const value = control?.value;
-      // console.log(value)
       if (value !== null && value !== undefined) {
           const numericValue = value.toString().replace(/[^0-9]/g, '');
           control?.setValue(numericValue, { emitEvent: false });
-          // console.log(control.value)
       }
   }
 
@@ -92,7 +90,6 @@ export class MachineDetailsComponent implements OnInit, OnChanges {
 
   // Submit Form
   onSubmit(): void {
-    console.log(this.machineForm.value);
     // return
     if (this.machineForm.invalid) {
       return;
@@ -109,7 +106,6 @@ export class MachineDetailsComponent implements OnInit, OnChanges {
         error: (err)=>{
           this.backendErrors = err.error.errors;
           this.loading = false;
-          console.log(err);
         }
       });
     } else {
@@ -122,7 +118,6 @@ export class MachineDetailsComponent implements OnInit, OnChanges {
         error: (err)=>{
           this.backendErrors = err.error.errors;
           this.loading = false;
-          console.log(err);
         }
       });
     }

@@ -10,6 +10,7 @@ export class FinishComponent implements OnInit {
   finishData!: any;
   loadingFinish: boolean = false;
   visibleAddFinishDialog: boolean = false;
+  selectedFinish: any = null;
 
   constructor(
     private adminApiService: AdminApiService
@@ -33,11 +34,16 @@ export class FinishComponent implements OnInit {
   }
 
   showAddFinishDialog(){
+    this.selectedFinish = null;
+    this.visibleAddFinishDialog = true;
+  }
+
+  editFinishDialog(selectedFinish: any){
+    this.selectedFinish = selectedFinish;
     this.visibleAddFinishDialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_finish_data();
       this.visibleAddFinishDialog = false; // Close the dialog or perform any action

@@ -49,7 +49,6 @@ export class MachinesComponent implements OnInit {
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_machines();
       this.visibleAddMachineDialog = false; // Close the dialog or perform any action

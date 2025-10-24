@@ -23,11 +23,11 @@
                         <th>Plan No of M/C</th>
                         <th>% of Efficiency</th>
                         <th>Added At</th>
-                        <!-- <th>Action</th> -->
+                        <th>Action</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-machine let-rowIndex="rowIndex">
-                    <tr (click)="showMachineEdit(machine)">
+                    <tr>
                         <td>{{ rowIndex+1 }}</td>
                         <td>{{ machine.process }}</td>
                         <!-- <td><a [routerLink]="['/machines/machine-details', machine.id]">{{ machine.machine_name }}</a></td> -->
@@ -41,9 +41,9 @@
                         <td>{{ machine.plan_no_of_mc }}</td>
                         <td>{{ machine.per_of_efficiency }}</td>
                         <td>{{ machine.created_at | date:'shortDate' }}</td>
-                        <!-- <td>
-                            <button (click)="navigateToMachineDetails(machine.id)">Edit</button>
-                        </td> -->
+                        <td>
+                            <p-button icon="pi pi-pencil" (click)="showMachineEdit(machine)" />
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>

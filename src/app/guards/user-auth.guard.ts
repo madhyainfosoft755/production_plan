@@ -25,8 +25,6 @@ export class UserAuthGuard implements CanActivate {
         map(user => {
           const isAuth = !!user;
           if (isAuth && user.isUSER) {
-            // console.log(user)
-            // console.log('Admin '+user.isAdmin)
             return true;
           }
           return this.router.createUrlTree(['/auth/login']);

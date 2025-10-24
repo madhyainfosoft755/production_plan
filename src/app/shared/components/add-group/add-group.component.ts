@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,9 +20,14 @@ export class AddGroupComponent implements OnInit {
   submitted = false;
   loading = false;
   backendErrors: any = {};
+  @Input() selectedGroup: any = null;
 
   ngOnInit(): void {
-     
+     if (this.selectedGroup) {
+        this.groupForm.patchValue({
+          name: this.selectedGroup.name || ''
+        });
+      }
   }
 
   // Transform input to uppercase
@@ -52,7 +57,8 @@ export class AddGroupComponent implements OnInit {
     formData.append('name', this.groupForm.controls['name'].value);
 
     this.loading = true;
-    this.adminApiService.add_groups(formData).subscribe({
+    const apiRef = this.selectedGroup ? this.adminApiService.edit_groups(this.selectedGroup.id, formData) : this.adminApiService.add_groups(formData);
+    apiRef.subscribe({
       next: (res)=>{
         this.groupForm.reset();
         this.loading = false;
@@ -62,7 +68,6 @@ export class AddGroupComponent implements OnInit {
       error: (err: HttpErrorResponse)=>{
         this.backendErrors = err.error.errors;
         this.loading = false;
-        console.log(err);
       }
     });
   }

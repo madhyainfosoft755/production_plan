@@ -10,6 +10,7 @@ export class GroupsComponent implements OnInit {
   groupsData!: any;
   loadingGroups: boolean = false;
   visibleAddGroupDialog: boolean = false;
+  selectedGroup: any = null;
 
   constructor(
     private adminApiService: AdminApiService
@@ -33,11 +34,16 @@ export class GroupsComponent implements OnInit {
   }
 
   showAddGroupDialog(){
+    this.selectedGroup = null;
+    this.visibleAddGroupDialog = true;
+  }
+  
+  editGroupDialog(selectedGroup: any){
+    this.selectedGroup = selectedGroup;
     this.visibleAddGroupDialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_groups_data();
       this.visibleAddGroupDialog = false; // Close the dialog or perform any action

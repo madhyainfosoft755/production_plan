@@ -172,6 +172,11 @@ export class AdminApiService {
     return this.http.post(`${this.baseUrl}add-work-order-master`, data);
   }
 
+
+  update_work_order(id: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}update-work-order-master/${id}`, data);
+  }
+
   upload_sap(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}transfer-and-upload`, data);
   }
@@ -190,6 +195,10 @@ export class AdminApiService {
 
   addProductMaster(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}add-product-master`, data);
+  }
+
+  updateProductMaster(id:string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}update-product-master/${id}`, data);
   }
 
   getMachineModules(machine_rev_id: string): Observable<any>{
@@ -228,12 +237,24 @@ export class AdminApiService {
     return this.http.post(`${this.baseUrl}finish`, data);
   }
 
+  edit_finish(finishId: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}finish/${finishId}`, data);
+  }
+
   add_surface_treatment_process(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}surface-treatment-process`, data);
   }
 
+  edit_surface_treatment_process(id: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}surface-treatment-process/${id}`, data);
+  }
+
   add_seg3(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}seg3`, data);
+  }
+  
+  edit_seg3(segId: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}seg3/${segId}`, data);
   }
 
   get_all_seg3(): Observable<any>{
@@ -243,6 +264,10 @@ export class AdminApiService {
   add_seg2(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}seg2`, data);
   }
+  
+  edit_seg2(segId: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}seg2/${segId}`, data);
+  }
 
   get_all_seg2(): Observable<any>{
     return this.http.get(`${this.baseUrl}seg2`);
@@ -250,6 +275,10 @@ export class AdminApiService {
 
   add_segments(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}segments`, data);
+  }
+  
+  edit_segments(segId: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}segments/${segId}`, data);
   }
 
   get_all_segments(): Observable<any>{
@@ -306,6 +335,10 @@ export class AdminApiService {
   add_modules(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}modules`, data);
   }
+  
+  edit_modules(moduleId: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}modules/${moduleId}`, data);
+  }
 
   completeWeeklyReportForMoudle(data: {module_id: number}): Observable<any>{
     return this.http.post(`${this.baseUrl}complete-weekly-report-for-module`, data);
@@ -349,6 +382,10 @@ export class AdminApiService {
 
   add_groups(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}groups`, data);
+  }
+  
+  edit_groups(groupId: string, data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}groups/${groupId}`, data);
   }
 
   get_all_groups(): Observable<any>{

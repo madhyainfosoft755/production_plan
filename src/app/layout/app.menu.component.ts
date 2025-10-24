@@ -26,7 +26,6 @@ export class AppMenuComponent implements OnInit {
               if (user){
                 this.user = user;
                 this.user.permissions = this.user.permissions ?? [];
-                console.log(user)
               }
             }
         });

@@ -10,6 +10,7 @@ export class Seg3Component implements OnInit {
   seg2Data!: any;
   loadingSeg3: boolean = false;
   visibleAddSeg3Dialog: boolean = false;
+  selectedSeg3: any = null;
 
   constructor(
     private adminApiService: AdminApiService
@@ -33,11 +34,16 @@ export class Seg3Component implements OnInit {
   }
 
   showAddSeg3Dialog(){
+    this.selectedSeg3 = null;
+    this.visibleAddSeg3Dialog = true;
+  }
+  
+  editSeg3Dialog(selectedSeg3: any){
+    this.selectedSeg3 = selectedSeg3;
     this.visibleAddSeg3Dialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_seg3_data();
       this.visibleAddSeg3Dialog = false; // Close the dialog or perform any action

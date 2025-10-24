@@ -25,8 +25,6 @@ export class MasterAuthGuard implements CanActivate {
         map(user => {
           const isAuth = !!user;
           if (isAuth && user.isMASTER) {
-            console.log(user)
-            // console.log('Admin '+user.isAdmin)
             return true;
           }
           return this.router.createUrlTree(['/auth/login']);

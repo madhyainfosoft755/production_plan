@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,9 +20,14 @@ export class AddFinishComponent implements OnInit {
   submitted = false;
   loading = false;
   backendErrors: any = {};
+  @Input() selectedFinish: any = null;
 
   ngOnInit(): void {
-     
+      if (this.selectedFinish) {
+        this.finishForm.patchValue({
+          name: this.selectedFinish.name || ''
+        });
+      }
   }
 
   // Transform input to uppercase
@@ -52,7 +57,8 @@ export class AddFinishComponent implements OnInit {
     formData.append('name', this.finishForm.controls['name'].value);
 
     this.loading = true;
-    this.adminApiService.add_finish(formData).subscribe({
+    const apiRef = this.selectedFinish ? this.adminApiService.edit_finish(this.selectedFinish.id, formData) : this.adminApiService.add_finish(formData);
+    apiRef.subscribe({
       next: (res)=>{
         this.finishForm.reset();
         this.loading = false;
@@ -62,7 +68,6 @@ export class AddFinishComponent implements OnInit {
       error: (err: HttpErrorResponse)=>{
         this.backendErrors = err.error.errors;
         this.loading = false;
-        console.log(err);
       }
     });
   }

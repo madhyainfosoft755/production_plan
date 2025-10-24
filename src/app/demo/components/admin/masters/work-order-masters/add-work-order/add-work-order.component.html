@@ -201,7 +201,7 @@
   
       <!-- Submit Button -->
       <div class=" col-12 sm:col-4">
-        <p-button type="submit" [disabled]="workOrderForm.invalid" label="Submit" [disabled]="loading" />
+        <p-button type="submit" [disabled]="workOrderForm.invalid" label="{{selectedWO ? 'Edit' : 'Add'}}" [disabled]="loading" />
       </div>
     </div>
 </form>

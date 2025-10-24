@@ -24,11 +24,16 @@
                     </ng-template>
                 </p-dropdown>
                 <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem mr-2" />
-                <p-button *ngIf="savedModules !== null && savedModules === false" (click)="completeWeeklyReportForMoudle()" [disabled]="isCompleteDisabled" label="Mark Complete" [loading]="loadingMarkComplete" />
-                <p-button *ngIf="savedModules !== null && savedModules === true" label="Export" [loading]="loadingDownload" />
+                <p-button *ngIf="savedModules !== null && savedModules === false" (click)="completeWeeklyReportForMoudle()" [disabled]="isCompleteDisabled || !(weeklyPlanningData && weeklyPlanningData.length > 0)" label="Mark Complete" [loading]="loadingMarkComplete" />
+                <p-button *ngIf="savedModules !== null && savedModules === true" label="Export" [loading]="loadingDownload" [disabled]="!(weeklyPlanningData && weeklyPlanningData.length > 0)" />
                 <p-button *ngIf="savedModules == null && savedModules === true" label="ExportAll" [loading]="loadingDownload" />
         </div>
         <div class="col-12 pt-0">
+            <p-messages 
+                [(value)]="messages" 
+                [enableService]="false" 
+                [closable]="true"
+                styleClass="mt-2" />
             <p-table #dt1 [rowHover]="true" dataKey="id" [value]="weeklyPlanningData" [loading]="loadingWPD" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped"
             [globalFilterFields]="['plant', 'work_order_db', 'customer', 'responsible_person_name1', 'segment_name', 'marketing_person_name1', 'reciving_date', 'delivery_date', 'quality_inspection_required', 'created_at']">
                 <ng-template pTemplate="header">

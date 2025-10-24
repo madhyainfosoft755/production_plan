@@ -152,7 +152,6 @@ export class AddPartNumberComponent implements OnInit {
             return;
         }
 
-        console.log('Form Submitted', this.form.value);
         // Submit logic here
 
         this.loadingSubmit = true;

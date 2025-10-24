@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,9 +20,14 @@ export class AddSegmentsComponent implements OnInit {
   submitted = false;
   loading = false;
   backendErrors: any = {};
+  @Input() selectedSegment: any = null;
 
   ngOnInit(): void {
-     
+     if (this.selectedSegment) {
+        this.segmentForm.patchValue({
+          name: this.selectedSegment.name || ''
+        });
+      }
   }
 
   // Transform input to uppercase
@@ -52,7 +57,8 @@ export class AddSegmentsComponent implements OnInit {
     formData.append('name', this.segmentForm.controls['name'].value);
 
     this.loading = true;
-    this.adminApiService.add_segments(formData).subscribe({
+    const apiRef = this.selectedSegment ? this.adminApiService.edit_segments(this.selectedSegment.id, formData) : this.adminApiService.add_segments(formData);
+    apiRef.subscribe({
       next: (res)=>{
         this.segmentForm.reset();
         this.loading = false;
@@ -62,7 +68,6 @@ export class AddSegmentsComponent implements OnInit {
       error: (err: HttpErrorResponse)=>{
         this.backendErrors = err.error.errors;
         this.loading = false;
-        console.log(err);
       }
     });
   }

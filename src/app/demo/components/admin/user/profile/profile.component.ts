@@ -71,7 +71,6 @@ export class ProfileComponent implements OnInit {
       }, 
       error: (err)=>{
         this.loadingProfile = false;
-        console.log(err);
       }
     });
   }
@@ -95,7 +94,6 @@ export class ProfileComponent implements OnInit {
       }, 
       error: (err)=>{
         this.loading = false;
-        console.log(err);
         this.messages = [
           { severity: 'error', detail: err?.error?.message }
         ];

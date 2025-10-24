@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,9 +20,14 @@ export class AddSeg3Component implements OnInit {
   submitted = false;
   loading = false;
   backendErrors: any = {};
+  @Input() selectedSeg3: any = null;
 
   ngOnInit(): void {
-     
+      if (this.selectedSeg3) {
+        this.seg3Form.patchValue({
+          name: this.selectedSeg3.name || ''
+        });
+      }
   }
 
   // Transform input to uppercase
@@ -52,7 +57,8 @@ export class AddSeg3Component implements OnInit {
     formData.append('name', this.seg3Form.controls['name'].value);
 
     this.loading = true;
-    this.adminApiService.add_seg3(formData).subscribe({
+    const apiRef = this.selectedSeg3 ? this.adminApiService.edit_seg3(this.selectedSeg3.id, formData) : this.adminApiService.add_seg3(formData);
+    apiRef.subscribe({
       next: (res)=>{
         this.seg3Form.reset();
         this.loading = false;
@@ -62,7 +68,6 @@ export class AddSeg3Component implements OnInit {
       error: (err: HttpErrorResponse)=>{
         this.backendErrors = err.error.errors;
         this.loading = false;
-        console.log(err);
       }
     });
   }

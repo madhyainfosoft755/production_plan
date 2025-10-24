@@ -44,7 +44,7 @@
     
         <!-- Submit Button -->
         <div class="field col-12">
-            <p-button type="submit" [disabled]="loading" label="Add" />
+            <p-button type="submit" [disabled]="loading" label="{{selectedModule ? 'Edit' : 'Add'}}" />
         </div>
     </div>
 </form>

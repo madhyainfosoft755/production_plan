@@ -63,6 +63,7 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   loadingValidatePMFile = false;
   loadingPMFileStatus = false;
   productMasterFileStatus: any = null;
+  selectedPMD: any = null;
 
   visibleFilterDrawer = false;
   segments: any[] = [];
@@ -110,9 +111,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
     ];
     const advanceSearchFormSub = this.productMasterForm.valueChanges.subscribe(currentValue  => {
       this.enableAdvSearch = JSON.stringify(this.commonUtilsService.replaceNullsWithEmpty(currentValue)) !== JSON.stringify(this.commonUtilsService.replaceNullsWithEmpty(this.initialAdvSearchValues));
-      console.log(JSON.stringify(this.commonUtilsService.replaceNullsWithEmpty(currentValue)))
-      console.log(JSON.stringify(this.initialAdvSearchValues))
-      console.log(this.enableAdvSearch)
     });
     this.load_machines();
     this.loadPMFileUploadStatus();
@@ -126,7 +124,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
         this.loadingPMFileStatus = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingPMFileStatus = false;
       }
     });
@@ -139,7 +136,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
 
         const blob = response.body!;
         const contentDisposition = response.headers.get('Content-Disposition');
-        console.log(contentDisposition)
         let filename = 'FailedProductMasterRecords.xlsx'; // default fallback
         if (contentDisposition) {
           const matches = /filename="([^"]+)"/.exec(contentDisposition);
@@ -159,7 +155,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
         this.loadingPMFailedRecords = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingPMFailedRecords = false;
       }
     });
@@ -177,7 +172,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
         this.loadingValidatePMFile = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingValidatePMFile = false;
       }
     });
@@ -195,10 +189,8 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
         const dataSize = new TextEncoder().encode(JSON.stringify(res)).length;
 
         // Log the size of the incoming data in bytes
-        console.log(`Incoming data size: ${dataSize} bytes`);
 
         const dataSizeInMB = dataSize / (1024 * 1024); // Convert bytes to MB
-        console.log(`Incoming data size: ${dataSizeInMB.toFixed(2)} MB`);
 
 
         this.productMasterData = res.data;
@@ -222,11 +214,16 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   }
 
   showAddPMDialog(){
+    this.selectedPMD = null;
+    this.visibleAddPMDialog = true;
+  }
+
+  editPMasterDialog(pmd: any){
+    this.selectedPMD = pmd;
     this.visibleAddPMDialog = true;
   }
 
   onFormDataChange(updatedForm: FormGroup) {
-    console.log('Form data changed:', updatedForm.value); 
     this.productMasterForm = updatedForm;
   }
   onClearAdvanceFilter(){
@@ -234,7 +231,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_machines();
       this.visibleAddPMDialog = false; // Close the dialog or perform any action
@@ -242,7 +238,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   }
 
   onFilterNotify(message: boolean): void {
-    console.log('Notification from filter:', message);
     if(message){
       this.load_machines();
       // this.visibleAddPMDialog = false; // Close the dialog or perform any action
@@ -256,7 +251,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
       next: (response)=>{
         const blob = response.body!;
         const contentDisposition = response.headers.get('Content-Disposition');
-        console.log(contentDisposition)
         let filename = 'ProductMasterTemplate.xlsx'; // default fallback
         if (contentDisposition) {
           const matches = /filename="([^"]+)"/.exec(contentDisposition);
@@ -274,7 +268,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
         this.loadingDPMTemplate = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingDPMTemplate = false;
       }
     });
@@ -293,7 +286,6 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: PageEvent) {
-    console.log(event)
     this.load_machines(Number(event.page)+1);
   }
 

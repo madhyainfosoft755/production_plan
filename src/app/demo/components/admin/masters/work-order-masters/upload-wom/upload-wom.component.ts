@@ -156,7 +156,6 @@ export class UploadWOMComponent implements OnInit {
     // }
 
     this.errorMessage = '';
-    console.log('File is valid!');
   }
 
   onSubmit(): void {
@@ -173,14 +172,12 @@ export class UploadWOMComponent implements OnInit {
       next: (response) => {
         this.router.navigate(['/admin/masters/work-order-master']);
         this.loading = false;
-        console.log('File uploaded successfully:', response);
       },
       error: (error) => {
         this.messages = [
           { severity: 'error', summary: 'Error', detail: error.statusText || 'File upload failed.' },
         ];
         this.loading = false;
-        console.error('File upload failed:', error);
       }
     });
   }

@@ -66,7 +66,6 @@ export class EmployeesComponent implements OnInit {
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_customers();
       this.visibleAddEmployeeDialog = false; // Close the dialog or perform any action

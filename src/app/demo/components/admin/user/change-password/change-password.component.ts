@@ -65,7 +65,6 @@ export class ChangePasswordComponent implements OnInit{
                   error: (error: any) => {
                       this.loading = false;
                       // this.serverErr = error.error;
-                      console.log(error)
                       this.messages = [
                           { severity: 'error', detail: error?.error?.message }
                       ]

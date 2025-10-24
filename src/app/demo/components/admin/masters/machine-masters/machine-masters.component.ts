@@ -80,7 +80,6 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
     this.adminApiService.get_machine_master(this.machinesFilterForm.value, page).subscribe({
       next: (res: any)=>{
         this.machineMaster = res.data;
-        console.log(this.machineMaster);
         this.pagination = res.pagination;
         if(this.enableAdvSearch){
           this.visibleFilterDrawer = false;
@@ -89,7 +88,6 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
         this.loadingAdvanceFilter = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingMMD = false;
         this.loadingAdvanceFilter = false;
 
@@ -130,7 +128,6 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.loadData();
       this.visibleAddMMDialog = false; // Close the dialog or perform any action
@@ -138,7 +135,6 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: PageEvent) {
-    console.log(event)
     this.loadData(Number(event.page)+1);
   }
 

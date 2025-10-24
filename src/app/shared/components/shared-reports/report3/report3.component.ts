@@ -52,14 +52,12 @@ export class Report3Component  implements OnInit {
         // this.data = res.data.map((val: any)=> {
         //   return this.unbrakoPPCommonService.SAPMainFileMapping(val);
         // });
-        // console.log(this.data);
         // const fileName = 'MyExcelFile';
         // this.excelService.generateExcelFile(fileName, this.data);
         this.loading_data = false;
         // this.generatePivotTable();
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loading_data = false;
       }
     });
@@ -113,8 +111,6 @@ export class Report3Component  implements OnInit {
   
 
   week_change(event: any){
-    console.log(event);
-    console.log(this.selectedWeek);
     this.month_full_year = undefined;
     this.rangeDates = undefined;
     this.loadData({
@@ -129,8 +125,6 @@ export class Report3Component  implements OnInit {
   }
   
   month_select(event: any){
-    console.log(event);
-    console.log(this.month_full_year)
     // Thu May 01 2025 00:00:00 GMT+0530 (India Standard Time)
     this.selectedWeek = undefined;
     this.rangeDates = undefined;
@@ -146,8 +140,6 @@ export class Report3Component  implements OnInit {
   }
 
   date_range_select(event: any){
-    console.log(event);
-    console.log(this.rangeDates)
     if(this.rangeDates[1] !== null){
       this.month_full_year = undefined;
       this.selectedWeek = undefined;

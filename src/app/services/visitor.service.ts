@@ -19,9 +19,7 @@ export class VisitorService {
       user_agent: window.navigator.userAgent,
     };
     return this.http.post(this.apiUrl, data).subscribe(response => {
-      console.log('Visitor details sent successfully:', response);
     }, error => {
-      console.error('Error sending visitor details:', error);
     });
   }
 

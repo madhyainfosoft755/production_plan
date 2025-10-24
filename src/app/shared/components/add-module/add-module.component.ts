@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -25,8 +25,14 @@ export class AddModuleComponent implements OnInit {
   backendErrors: any = {};
   responsibleOptions: any;
   loadingResponsibles: boolean = false;
+  @Input() selectedModule: any = null;
 
   ngOnInit(): void {
+    if (this.selectedModule) {
+      this.moduleForm.patchValue({
+        name: this.selectedModule.name || ''
+      });
+    }
     this.load_customers();
   }
 
@@ -35,6 +41,9 @@ export class AddModuleComponent implements OnInit {
     this.adminApiService.get_all_employees().subscribe({
       next: (res: any)=>{
         this.responsibleOptions = res.data.map(value => ({...value, label: `${value.name} - ${value.role.toLowerCase()}`}));
+        this.moduleForm.patchValue({
+          responsible: Number(this.selectedModule.responsible_id || '')
+        });
         this.loadingResponsibles = false;
       }, 
       error: (err: any)=>{
@@ -72,7 +81,8 @@ export class AddModuleComponent implements OnInit {
     formData.append('responsible', this.moduleForm.controls['responsible'].value);
 
     this.loading = true;
-    this.adminApiService.add_modules(formData).subscribe({
+    const apiRef = this.selectedModule ? this.adminApiService.edit_modules(this.selectedModule.id, formData) : this.adminApiService.add_modules(formData);
+    apiRef.subscribe({
       next: (res)=>{
         this.moduleForm.reset();
         this.loading = false;
@@ -82,7 +92,6 @@ export class AddModuleComponent implements OnInit {
       error: (err: HttpErrorResponse)=>{
         this.backendErrors = err.error.errors;
         this.loading = false;
-        console.log(err);
       }
     });
   }

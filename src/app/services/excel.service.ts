@@ -10,7 +10,6 @@ export class ExcelService {
 
   generateExcelFile(fileName: string, data: any[]): void {
     if (!data || data.length === 0) {
-      console.error('No data provided to export');
       return;
     }
 

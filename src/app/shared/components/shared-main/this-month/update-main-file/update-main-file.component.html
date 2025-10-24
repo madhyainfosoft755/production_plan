@@ -3,18 +3,18 @@
 
         <div class="p-fluid grid m-0">
             <!-- Increase Qty -->
-            <div class="field mb-0 col-12 sm:col-4" *ngIf="data?.length === 1">
+            <div class="field mb-0 col-12 sm:col-4" *ngIf="data?.length === 1 && updateAdminFieldsForm.contains('to_forge_limit_inc')" >
                 <label for="to-forge">To Forge <span>Current Qty : {{data[0].final_pending_qty}}</span></label>
                 <input
                     id="to-forge"
-                    (input)="checkNumberInput('to_forge')"
+                    (input)="checkNumberInput('to_forge_limit_inc')"
                     pInputText
-                    formControlName="to_forge"
+                    formControlName="to_forge_limit_inc"
                     placeholder="To Forge Qty"
                 />
                 <span>You can update from 0 to {{maxToForgeQty}}</span>
-                <small *ngIf="submitted && toForgeForm.controls['to_forge'].invalid" class="p-error">
-                    Error
+                <small *ngIf="submitted && updateAdminFieldsForm.controls['to_forge_limit_inc'].invalid" class="p-error">
+                    Error: max limit exceed (limit {{maxToForgeQty}}).
                 </small>
             </div>
             <!-- Monthly Plan -->

@@ -66,7 +66,6 @@ export class ForgotPasswordComponent implements OnInit {
                     this.submitted = false;
                       this.loading = false;
                       // this.serverErr = error.error;
-                      console.log(error)
                       this.messages = [
                           { severity: 'error', detail: error?.error?.message }
                       ]

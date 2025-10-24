@@ -58,24 +58,20 @@ export class HistoryComponent implements OnInit {
       },
       error: (err) => {
         this.loadingModules = false;
-        console.error(err);
       }
     });
   }
 
   moduleChanged(event: any){
-    // console.log(event.value.map(val=>val.id))
     this.loadingMachines = true;
 
     this.adminApiService.getMachineForModules(event.value.map(val=>val.id)).subscribe({
       next: (res) => {
         this.loadingMachines = false;
         this.machineOptions = this.unbrakoPPCommonService.groupMachines(res.data);
-        console.log(this.machineOptions)
       },
       error: (err) => {
         this.loadingMachines = false;
-        console.error(err);
       }
     });
   }
@@ -147,7 +143,6 @@ export class HistoryComponent implements OnInit {
       },
       error: (err) => {
         this.loadingReport = false;
-        console.error(err);
       }
     });
   }
@@ -155,11 +150,8 @@ export class HistoryComponent implements OnInit {
   // Function to aggregate data and format it into a pivot table-like structure
   updateFilteredData() {
     let filteredData = [...this.data];
-    console.log([...this.data])
     const moduleNames = this.filterForm.get('module_name')?.value.map(val=>val.id);
     const machineNames = this.filterForm.get('machine_name')?.value;
-    console.log(moduleNames);
-    console.log(machineNames)
     // Apply filters
     if (moduleNames) {
       // filteredData = filteredData.filter(item => item.module_name === moduleNames);
@@ -170,8 +162,6 @@ export class HistoryComponent implements OnInit {
       // filteredData = filteredData.filter(item => machineNames.includes(item.machine_name));
       filteredData = filteredData.filter(item => machineNames.includes(item.machine_id));
     }
-
-    console.log(filteredData);
 
     // Create pivot data based on grouping by prod_group, size, spec
     this.pivotData = this.createPivot(filteredData);
@@ -233,7 +223,6 @@ export class HistoryComponent implements OnInit {
     if (lastSpec !== null) {
         result.push({ spec: "Total", ...specTotals });
     }
-    // console.log(result);
     return result;
   }
 
@@ -259,8 +248,6 @@ export class HistoryComponent implements OnInit {
         groupedData[key].to_forge_rm_wt += entry.to_forge_rm_wt;
     });
 
-    console.log(groupedData)
-
     // Step 2: Creating the final output with total rows
     const finalData = [];
 
@@ -283,7 +270,6 @@ export class HistoryComponent implements OnInit {
     });
 
     // Output result
-    // console.log(JSON.stringify(finalData, null, 4));
     return finalData;
   }
 

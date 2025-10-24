@@ -419,31 +419,26 @@ export class Report4Component implements OnInit {
       },
       error: (err) => {
         this.loadingModules = false;
-        console.error(err);
       }
     });
   }
 
   moduleChanged(event: any){
-    // console.log(event.value.map(val=>val.id))
     this.loadingMachines = true;
     this.onFilterChange();
     this.adminApiService.getMachineForModules(event.value.map(val=>val.id)).subscribe({
       next: (res) => {
         this.loadingMachines = false;
         this.machineOptions = this.unbrakoPPCommonService.groupMachines(res.data);
-        console.log(this.machineOptions)
       },
       error: (err) => {
         this.loadingMachines = false;
-        console.error(err);
       }
     });
   }
 
   // Update filtered data based on selected filters
   onFilterChange() {
-    console.log(this.filterForm.value);
     this.loadingReport = true;
     let moduleIds;
     let machineRevIds;
@@ -457,7 +452,6 @@ export class Report4Component implements OnInit {
     this.adminApiService.machineWiseModuleWiseMonthlyReport2({moduleIds, machineRevIds}).subscribe({
       next: (res) => {
         this.loadingReport = false;
-        console.log(res.data)
         this.data = res.data.map((val: any)=> {
           return this.unbrakoPPCommonService.SAPMainFileMapping(val);
           // const to_forge_qty = (+val.orderQuantity_GMEIN - (+val.confirmedQuantity_GMEIN)); //--
@@ -507,19 +501,16 @@ export class Report4Component implements OnInit {
           //   per_of_efficiency: per_of_efficiency,
           // }
         });
-        console.log(this.data)
         // this.updateFilteredData();
         // Create pivot data based on grouping by prod_group, size, spec
         // this.pivotData = this.createPivot(this.data);
         // this.pivotData = this.summingOfSPEC(this.data);
         this.pivotData = this.processData(this.data);
-        console.log(this.pivotData)
         const fileName = 'Pivot Data';
         // this.excelService.generateExcelFile(fileName, this.data);
       },
       error: (err) => {
         this.loadingReport = false;
-        console.error(err);
       }
     });
   }
@@ -564,11 +555,8 @@ export class Report4Component implements OnInit {
   // Function to aggregate data and format it into a pivot table-like structure
   updateFilteredData() {
     let filteredData = [...this.data];
-    console.log([...this.data])
     const moduleNames = this.filterForm.get('module_name')?.value.map(val=>val.id);
     const machineNames = this.filterForm.get('machine_name')?.value;
-    console.log(moduleNames);
-    console.log(machineNames)
     // Apply filters
     if (moduleNames) {
       // filteredData = filteredData.filter(item => item.module_name === moduleNames);
@@ -579,8 +567,6 @@ export class Report4Component implements OnInit {
       // filteredData = filteredData.filter(item => machineNames.includes(item.machine_name));
       filteredData = filteredData.filter(item => machineNames.includes(item.machine_id));
     }
-
-    console.log(filteredData);
 
     // Create pivot data based on grouping by prod_group, size, spec
     this.pivotData = this.createPivot(filteredData);
@@ -642,7 +628,6 @@ export class Report4Component implements OnInit {
     if (lastSpec !== null) {
         result.push({ spec: "Total", ...specTotals });
     }
-    // console.log(result);
     return result;
   }
 
@@ -690,7 +675,6 @@ export class Report4Component implements OnInit {
     });
 
     // Output result
-    // console.log(JSON.stringify(finalData, null, 4));
     return finalData;
   }
 

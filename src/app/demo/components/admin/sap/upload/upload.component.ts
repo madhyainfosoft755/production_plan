@@ -3,12 +3,13 @@ import { AdminApiService } from 'src/app/services/adminapi.service';
 import * as XLSX from 'xlsx';
 import { Message } from 'primeng/api';
 import * as Papa from 'papaparse';
-
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
-  styleUrl: './upload.component.scss'
+  styleUrl: './upload.component.scss',
+  providers: [ConfirmationService]
 })
 export class UploadComponent implements OnInit {
   breadcrumbItems: any[];
@@ -38,8 +39,22 @@ export class UploadComponent implements OnInit {
   SAPFileStatus: any = null;
   loadingSAPFailedRecords = false;
   loadingSAPTemplate = false;
+  fileUploadTypeOptions = [
+    {
+      label: 'Incremental',
+      value: 'incremental'
+    },
+    {
+      label: 'New',
+      value: 'new'
+    }
+  ]
+  selectedFileTypeOption: 'new' | 'incremental'  = 'incremental';
 
-  constructor(private adminApiService: AdminApiService) {}
+  constructor(
+    private adminApiService: AdminApiService, 
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit() :void {
     this.breadcrumbItems = [
@@ -54,7 +69,6 @@ export class UploadComponent implements OnInit {
     this.loadingSAPFileStatus = true;
     this.adminApiService.getSAPFileStatus().subscribe({
       next: (response) => {
-        console.log(response)
         this.SAPFileStatus = response.data ?? {status: 'completed'} ;
         this.loadingSAPFileStatus = false;
       },
@@ -87,7 +101,6 @@ export class UploadComponent implements OnInit {
       next: (response)=>{
         const blob = response.body!;
         const contentDisposition = response.headers.get('Content-Disposition');
-        console.log(contentDisposition)
         let filename = 'SAPTemplate.xlsx'; // default fallback
         if (contentDisposition) {
           const matches = /filename="([^"]+)"/.exec(contentDisposition);
@@ -105,7 +118,6 @@ export class UploadComponent implements OnInit {
         this.loadingSAPTemplate = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingSAPTemplate = false;
       }
     });
@@ -117,7 +129,6 @@ export class UploadComponent implements OnInit {
       next: (response)=>{
         const blob = response.body!;
         const contentDisposition = response.headers.get('Content-Disposition');
-        console.log(contentDisposition)
         let filename = 'FailedSAPData.xlsx'; // default fallback
         if (contentDisposition) {
           const matches = /filename="([^"]+)"/.exec(contentDisposition);
@@ -137,7 +148,6 @@ export class UploadComponent implements OnInit {
         this.loadingSAPFailedRecords = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingSAPFailedRecords = false;
       }
     });
@@ -255,7 +265,10 @@ export class UploadComponent implements OnInit {
     // }
 
     this.errorMessage = '';
-    console.log('File is valid!');
+  }
+
+  selecteUploadFileTypeChanged(event: any){
+    this.selectedFileTypeOption = event.value;
   }
 
   onSubmit(): void {
@@ -263,9 +276,34 @@ export class UploadComponent implements OnInit {
       this.errorMessage = 'Please select a valid file.';
       return;
     }
+    
+    if(this.selectedFileTypeOption === 'new'){
 
+      this.confirmationService.confirm({
+          target: event.target as EventTarget,
+          message: 'Are you sure that you want erase old data and start from scratch?',
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          acceptIcon:"none",
+          rejectIcon:"none",
+          rejectButtonStyleClass:"p-button",
+          acceptButtonStyleClass: 'p-button-outlined',
+          accept: () => {
+            this.submitData();
+          },
+          reject: () => {
+          }
+      });
+    } else {
+      this.submitData();
+    }
+    
+  }
+  
+  submitData(){
     const formData = new FormData();
     formData.append('upload_excel', this.selectedFile);
+    formData.append('selectedFileTypeOption', this.selectedFileTypeOption);
     this.loading = true;
     // Replace 'your-api-url' with the actual endpoint
     this.adminApiService.upload_sap(formData).subscribe({
@@ -275,16 +313,15 @@ export class UploadComponent implements OnInit {
         ]
         this.getSAPFileStatus();
         this.loading = false;
-        console.log('File uploaded successfully:', response);
       },
       error: (error) => {
         this.messages = [
-            { severity: 'error', summary: 'Error', detail: error.statusText || 'File upload failed.' },
+            { severity: 'error', summary: 'Error', detail: error?.error?.message ?? (error.statusText || 'File upload failed.') },
         ]
         this.loading = false;
-        console.error('File upload failed:', error);
       }
     });
+
   }
 
   generating_main_file(){
@@ -297,7 +334,6 @@ export class UploadComponent implements OnInit {
         ]
         this.getSAPFileStatus();
         this.loadingMainFile = false;
-        console.log('File uploaded successfully:', response);
       },
       error: (error) => {
         this.messages = [
@@ -305,7 +341,6 @@ export class UploadComponent implements OnInit {
         ]
         this.getSAPFileStatus();
         this.loadingMainFile = false;
-        console.error('File generation failed:', error);
       }
     });
   }

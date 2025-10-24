@@ -54,12 +54,9 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
   onRoleChange(role: string) {
     // Set selected permissions (array of permission IDs)
     this.empPermissions = [];
-    console.log(this.empPermissions)
     if(role && role === this.employee?.role){
       this.empPermissions = structuredClone(this.incommingUserPermission || []);
     }
-    console.log(this.incommingUserPermission)
-    console.log(this.empPermissions)
 
     // Example: disable certain permission IDs for specific roles
     const roleBasedDisabled = {
@@ -80,12 +77,10 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
         this.empPermissions.push(id);
       }
     });
-    console.log(this.disabledPermissions);
     // Optionally uncheck disabled permissions
     // this.empPermissions = this.empPermissions.filter(
     //   (id) => !this.disabledPermissions.includes(id)
     // );
-    console.log(this.empPermissions)
   }
 
   constructor(private fb: FormBuilder, private adminApiService: AdminApiService, private constantService: ConstantService) {
@@ -141,7 +136,6 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
           active: Number(this.employee?.active || 0)
         });
         
-        console.log(this.employee)
         // Update disabled permissions based on role
         this.onRoleChange(this.employee.role || '');
       } else {
@@ -227,8 +221,6 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
   // Submit Form
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.employeeForm)
-    console.log(this.employeeForm.invalid)
     if (this.employeeForm.invalid) {
       return;
     }
@@ -244,7 +236,6 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
         }, 
         error: (err)=>{
           this.loading = false;
-          console.log(err);
         }
       });
     } else {
@@ -256,7 +247,6 @@ export class EmployeeDetailsComponent implements OnInit, OnChanges {
         }, 
         error: (err)=>{
           this.loading = false;
-          console.log(err);
         }
       });
 

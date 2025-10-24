@@ -13,16 +13,12 @@ export const authInterceptor: HttpInterceptorFn = (
 ): Observable<HttpEvent<any>> => {
   const authService = inject(AuthService);
 
-  // console.log('interceptor');
-  // return next(req);
   return authService.currentUser.pipe(
     take(1),
     exhaustMap((user) => {
-      // console.log('check user');
       if (!user) {
         return next(req);
       }
-      // console.log('request modified');
       const modifiedReq = req.clone({
         headers: new HttpHeaders().set('Authorization', `Bearer ${user.token}`),
       });

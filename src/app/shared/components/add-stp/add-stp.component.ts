@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,9 +20,14 @@ export class AddSTPComponent implements OnInit {
   submitted = false;
   loading = false;
   backendErrors: any = {};
+  @Input() selectedSTP: any = null;
 
   ngOnInit(): void {
-     
+      if (this.selectedSTP) {
+        this.stpForm.patchValue({
+          name: this.selectedSTP.name || ''
+        });
+      }
   }
 
   // Transform input to uppercase
@@ -52,7 +57,8 @@ export class AddSTPComponent implements OnInit {
     formData.append('name', this.stpForm.controls['name'].value);
 
     this.loading = true;
-    this.adminApiService.add_surface_treatment_process(formData).subscribe({
+    const apiRef = this.selectedSTP ? this.adminApiService.edit_surface_treatment_process(this.selectedSTP.id, formData) : this.adminApiService.add_surface_treatment_process(formData);
+    apiRef.subscribe({
       next: (res)=>{
         this.stpForm.reset();
         this.loading = false;
@@ -62,7 +68,6 @@ export class AddSTPComponent implements OnInit {
       error: (err: HttpErrorResponse)=>{
         this.backendErrors = err.error.errors;
         this.loading = false;
-        console.log(err);
       }
     });
   }

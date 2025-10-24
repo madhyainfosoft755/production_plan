@@ -21,6 +21,14 @@
                     <div class="col-12">
                         <button [loading]="loading" pButton label="Submit" type="submit" class="mr-2" [disabled]="!selectedFile"></button>
                         <p-button title="Download SAP Template" type="button" icon="pi pi-download" [loading]="loadingSAPTemplate" class="mr-2" (onClick)="downloadSAPTemplate()" />
+                        <p-dropdown
+                            id="file-type-options"
+                            [options]="fileUploadTypeOptions"
+                            placeholder="Select File Type"
+                            optionLabel="label"
+                            optionValue="value"
+                            (onChange)="selecteUploadFileTypeChanged($event)"
+                            ></p-dropdown>
                     </div>
                 </form>
             </div>
@@ -44,3 +52,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog />

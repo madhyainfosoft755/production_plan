@@ -10,6 +10,7 @@ export class SegmentsComponent implements OnInit {
   segmentsData!: any;
   loadingSegments: boolean = false;
   visibleAddSegmentDialog: boolean = false;
+  selectedSegment: any = null;
 
   constructor(
     private adminApiService: AdminApiService
@@ -33,11 +34,16 @@ export class SegmentsComponent implements OnInit {
   }
 
   showAddSegmentDialog(){
+    this.selectedSegment = null;
+    this.visibleAddSegmentDialog = true;
+  }
+  
+  editSegmentDialog(selectedSegment: any){
+    this.selectedSegment = selectedSegment;
     this.visibleAddSegmentDialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_segments_data();
       this.visibleAddSegmentDialog = false; // Close the dialog or perform any action

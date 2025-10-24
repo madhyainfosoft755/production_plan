@@ -167,7 +167,6 @@ export class UploadPMComponent implements OnInit {
     // }
 
     this.errorMessage = '';
-    console.log('File is valid!');
   }
 
   onSubmit(): void {
@@ -185,15 +184,12 @@ export class UploadPMComponent implements OnInit {
         this.router.navigate(['/admin/masters/product-master']);
         this.loading = false;
         this.selectedFile = null;
-        console.log('File uploaded successfully:', response);
       },
       error: (error) => {
         this.messages = [
             { severity: 'error', summary: 'Error', detail: error.statusText || 'File upload failed.' },
         ]
         this.loading = false;
-
-        console.error('File upload failed:', error);
       }
     });
   }

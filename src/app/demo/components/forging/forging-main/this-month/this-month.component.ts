@@ -31,7 +31,6 @@ export class ThisMonthComponent implements OnInit {
         this.loading_data = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loading_data = false;
       }
     });

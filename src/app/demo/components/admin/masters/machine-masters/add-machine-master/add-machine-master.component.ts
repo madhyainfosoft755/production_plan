@@ -89,7 +89,6 @@ export class AddMachineMasterComponent implements OnInit {
     if (this.machineMasterForm.invalid) {
       return;
     }
-    console.log(this.machineMasterForm.value);
     // Prepare FormData
     const formData = new FormData();
     formData.append('module', this.machineMasterForm.controls['module'].value);
@@ -103,7 +102,6 @@ export class AddMachineMasterComponent implements OnInit {
         this.loading = false;
       }, 
       error: (err: HttpErrorResponse)=>{
-        console.log(err);
         this.backendErrors = err.error;
         this.loading = false;
 
@@ -116,7 +114,6 @@ export class AddMachineMasterComponent implements OnInit {
   }
 
   onModuleNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_modules();
       this.visibleAddModuleDialog = false; // Close the dialog or perform any action

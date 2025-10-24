@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { forkJoin } from 'rxjs';
@@ -40,6 +40,7 @@ export class AddProductMasterComponent implements OnInit {
     Heating: 'H',
     Finish: 'S'
   };
+  @Input() selectedProductNumber: any = null;
 
   selectedProcess: { label: string; value: string } | null = {label: "Forging", value: 'F'};
   machineModuleOptions: any;
@@ -74,6 +75,18 @@ export class AddProductMasterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // React to value changes
+    this.productMasterForm.get('material_number')?.valueChanges.subscribe(value => {
+      this.onInput(value);
+      // Put your old onInput() logic here
+    });
+    if(this.selectedProductNumber){
+      // this.onInput(this.selectedProductNumber.material_number);
+      this.productMasterForm.patchValue({
+        order_number: this.selectedProductNumber.order_number,
+        material_number: this.selectedProductNumber.material_number,
+      });
+    }
     this.loadInitialData();
   }
 
@@ -131,14 +144,10 @@ export class AddProductMasterComponent implements OnInit {
         }
 
         // Handle other API responses
-        // console.log('Data1:', res.data1);
-        // console.log('Data2:', res.data2);
-        // console.log('Data3:', res.data3);
 
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading data:', err);
         this.loading = false;
       }
     });
@@ -210,27 +219,35 @@ export class AddProductMasterComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.productMasterForm.controls['seg2'].value)
-    console.log(this.productMasterForm.value);
 
     if (this.productMasterForm.invalid) {
       return;
     }
 
     this.loading = true;
-
-    this.adminApiService.addProductMaster({...this.productMasterForm.value, material_number_for_process:this.material_no_for_process}).subscribe({
-      next: (res) => {
-        this.loading = false;
-        console.log('Product Master added successfully:', res);
-        // Emit an event with a message or any data
-        this.notifyParent.emit(true);
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error(err);
-      }
-    });
+    if(this.selectedProductNumber){
+      this.adminApiService.updateProductMaster(this.selectedProductNumber.id, {...this.productMasterForm.value, material_number_for_process:this.material_no_for_process}).subscribe({
+        next: (res) => {
+          this.loading = false;
+          // Emit an event with a message or any data
+          this.notifyParent.emit(true);
+        },
+        error: (err) => {
+          this.loading = false;
+        }
+      });
+    } else {
+      this.adminApiService.addProductMaster({...this.productMasterForm.value, material_number_for_process:this.material_no_for_process}).subscribe({
+        next: (res) => {
+          this.loading = false;
+          // Emit an event with a message or any data
+          this.notifyParent.emit(true);
+        },
+        error: (err) => {
+          this.loading = false;
+        }
+      });
+    }
   }
 
   get_machines_info(){
@@ -263,7 +280,6 @@ export class AddProductMasterComponent implements OnInit {
       },
       error: (err) => {
         this.loadingMachines = false;
-        console.error(err);
       }
     });
   }
@@ -285,7 +301,6 @@ export class AddProductMasterComponent implements OnInit {
   }
 
   onFinishNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_finish_data();
       this.visibleAddFinishDialog = false; // Close the dialog or perform any action
@@ -293,7 +308,6 @@ export class AddProductMasterComponent implements OnInit {
   }
 
   onSegmentNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_segment_data();
       this.visibleAddSegmentDialog = false; // Close the dialog or perform any action
@@ -301,7 +315,6 @@ export class AddProductMasterComponent implements OnInit {
   }
 
   onGroupNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_group_data();
       this.visibleAddGroupDialog = false; // Close the dialog or perform any action
@@ -309,7 +322,6 @@ export class AddProductMasterComponent implements OnInit {
   }
 
   onSeg2Notify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_seg2_data();
       this.visibleAddSeg2Dialog = false; // Close the dialog or perform any action
@@ -317,7 +329,6 @@ export class AddProductMasterComponent implements OnInit {
   }
 
   onSeg3Notify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_seg3_data();
       this.visibleAddSeg3Dialog = false; // Close the dialog or perform any action
@@ -354,7 +365,6 @@ export class AddProductMasterComponent implements OnInit {
             rm_component: res.data.rm_component,
           });
           this.checkingMaterialNumber = false;
-          console.log(this.productMasterForm.value)
           this.machineChanged({value: res.data.machine});
         }, 
         error: (err: any)=>{
@@ -394,11 +404,9 @@ export class AddProductMasterComponent implements OnInit {
     this.selectedProcess = { label, value };
     // this.material_no_for_process = this.productMasterForm.value.material_number.trim()?this.productMasterForm.value.material_number.trim()+value:this.productMasterForm.value.material_number.trim();
     this.material_no_for_process = this.productMasterForm.value.material_number.trim()+value;
-    // console.log('Selected Process:', this.selectedProcess);
   }
 
   machineChanged(event: any){
-    console.log(event)
     this.loadingMachineModules = true;
 
     this.adminApiService.getMachineModules(event.value).subscribe({
@@ -408,13 +416,11 @@ export class AddProductMasterComponent implements OnInit {
       },
       error: (err) => {
         this.loadingMachineModules = false;
-        console.error(err);
       }
     });
   }
 
   machineModuleChanged(event: any){
-    // console.log(event);
     this.responsible_person = this.machineModuleOptions.filter(val => val.module_id == event.value)[0].responsible;
   }
 

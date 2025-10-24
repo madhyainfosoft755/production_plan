@@ -17,9 +17,10 @@
                             optionValue="id"
                             filter="true"
                             filterBy="name"
+                            (onChange)="loadMachines()"
                         ></p-dropdown>
                         <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem mr-2" />
-                        <p-button type="submit" label="Go" [disabled]="!module_id || !current" (onClick)="loadMachines()" [loading]="loadingMachines" />
+                        <!-- <p-button type="submit" label="Go" [disabled]="!module_id || !current" (onClick)="loadMachines()" [loading]="loadingMachines" /> -->
                     </div>
                     <span class="p-buttonset">
                         <p-button (onClick)="getCurrentData()" label="Current" [disabled]="current" />
@@ -27,6 +28,13 @@
                     </span>
 
                 </div>
+        </div>
+        <div class="col-12" *ngIf="messages && messages.length">
+            <p-messages 
+                [(value)]="messages" 
+                [enableService]="false" 
+                [closable]="true"
+                styleClass="mt-2" />
         </div>
         <div class="col-12" *ngIf="current">
             <form [formGroup]="dailyUpdateForm">
@@ -40,7 +48,7 @@
                         <div class="field col-12 sm:col-3 mb-0">
                             <label for="finish_wt">Shift <span class="text-red-500">*</span></label>
                             <!-- <input id="shift" type="text" pInputText [disabled]="true" /> -->
-                            <div class="flex align-items-center">
+                            <div class="">
                                 <p-dropdown
                                     id="shift"
                                     class="flex-grow-1 w-full"
@@ -76,7 +84,7 @@
                     </div>
                     <div class="col-12" formArrayName="machinePartNumberInfo" > <!-- *ngIf="machinePartNumberInfo  && dailyUpdateForm.get('machinePartNumberInfo')?.length" -->
                         <p-table #dailyUpdateTable [loading]="loadingMachines"
-                            [globalFilterFields]="['machine_name', 'materialNumber', 'orderQuantity_GMEIN']"
+                            [globalFilterFields]="['machine_name', 'materialNumber', 'materialDescription', 'orderQuantity_GMEIN']"
                             [value]="machinePartNumberInfo" 
                             [tableStyle]="{ 'min-width': '50rem' }" 
                                 >
@@ -84,6 +92,7 @@
                                 <tr>
                                     <th>Machine</th>
                                     <th>Material Number</th>
+                                    <th>Material Description</th>
                                     <th>Total Qty.</th>
                                     <th>Forged So Far</th>
                                     <th>Pending Qty.</th>
@@ -94,6 +103,7 @@
                                         <p-columnFilter 
                                             type="text" 
                                             field="machine_name" 
+                                            matchMode="contains"
                                             placeholder="Search by machine" 
                                             ariaLabel="Filter Machine Name" />
                                     </th>
@@ -101,8 +111,17 @@
                                         <p-columnFilter 
                                             type="text" 
                                             field="materialNumber" 
+                                            matchMode="contains"
                                             placeholder="Search by part number" 
                                             ariaLabel="Filter Material Number" />
+                                    </th>
+                                    <th>
+                                        <p-columnFilter 
+                                            type="text" 
+                                            field="materialDescription" 
+                                            matchMode="contains"
+                                            placeholder="Search by Description" 
+                                            ariaLabel="Filter Material Description" />
                                     </th>
                                     <th></th>
                                     <th></th>
@@ -114,17 +133,29 @@
                                 <tr [formGroupName]="rowIndex" [ngClass]="{'has-qty': row.production_qty != 0}">
                                     <td>{{ row.machine_name }}</td>
                                     <td>{{ row.materialNumber }}</td>
+                                    <td>{{ row.materialDescription }}</td>
                                     <td>{{ row.to_forge_qty }}</td>
                                     <td>{{ row.forged_so_far }}</td>
                                     <td>{{ row.pending_qty }}</td>
                                     <td>
-                                        <!-- <input type="text" pInputText /> -->
-                                        <input (input)="makeInt('input_qty')" (keypress)="onlyAllowNumbers($event)" type="text" pInputText formControlName="input_qty" />
-                                        <!-- <div class="p-error" *ngIf="dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.errors?.['required'] && dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.touched">
-                                            Quantity is required
-                                        </div> -->
-                                        <div class="p-error" *ngIf="dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.errors?.['maxExceeded'] && dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.touched">
-                                            Cannot exceed pending qty ({{ dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.errors?.['maxExceeded'].max }})
+                                        <div class="flex align-items-center">
+                                            <div>
+                                                <!-- <input type="text" pInputText /> -->
+                                                <input (input)="makeInt('input_qty')" (keypress)="onlyAllowNumbers($event)" type="text" pInputText formControlName="input_qty" />
+                                                <!-- <div class="p-error" *ngIf="dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.errors?.['required'] && dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.touched">
+                                                    Quantity is required
+                                                </div> -->
+                                                <div class="p-error" *ngIf="dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('remarks')?.hasError('required')">
+                                                    <small>Cannot exceed pending qty ({{ dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('input_qty')?.errors?.['maxExceeded'].max }})</small>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <input type="text" pInputText formControlName="remarks" placeholder="Remarks" />
+    
+                                                <div class="p-error" *ngIf="dailyUpdateForm.get('machinePartNumberInfo')['controls'][rowIndex].get('remarks')?.hasError('required')">
+                                                    <small>Remarks are required if input quantity exceeds pending quantity.</small>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>

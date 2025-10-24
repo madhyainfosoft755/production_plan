@@ -5,7 +5,9 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { Message } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessagesModule } from 'primeng/messages';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
@@ -14,7 +16,7 @@ import { AdminApiService } from 'src/app/services/adminapi.service';
 @Component({
   selector: 'app-add-weekly-planning',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogModule, ReactiveFormsModule, DropdownModule, ProgressSpinnerModule, ButtonModule, InputTextModule, BreadcrumbModule, TableModule, PaginatorModule],
+  imports: [CommonModule, FormsModule, DialogModule, MessagesModule, ReactiveFormsModule, DropdownModule, ProgressSpinnerModule, ButtonModule, InputTextModule, BreadcrumbModule, TableModule, PaginatorModule],
   templateUrl: './add-weekly-planning.component.html',
   styleUrl: './add-weekly-planning.component.scss'
 })
@@ -36,6 +38,7 @@ export class AddWeeklyPlanningComponent implements OnInit {
     loadingSubmit = false;
     selectedRow: any;
     today = new Date();
+    messages: Message[] | undefined;
 
     constructor(
         private adminApiService: AdminApiService,
@@ -123,7 +126,9 @@ export class AddWeeklyPlanningComponent implements OnInit {
             }, 
             error: (err: any)=>{
                 this.loadingWPD = false;
-
+                this.messages = [
+                    { severity: 'error', detail: err?.error?.message ?? 'Something went wrong.' }
+                ];
             }
         });
     }
@@ -148,7 +153,6 @@ export class AddWeeklyPlanningComponent implements OnInit {
                     items: savedModules
                 },
             ];
-            // console.log(this.moduleOptions)
             this.loadingModules = false;
             }, 
             error: (err: any)=>{
@@ -167,7 +171,6 @@ export class AddWeeklyPlanningComponent implements OnInit {
         } else {
             this.module_id = event.value;
             const savedModules = this.moduleOptions.filter(val => val.value == 'saved')[0].items.map(val=>val.id);
-            // console.log(savedModules)
             this.savedModules = savedModules.includes(this.module_id);
             this.loadWeeklyPlanningData();
         }
@@ -183,9 +186,15 @@ export class AddWeeklyPlanningComponent implements OnInit {
                 this.savedModules = true;
                 this.loadingMarkComplete = false;
                 this.loadModuleOptions();
+                this.messages = [
+                    { severity: 'success', detail: res?.message ?? 'Added Successfully.' }
+                ];
             }, 
             error: (err: any)=>{
                 this.loadingMarkComplete = false;
+                this.messages = [
+                    { severity: 'error', detail: err?.error?.message ?? 'Something went wrong.' }
+                ];
             }
         });
     }
@@ -213,11 +222,7 @@ export class AddWeeklyPlanningComponent implements OnInit {
             this.loadingSubmit = true;
             this.adminApiService.updateWeeklyReportFields({module_id: this.module_id, machine_id: this.selectedRow.machine_id, ...this.updateWeeklyReportForm.value}).subscribe({
                 next: (res: any)=>{
-                    // console.log(this.weeklyPlanningDataBT);
-                    // console.log( this.selectedRow);
                     const original = structuredClone(this.weeklyPlanningDataBT);
-                    // console.log(original.filter(val => val.machine_id == this.selectedRow.machine_id));
-                    // console.log(this.updateWeeklyReportForm.value);
                     const newOriginal = original.map(val => 
                         val.machine_id == this.selectedRow.machine_id ? 
                         { 
@@ -227,15 +232,19 @@ export class AddWeeklyPlanningComponent implements OnInit {
                             gap: Number(this.updateWeeklyReportForm.value.gap) 
                         } : val);
                     this.weeklyPlanningDataBT = structuredClone(newOriginal);
-                    // console.log(newOriginal)
-                    // console.log(this.weeklyPlanningDataBT)
                     this.addTotalRow();
                     this.updateWeeklyReportForm.reset();
                     this.visibleEditDialog = false;
                     this.loadingSubmit = false;
+                    this.messages = [
+                        { severity: 'success', detail: res?.message ?? 'Added Successfully.' }
+                    ];
                 }, 
                 error: (err: any)=>{
                     this.loadingSubmit = false;
+                    this.messages = [
+                        { severity: 'error', detail: err?.error?.message ?? 'Something went wrong.' }
+                    ];
                 }
             });
         }
@@ -244,11 +253,9 @@ export class AddWeeklyPlanningComponent implements OnInit {
     checkNumberInput(controlName: string) {
         const control = this.updateWeeklyReportForm.get(controlName);
         const value = control?.value;
-        // console.log(value)
         if (value !== null && value !== undefined) {
             const numericValue = value.toString().replace(/[^0-9]/g, '');
             control?.setValue(numericValue, { emitEvent: false });
-            // console.log(control.value)
         }
     }
 }

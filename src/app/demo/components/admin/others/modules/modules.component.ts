@@ -10,6 +10,7 @@ export class ModulesComponent implements OnInit {
   modulesData!: any;
   loadingModules: boolean = false;
   visibleAddModuleDialog: boolean = false;
+  selectedModule: any = null;
 
   constructor(
     private adminApiService: AdminApiService
@@ -33,11 +34,16 @@ export class ModulesComponent implements OnInit {
   }
 
   showAddModuleDialog(){
+    this.selectedModule = null;
+    this.visibleAddModuleDialog = true;
+  }
+  
+  editModuleDialog(selectedModule: any){
+    this.selectedModule = selectedModule;
     this.visibleAddModuleDialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_modules_data();
       this.visibleAddModuleDialog = false; // Close the dialog or perform any action

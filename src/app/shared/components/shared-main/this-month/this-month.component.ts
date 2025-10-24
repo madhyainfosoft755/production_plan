@@ -283,7 +283,6 @@ export class ThisMonthComponent implements OnInit {
   }
 
   onSort(event: any){
-    console.log(event)
   }
 
   load_STProcess(){
@@ -300,13 +299,11 @@ export class ThisMonthComponent implements OnInit {
   }
 
   sortingField(field: string){
-    console.log(field);
     this.sortBy = {field: field, value:1};
     this.cdr.detectChanges();
     this.loadData(this.page);
   }
   rSortingField(field: string){
-    console.log(field);
     this.sortBy = {field: field, value:-1};
     this.cdr.detectChanges();
     this.loadData(this.page);
@@ -316,14 +313,12 @@ export class ThisMonthComponent implements OnInit {
       return this._selectedColumns;
   }
   handleSort(event: any) {
-    console.log('Sort event:', event);
 
     // Optional: "terminate" by not processing data or triggering lazy load
     // If you're using [lazy]="true", don't call your backend here
   }
 
   handleFilter(event: any) {
-    console.log('Filter event:', event);
 
     // Optional: terminate or handle filtering yourself
   }
@@ -335,13 +330,10 @@ export class ThisMonthComponent implements OnInit {
         allFilters[key]={matchMode: 'contains', value: null} ;
       }
       this.filterForObj = allFilters;
-      console.log(allFilters);
     }
   }
 
   onFilterClick(index: number, event: Event, field: string){
-    console.log(index)
-    console.log(event)
     this.currentPanelId = index;
     this.selectedFilters = [];
     this.currentFilterField = field;
@@ -350,7 +342,6 @@ export class ThisMonthComponent implements OnInit {
     if (panel) {
       panel.toggle(event);
     } else {
-      console.warn('Overlay panel not found at index', index);
     }
     for(const key in this.sapFilters) {
       if(key === field){
@@ -361,9 +352,6 @@ export class ThisMonthComponent implements OnInit {
   }
 
   onFilterApply(index: number|null=null, event: Event|null=null){
-    console.log(index)
-    console.log(event)
-    console.log(this.currentPanelId);
     let panel: any;
     if(index){
       panel = this.overlayPanels.toArray()[index];
@@ -375,24 +363,16 @@ export class ThisMonthComponent implements OnInit {
       panel.toggle(event);
       this.currentPanelId = null;
     } else {
-      console.warn('Overlay panel not found at index', index);
     }
     if (this.filterForObj && this.currentFilterField in this.filterForObj) {
       this.filterForObj[this.currentFilterField].value = this.selectedFilters;
       this.loadData(this.page);
 
     } else {
-      console.warn(`this.currentFilterField "${this.currentFilterField}" not found in filterForObj`);
     }
-    console.log(this.filterForObj);
   }
 
   onFilterClear(index: number, event: Event, field: string){
-    console.log(index)
-    console.log(event)
-    console.log(this.currentPanelId);
-    console.log(this.filterForObj);
-    console.log(field);
     // let panel: any;
     // if(index){
     //   panel = this.overlayPanels.toArray()[index];
@@ -404,23 +384,17 @@ export class ThisMonthComponent implements OnInit {
     //   panel.toggle(event);
     //   this.currentPanelId = null;
     // } else {
-    //   console.warn('Overlay panel not found at index', index);
     // }
     if (this.filterForObj && field in this.filterForObj) {
       this.filterForObj[field].value = null;
-      console.log(this.filterForObj)
       this.selectedFilters = [];
       this.loadData(this.page);
 
     } else {
-      console.warn(`field "${field}" not found in filterForObj`);
     }
   }
 
   onFilterCancel(index: number, event: Event){
-    console.log(index)
-    console.log(event)
-    console.log(this.currentPanelId);
     let panel: any;
     if(index){
       panel = this.overlayPanels.toArray()[index];
@@ -432,12 +406,10 @@ export class ThisMonthComponent implements OnInit {
       panel.toggle(event);
       this.currentPanelId = null;
     } else {
-      console.warn('Overlay panel not found at index', index);
     }
     if (this.filterForObj && this.currentFilterField in this.filterForObj) {
       this.filterForObj[this.currentFilterField].value = null;
     } else {
-      console.warn(`this.currentFilterField "${this.currentFilterField}" not found in filterForObj`);
     }
   }
 
@@ -447,7 +419,6 @@ export class ThisMonthComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    console.log(event)
     this.page = Number(event.page)+1;
     this.loadData(this.page);
   }
@@ -461,7 +432,6 @@ export class ThisMonthComponent implements OnInit {
         this.loadingSAPFilters = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingSAPFilters = false;
       }
     });
@@ -484,7 +454,6 @@ export class ThisMonthComponent implements OnInit {
         this.data = res.data;
         this.pagination = res.pagination;
         // this.data = [this.data[0], this.data[1], this.data[2], this.data[3], this.data[4], this.data[5], this.data[6], this.data[7], this.data[8], this.data[9]];
-        console.log(this.data);
         const fileName = 'MyExcelFile';
         // this.excelService.generateExcelFile(fileName, this.data);
         this.loading_data = false;
@@ -494,7 +463,6 @@ export class ThisMonthComponent implements OnInit {
         // this.generatePivotTable();
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loading_data = false;
       }
     });
@@ -506,7 +474,6 @@ export class ThisMonthComponent implements OnInit {
   }
 
   onChildNotify(val: any): void {
-    console.log('Notification from child:', val);
     if(val){
       // this.updateDataFromChild(this.unbrakoPPCommonService.SAPMainFileMapping(val))
       this.visibleAdminUpdateDialog = false; // Close the dialog or perform any action
@@ -569,7 +536,6 @@ export class ThisMonthComponent implements OnInit {
   }
 
   showUpdateForm(){
-    console.log(this.selectedRecords.length)
     if(this.selectedRecords.length && ((this.isRmUser && this.today.getDay() !== 6) || this.isAdminUser)){
       this.visibleAdminUpdateDialog = true;
     }

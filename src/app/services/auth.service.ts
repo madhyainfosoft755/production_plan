@@ -81,7 +81,6 @@ export class AuthService {
         this.router.navigate(['/auth/login']);
       },
       error: (err) => {
-        console.error('Error logging out:', err);
         localStorage.removeItem('UNBRAKO_PPC_USER');
         this.accessToken = '';
         this.currentUser.next(null);
@@ -153,13 +152,10 @@ export class AuthService {
             throw new Error('Corrupted user data');
           }
         } catch (parseError) {
-          console.error('Invalid user data in localStorage:', parseError);
           this._forceLogout();
           resolve(false);
           return;
         }
-        // console.log('got user')
-        // console.log(userDataJSON)
         this.accessToken = userData._token;
         const loadedUser = new User({
           id: userData.id, 
@@ -176,7 +172,6 @@ export class AuthService {
           this.http.get(`${this.baseUrl}get-permissions/${loadedUser.id}`).subscribe({
             next: (res: any) => {
               if (res.permissions === undefined) {
-                console.error('Invalid permissions response');
                 this._forceLogout();
                 this.isAuthenticating$.next(false);
                 resolve(false);
@@ -186,8 +181,7 @@ export class AuthService {
               this.isAuthenticating$.next(false);
               resolve(true);
             },
-            error: (err) => { console.error('Error logging out:', err); 
-              console.error('Permission fetch failed:', err);
+            error: (err) => {
               this._forceLogout();
               this.isAuthenticating$.next(false);
               resolve(false);
@@ -199,7 +193,6 @@ export class AuthService {
         }
       }
         catch (error) {
-        console.error('Unexpected autoLogin error:', error);
         this._forceLogout();
         resolve(false);
       }

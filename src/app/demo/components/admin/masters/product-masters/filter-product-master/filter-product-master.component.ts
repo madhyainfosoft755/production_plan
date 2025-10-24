@@ -67,19 +67,16 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
     if (changes['visibleFilterDrawer']) {
       const current = changes['visibleFilterDrawer'].currentValue;
       const previous = changes['visibleFilterDrawer'].previousValue;
-      console.log('visibleFilterDrawer changed:', previous, '→', current);
       this.visibleFilterDrawer = current;
     }
     if(changes['enableAdvSearch']){
       const current = changes['enableAdvSearch'].currentValue;
       const previous = changes['enableAdvSearch'].previousValue;
-      console.log('enableAdvSearch changed:', previous, '→', current);
       this.enableAdvSearch = current;
     }
     if(changes['loadingAdvanceFilter']){
       const current = changes['loadingAdvanceFilter'].currentValue;
       const previous = changes['loadingAdvanceFilter'].previousValue;
-      console.log('loadingAdvanceFilter changed:', previous, '→', current);
       this.loadingAdvanceFilter = current;
     }
   }
@@ -138,14 +135,10 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
         }
 
         // Handle other API responses
-        // console.log('Data1:', res.data1);
-        // console.log('Data2:', res.data2);
-        // console.log('Data3:', res.data3);
 
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading data:', err);
         this.loading = false;
       }
     });
@@ -254,7 +247,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
       },
       error: (err) => {
         this.loadingMachines = false;
-        console.error(err);
       }
     });
   }
@@ -276,7 +268,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   }
 
   onFinishNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_finish_data();
       this.visibleAddFinishDialog = false; // Close the dialog or perform any action
@@ -284,7 +275,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   }
 
   onSegmentNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_segment_data();
       this.visibleAddSegmentDialog = false; // Close the dialog or perform any action
@@ -292,7 +282,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   }
 
   onGroupNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_group_data();
       this.visibleAddGroupDialog = false; // Close the dialog or perform any action
@@ -300,7 +289,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   }
 
   onSeg2Notify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_seg2_data();
       this.visibleAddSeg2Dialog = false; // Close the dialog or perform any action
@@ -308,7 +296,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   }
 
   onSeg3Notify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_seg3_data();
       this.visibleAddSeg3Dialog = false; // Close the dialog or perform any action
@@ -323,11 +310,9 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
     this.selectedProcess = { label, value };
     // this.material_no_for_process = this.productMasterForm.value.material_number.trim()?this.productMasterForm.value.material_number.trim()+value:this.productMasterForm.value.material_number.trim();
     this.material_no_for_process = this.productMasterForm.value.material_number.trim()+value;
-    // console.log('Selected Process:', this.selectedProcess);
   }
 
   machineChanged(event: any){
-    console.log(event)
     this.loadingMachineModules = true;
 
     this.adminApiService.getMachineModules(event.value).subscribe({
@@ -337,13 +322,11 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
       },
       error: (err) => {
         this.loadingMachineModules = false;
-        console.error(err);
       }
     });
   }
 
   machineModuleChanged(event: any){
-    // console.log(event);
     this.responsible_person = this.machineModuleOptions.filter(val => val.module_id == event.value)[0].responsible;
   }
 

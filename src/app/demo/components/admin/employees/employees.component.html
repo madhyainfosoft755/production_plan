@@ -18,16 +18,20 @@
                         <th>Employee Id</th>
                         <th>Role</th>
                         <th>Added At</th>
+                        <th>Action</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-employee let-rowIndex="rowIndex">
-                    <tr (click)="editEmployee(employee)">
+                    <tr>
                         <td>{{ rowIndex+1 }}</td>
                         <td>{{ employee.salutation }}. {{ employee.name }}</td>
                         <td>{{ employee.email_add }}</td>
                         <td>{{ employee.emp_id }}</td>
                         <td>{{ employee.role }}</td>
                         <td>{{ employee.created_at.date | date:'shortDate' }}</td>
+                        <td>
+                            <p-button icon="pi pi-user-edit" size="small" (click)="editEmployee(employee)" />
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>

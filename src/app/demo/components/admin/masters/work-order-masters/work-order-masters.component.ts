@@ -51,6 +51,7 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
   };
   workOrderMasterFileStatus: any = null;
   visibleAddPartsDialog = false;
+  selectedWO: any = null;
 
 
   constructor(
@@ -93,7 +94,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
         this.loadingWOMFileStatus = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingWOMFileStatus = false;
       }
     });
@@ -105,7 +105,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
       next: (response)=>{
         const blob = response.body!;
         const contentDisposition = response.headers.get('Content-Disposition');
-        console.log(contentDisposition)
         let filename = 'FailedWorkOrderMasterRecords.xlsx'; // default fallback
         if (contentDisposition) {
           const matches = /filename="([^"]+)"/.exec(contentDisposition);
@@ -125,7 +124,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
         this.loadingWOMFailedRecords = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingWOMFailedRecords = false;
       }
     });
@@ -143,7 +141,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
         this.loadingValidateWOMFile = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingValidateWOMFile = false;
       }
     });
@@ -153,10 +150,8 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     this.adminApiService.get_all_segments().subscribe({
       next: (res: any)=>{
         this.segments = res.data;
-        console.log(this.segments)
       }, 
       error: (err: any)=>{
-        console.log(err);
       }
     });
   }
@@ -178,7 +173,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
         this.loadingAdvanceFilter = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingWOMD = false;
         this.loadingAdvanceFilter = false;
       }
@@ -186,11 +180,16 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
   }
 
   showAddWOMasterDialog(){
+    this.selectedWO = null;
+    this.visibleAddWOMasterDialog = true;
+  }
+
+  editWOMasterDialog(wo: any){
+    this.selectedWO = wo;
     this.visibleAddWOMasterDialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.loadData();
       this.visibleAddWOMasterDialog = false; // Close the dialog or perform any action
@@ -198,7 +197,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
   }
 
   onPartsChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.loadData();
       this.visibleAddPartsDialog = false; // Close the dialog or perform any action
@@ -211,7 +209,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
       next: (response)=>{
         const blob = response.body!;
         const contentDisposition = response.headers.get('Content-Disposition');
-        console.log(contentDisposition)
         let filename = 'WorkOrderMasterTemplate.xlsx'; // default fallback
         if (contentDisposition) {
           const matches = /filename="([^"]+)"/.exec(contentDisposition);
@@ -229,7 +226,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
         this.loadingDWOMTemplate = false;
       }, 
       error: (err: any)=>{
-        console.log(err);
         this.loadingDWOMTemplate = false;
       }
     });
@@ -256,7 +252,6 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
 
 
   onPageChange(event: PageEvent) {
-    console.log(event)
     this.loadData(Number(event.page)+1);
   }
 

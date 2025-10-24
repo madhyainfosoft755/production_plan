@@ -1,7 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { debounceTime, Subject } from 'rxjs';
+import { CommonUtilsService } from 'src/app/services/common-utils.service';
 
 @Component({
   selector: 'app-add-work-order',
@@ -20,6 +21,7 @@ export class AddWorkOrderComponent implements OnInit {
   loadingCustomers: boolean = false;
   suggestions: any[] | undefined;
   private inputSubject = new Subject<string>();
+  @Input() selectedWO: any = null;
 
   // Dropdown options for Plant and Customer
   plantOptions:any;
@@ -28,7 +30,7 @@ export class AddWorkOrderComponent implements OnInit {
   marketingPersonOptions: any;
   responsiblePersonOptions: any;
 
-  constructor(private fb: FormBuilder, private adminApiService: AdminApiService) {
+  constructor(private fb: FormBuilder, private adminApiService: AdminApiService, private commonUtilsService: CommonUtilsService) {
     this.workOrderForm = this.fb.group({
       plant: ['MP01', Validators.required],
       customer: ['', Validators.required],
@@ -53,6 +55,22 @@ export class AddWorkOrderComponent implements OnInit {
     // this.inputSubject.pipe(debounceTime(2000)).subscribe((value) => {
     //   this.fetchSuggestions(value);
     // });
+    if(this.selectedWO){
+      this.workOrderForm.patchValue({
+        plant: this.selectedWO.plant ,
+        customer: this.selectedWO.customer ,
+        segment: this.selectedWO.segment ,
+        marketing_person_name: this.selectedWO.marketing_person_name1 ,
+        responsible_person_name: this.selectedWO.responsible_person_name1 ,
+        reciving_date: this.selectedWO.reciving_date ? new Date(this.selectedWO.reciving_date) : null ,
+        delivery_date: this.selectedWO.delivery_date ? new Date(this.selectedWO.delivery_date) : null ,
+        wo_add_date: this.selectedWO.wo_add_date ? new Date(this.selectedWO.wo_add_date) : null ,
+        work_order_db: this.selectedWO.work_order_db ,
+        quality_inspection_required: Number(this.selectedWO.quality_inspection_required ?? 0) ,
+        no_of_items: this.selectedWO.no_of_items ,
+        weight: this.selectedWO.weight ,
+      });
+    }
     this.load_segments();
     this.load_responsible();
     this.load_marketing();
@@ -141,25 +159,46 @@ export class AddWorkOrderComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.workOrderForm.value);
     if (this.workOrderForm.invalid) {
       this.workOrderForm.markAllAsTouched();
       return;
     }
 
     this.loading = true;
-    this.adminApiService.add_new_work_order(this.workOrderForm.value).subscribe({
-      next: (res: any)=>{
-        // this.segmentOptions = res.data;
-        // Emit an event with a message or any data
-        this.notifyParent.emit(true);
-        this.loading = false;
-      }, 
-      error: (err: any)=>{
-        this.loading = false;
+    const data: any = {
+      ...this.workOrderForm.value,
+      reciving_date: this.commonUtilsService.getFormatedDate(this.workOrderForm.value.reciving_date),
+      delivery_date: this.commonUtilsService.getFormatedDate(this.workOrderForm.value.delivery_date),
+      wo_add_date: this.commonUtilsService.getFormatedDate(this.workOrderForm.value.wo_add_date),
+    }
+    if(this.selectedWO){
+      this.adminApiService.update_work_order(this.selectedWO.id, data).subscribe({
+        next: (res: any)=>{
+          // this.segmentOptions = res.data;
+          // Emit an event with a message or any data
+          this.notifyParent.emit(true);
+          this.loading = false;
+        }, 
+        error: (err: any)=>{
+          this.loading = false;
+  
+        }
+      });
+    } else {
 
-      }
-    });
+      this.adminApiService.add_new_work_order(data).subscribe({
+        next: (res: any)=>{
+          // this.segmentOptions = res.data;
+          // Emit an event with a message or any data
+          this.notifyParent.emit(true);
+          this.loading = false;
+        }, 
+        error: (err: any)=>{
+          this.loading = false;
+  
+        }
+      });
+    }
   }
 
   // onInput(value: string): void {
@@ -176,7 +215,6 @@ export class AddWorkOrderComponent implements OnInit {
   //   this.load_customers(query);
   //   // const mockApiData = customers;
   //   // this.suggestions = customers;
-  //   console.log(this.suggestions);
   //   // this.suggestions = mockApiData.filter((name) =>
   //   //   name.toLowerCase().includes(query.toLowerCase())
   //   // );

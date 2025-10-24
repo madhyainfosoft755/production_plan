@@ -31,24 +31,15 @@ export class PermissionGuard implements CanActivate {
             
                 // Role check
                 const requiredRole: string[] = route.data['role'];
-                console.log(route.data);
-                console.log(route.data['role']);
-                console.log(user.role);
 
                 let returnValRole = true;
-                // console.lo
                 if (requiredRole && !requiredRole.includes(user.role)) {
                 //   this.router.navigate(['/unauthorized']);
                   returnValRole= false;
                 }
-                console.log('role pass');
-
-                console.log(route.data['permission']);
-                console.log(user?.permissions);
                 // Permission check
                 let returnValRolePer = true;
                 const requiredPermission = route.data['permission'];
-                console.log(requiredPermission && !user?.permissions?.includes(requiredPermission));
                 if (requiredPermission && !user?.permissions?.includes(requiredPermission)) {
                 //   this.router.navigate(['/unauthorized']);
                   returnValRolePer= false;

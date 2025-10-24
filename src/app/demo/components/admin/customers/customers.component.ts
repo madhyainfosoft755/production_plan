@@ -41,7 +41,6 @@ export class CustomersComponent implements OnInit {
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_customers();
       this.visibleAddCustomerDialog = false; // Close the dialog or perform any action

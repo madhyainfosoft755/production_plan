@@ -11,8 +11,8 @@
           <div class="field col-12 sm:col-4">
             <label for="material_number">Material Number <span class="text-red-500">*</span></label>
             <p-inputGroup>
-              <input *ngIf="loading" id="material_number" (input)="onInput($event.target.value)" type="text" pInputText [disabled]="true" placeholder="Enter Material Number" />
-              <input *ngIf="!loading" id="material_number" (input)="onInput($event.target.value)" type="text" pInputText formControlName="material_number" placeholder="Enter Material Number" />
+              <input *ngIf="loading" id="material_number" type="text" pInputText [disabled]="true" placeholder="Enter Material Number" />
+              <input *ngIf="!loading" id="material_number" type="text" pInputText formControlName="material_number" placeholder="Enter Material Number" />
               <button type="button" pButton
                 [ngClass]="materialNumberInfo ? 'p-button-success' : 'p-button-danger'">
                 <i *ngIf="checkingMaterialNumber" class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
@@ -295,7 +295,7 @@
           <div class="col-offset-6"></div>
         </div>
     </p-fieldset>
-    <p-button type="submit" label="Submit" [disabled]="loading" />
+    <p-button type="submit" label="{{selectedProductNumber ? 'Edit' : 'Add'}}" [disabled]="loading" />
 </form>
 
 <p-dialog header="Add Finish" [modal]="true" [(visible)]="visibleAddFinishDialog" [style]="{ width: '25vw' }">

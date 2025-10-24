@@ -10,6 +10,7 @@ export class SurfaceTreatmentComponent implements OnInit {
   STPData!: any;
   loadingSurfaceTreatment: boolean = false;
   visibleAddSTPDialog: boolean = false;
+  selectedSTP: any = null;
 
   constructor(
     private adminApiService: AdminApiService
@@ -33,11 +34,16 @@ export class SurfaceTreatmentComponent implements OnInit {
   }
 
   showAddSTPDialog(){
+    this.selectedSTP = null;
+    this.visibleAddSTPDialog = true;
+  }
+  
+  editSTPDialog(selectedSTP: any){
+    this.selectedSTP = selectedSTP;
     this.visibleAddSTPDialog = true;
   }
 
   onChildNotify(message: boolean): void {
-    console.log('Notification from child:', message);
     if(message){
       this.load_STProcess();
       this.visibleAddSTPDialog = false; // Close the dialog or perform any action

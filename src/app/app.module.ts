@@ -13,15 +13,18 @@ import { IconService } from './demo/service/icon.service';
 import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { errorHandlingInterceptor } from './interceptors/error-handling.interceptor';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
-    imports: [CommonModule, AppRoutingModule, AppLayoutModule],
+    imports: [CommonModule, AppRoutingModule, AppLayoutModule, ToastModule],
     providers: [
-        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClient(withInterceptors([errorHandlingInterceptor, authInterceptor])),
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, DatePipe
+        PhotoService, ProductService, DatePipe, MessageService
     ],
     bootstrap: [AppComponent],
 })
