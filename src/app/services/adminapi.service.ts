@@ -376,8 +376,8 @@ export class AdminApiService {
     return this.http.get(`${this.baseUrl}submit-daily-data`);
   }
 
-  get_all_machines_with_part_numbers(module_id: string): Observable<any>{
-    return this.http.post(`${this.baseUrl}get-all-machines-with-part-numbers`, {module_id: module_id});
+  get_all_machines_with_part_numbers(data: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}get-all-machines-with-part-numbers`, data);
   }
 
   add_groups(data: any): Observable<any>{

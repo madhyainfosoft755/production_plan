@@ -12,6 +12,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { CommonUtilsService } from 'src/app/services/common-utils.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessagesModule } from 'primeng/messages';
@@ -39,6 +40,7 @@ export class DailyUpdateComponent implements OnInit {
     loadingSavedTempData = false;
     moduleShiftTempData: any;
     messages: Message[] | undefined;
+    filterForm!: FormGroup;
     shifts = [
         {
             id: "1",
@@ -75,8 +77,37 @@ export class DailyUpdateComponent implements OnInit {
             supervisor: new  FormControl('', Validators.required),
             machinePartNumberInfo: this.fb.array([]) 
         });
+        this.filterForm = this.fb.group({
+            machine_name: [''],
+            module_id: [''],
+            materialNumber: [''],
+            materialDescription: [''],
+            to_forge_qty: ['']
+        });
+        // set up watchers for each field (debounced API call)
+        this.setupFilters();
         this.dailyUpdateForm.markAsTouched();
     }
+
+    setupFilters() {
+        Object.keys(this.filterForm.controls).forEach((key) => {
+        this.filterForm.get(key)!.valueChanges.pipe(
+            debounceTime(2000),            // wait for 2s pause
+            distinctUntilChanged(),        // only when value actually changes
+            switchMap(value => {
+                this.loadingMachines = true;
+                return this.adminApiService.get_all_machines_with_part_numbers(this.filterForm.value)}) // API call
+        ).subscribe({
+            next: (res: any) => {
+                this.mapResponse(res);
+            },
+            error: (err: any)=>{
+                this.loadingMachines = false;
+            }
+        });
+        });
+    }
+  
     ngOnInit(): void {
         this.breadcrumbItems = [
             { label: 'Home', routerLink: '/' },
@@ -158,98 +189,103 @@ export class DailyUpdateComponent implements OnInit {
     }
 
     loadMachines(){
-        if(this.module_id){
+        // if(this.module_id){
             this.loadingMachines = true;
-            const partArray = this.dailyUpdateForm.get('machinePartNumberInfo') as FormArray;
-            while (partArray.length !== 0) {
-                partArray.removeAt(0);
-            }
-            this.adminApiService.get_all_machines_with_part_numbers(this.module_id).subscribe({
+            this.adminApiService.get_all_machines_with_part_numbers(this.filterForm.value).subscribe({
                 next: (res: any)=>{
-                // this.machinePartNumberInfo = this.commonUtilService.groupByMachine(res.data);
-                this.machinePartNumberInfo = res.data.map((row: any) => {
-                    
-                    const to_forge_qty: number = +row.to_forge_limit_inc ? (+row.to_forge_qty + (+row.to_forge_limit_inc)): +row.to_forge_qty;
-                    const final_pending_qty = to_forge_qty - row.forged_so_far;
-                    const pending_qty = final_pending_qty <= 0 ? 0 : final_pending_qty ;
-
-                    const group = this.fb.group({
-                        id: [row.id],
-                        machine_name: [row.machine_name],
-                        module_id: [row.module_id],
-                        machine_id: [row.machine_id],
-                        materialNumber: [row.materialNumber],
-                        to_forge_qty: [row.to_forge_qty],
-                        forged_so_far: [row.forged_so_far],
-                        pending_qty: [pending_qty],
-                        input_qty: [row.production_qty ?? '', [Validators.min(0)]],
-                        remarks: []
-                    });
-
-                    // Dynamically validate 'remarks' if 'maxExceeded' occurs
-                    const inputQtyControl = group.get('input_qty');
-                    const remarksControl = group.get('remarks');
-
-                    const validateControls = () => {
-                        const inputQty = +inputQtyControl?.value;
-                        const remarks = remarksControl?.value?.trim();
-
-                        if (inputQty > pending_qty) {
-                            // Exceeds pending qty
-                            inputQtyControl?.setErrors({ ...(inputQtyControl.errors || {}), maxExceeded: pending_qty });
-                            inputQtyControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                            if (!remarks) {
-                                remarksControl?.setValidators([Validators.required]);
-                                remarksControl?.setErrors({ ...(remarksControl.errors || {}), required: true });
-                            } else {
-                                // Remarks present — remove its error if exists
-                                remarksControl?.clearValidators();
-                                remarksControl?.setErrors(null);
-                            }
-                        } else {
-                            // Within limit — remove errors
-                            inputQtyControl?.setErrors(null);
-                            remarksControl?.clearValidators();
-                            remarksControl?.setErrors(null);
-                        }
-
-                        inputQtyControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                        remarksControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    };
-
-                    // inputQtyControl?.valueChanges.subscribe(value => {
-                    //     const errors = inputQtyControl.errors;
-                    //     const intValue = +value;
-                    //     if (intValue > +pending_qty) {
-                    //         // Make remarks required
-                    //         remarksControl?.setValidators([Validators.required]);
-                    //     } else {
-                    //         // Remove required validator if not needed
-                    //         remarksControl?.clearValidators();
-                    //     }
-
-                    //     remarksControl?.updateValueAndValidity();
-                    // });
-
-                    // Listen to changes
-                    inputQtyControl?.valueChanges.subscribe(() => validateControls());
-                    remarksControl?.valueChanges.subscribe(() => validateControls());
-
-                    partArray.push(group);
-                    
-                    return {
-                        ...row,
-                        pending_qty: pending_qty,
-                    }
-                });
-                this.loadingMachines = false;
+                    this.mapResponse(res);
                 }, 
                 error: (err: any)=>{
-                this.loadingMachines = false;
-    
+                    this.loadingMachines = false;
                 }
             });
-        } 
+        // } 
+    }
+
+    mapResponse(res: any){
+        const partArray = this.dailyUpdateForm.get('machinePartNumberInfo') as FormArray;
+        while (partArray.length !== 0) {
+            partArray.removeAt(0);
+        }
+        // this.machinePartNumberInfo = this.commonUtilService.groupByMachine(res.data);
+        this.machinePartNumberInfo = res.data.map((row: any) => {
+            
+            const to_forge_qty: number = +row.to_forge_limit_inc ? (+row.to_forge_qty + (+row.to_forge_limit_inc)): +row.to_forge_qty;
+            const final_pending_qty = to_forge_qty - row.forged_so_far;
+            const pending_qty = final_pending_qty <= 0 ? 0 : final_pending_qty ;
+
+            const group = this.fb.group({
+                id: [row.id],
+                machine_name: [row.machine_name],
+                module_name: [row.module_name],
+                module_id: [row.module_id],
+                machine_id: [row.machine_id],
+                materialNumber: [row.materialNumber],
+                to_forge_qty: [to_forge_qty],
+                forged_so_far: [row.forged_so_far],
+                pending_qty: [pending_qty],
+                input_qty: [row.production_qty ?? '', [Validators.min(0)]],
+                remarks: [row.remarks]
+            });
+
+            // Dynamically validate 'remarks' if 'maxExceeded' occurs
+            const inputQtyControl = group.get('input_qty');
+            const remarksControl = group.get('remarks');
+
+            const validateControls = () => {
+                const inputQty = +inputQtyControl?.value;
+                const remarks = remarksControl?.value?.trim();
+
+                if (inputQty > pending_qty) {
+                    // Exceeds pending qty
+                    inputQtyControl?.setErrors({ ...(inputQtyControl.errors || {}), maxExceeded: pending_qty });
+                    inputQtyControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                    if (!remarks) {
+                        remarksControl?.setValidators([Validators.required]);
+                        remarksControl?.setErrors({ ...(remarksControl.errors || {}), required: true });
+                    } else {
+                        // Remarks present — remove its error if exists
+                        remarksControl?.clearValidators();
+                        remarksControl?.setErrors(null);
+                    }
+                } else {
+                    // Within limit — remove errors
+                    inputQtyControl?.setErrors(null);
+                    remarksControl?.clearValidators();
+                    remarksControl?.setErrors(null);
+                }
+
+                inputQtyControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                remarksControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+            };
+
+            // inputQtyControl?.valueChanges.subscribe(value => {
+            //     const errors = inputQtyControl.errors;
+            //     const intValue = +value;
+            //     if (intValue > +pending_qty) {
+            //         // Make remarks required
+            //         remarksControl?.setValidators([Validators.required]);
+            //     } else {
+            //         // Remove required validator if not needed
+            //         remarksControl?.clearValidators();
+            //     }
+
+            //     remarksControl?.updateValueAndValidity();
+            // });
+
+            // Listen to changes
+            inputQtyControl?.valueChanges.subscribe(() => validateControls());
+            remarksControl?.valueChanges.subscribe(() => validateControls());
+
+            partArray.push(group);
+            
+            return {
+                ...row,
+                pending_qty: pending_qty,
+                to_forge_qty: to_forge_qty
+            }
+        });
+        this.loadingMachines = false;
     }
 
     maxQtyValidator(max: number) {

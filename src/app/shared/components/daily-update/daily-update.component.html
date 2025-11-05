@@ -3,10 +3,12 @@
     <div class="grid">
         <div class="col-12">
             <h3>Module Shift Output</h3>
-                <label for="module-id">Module <span class="text-red-500">*</span></label>
+                <label for="module-id">
+                    <!-- Module <span class="text-red-500">*</span> -->
+                </label>
                 <div class="flex justify-content-between">
                     <div>
-                        <p-dropdown
+                        <!-- <p-dropdown
                             id="module-id"
                             class="mr-2"
                             [options]="moduleOptions"
@@ -19,7 +21,7 @@
                             filterBy="name"
                             (onChange)="loadMachines()"
                         ></p-dropdown>
-                        <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem mr-2" />
+                        <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem mr-2" /> -->
                         <!-- <p-button type="submit" label="Go" [disabled]="!module_id || !current" (onClick)="loadMachines()" [loading]="loadingMachines" /> -->
                     </div>
                     <span class="p-buttonset">
@@ -91,6 +93,7 @@
                             <ng-template pTemplate="header">
                                 <tr>
                                     <th>Machine</th>
+                                    <th>Module</th>
                                     <th>Material Number</th>
                                     <th>Material Description</th>
                                     <th>Total Qty.</th>
@@ -98,32 +101,40 @@
                                     <th>Pending Qty.</th>
                                     <th>Production</th>
                                 </tr>
-                                <tr>
+                                <tr [formGroup]="filterForm">
                                     <th>
-                                        <p-columnFilter 
-                                            type="text" 
-                                            field="machine_name" 
-                                            matchMode="contains"
-                                            placeholder="Search by machine" 
-                                            ariaLabel="Filter Machine Name" />
+                                        <input pInputText placeholder="Search by machine"
+                                            formControlName="machine_name" />
                                     </th>
                                     <th>
-                                        <p-columnFilter 
-                                            type="text" 
-                                            field="materialNumber" 
-                                            matchMode="contains"
-                                            placeholder="Search by part number" 
-                                            ariaLabel="Filter Material Number" />
+                                        <div class="flex justify-content-between">
+                                            <p-dropdown
+                                                id="module-id2"
+                                                [options]="moduleOptions"
+                                                formControlName="module_id"
+                                                appendTo="body"
+                                                placeholder="Select Module"
+                                                optionLabel="label"
+                                                optionValue="id"
+                                                filter="true"
+                                                filterBy="name"
+                                            ></p-dropdown>
+                                            <p-progressSpinner *ngIf="loadingModules" styleClass="w-2rem h-2rem mr-2" />
+                                        </div>
                                     </th>
                                     <th>
-                                        <p-columnFilter 
-                                            type="text" 
-                                            field="materialDescription" 
-                                            matchMode="contains"
-                                            placeholder="Search by Description" 
-                                            ariaLabel="Filter Material Description" />
+                                        <input pInputText placeholder="Search by part number"
+                                            formControlName="materialNumber" />
                                     </th>
-                                    <th></th>
+                                    <th>
+                                        <input pInputText placeholder="Search by description"
+                                            formControlName="materialDescription" />
+                                    </th>
+                                    <th>
+                                        <input pInputText placeholder="Qty"
+                                        formControlName="to_forge_qty"
+                                        (keypress)="onlyAllowNumbers($event)" />
+                                    </th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -132,6 +143,7 @@
                             <ng-template pTemplate="body" let-row  let-rowIndex="rowIndex">
                                 <tr [formGroupName]="rowIndex" [ngClass]="{'has-qty': row.production_qty != 0}">
                                     <td>{{ row.machine_name }}</td>
+                                    <td>{{ row.module_name }}</td>
                                     <td>{{ row.materialNumber }}</td>
                                     <td>{{ row.materialDescription }}</td>
                                     <td>{{ row.to_forge_qty }}</td>
@@ -223,7 +235,7 @@
                         <td>{{ row.forged_so_far }}</td>
                         <td>{{ +row.to_forge_qty - +row.forged_so_far }}</td>
                         <td>
-                            {{ row.production_qty }}
+                            <span class="p-2">{{ row.production_qty }}</span> <span class="bg-blue-300 p-2">{{ row.remarks }}</span>
                         </td>
                     </tr>
                 </ng-template>

@@ -32,6 +32,7 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     return [start, end];
   })();
   dateTypes = [
+    { label: 'All', value: 'all' },
     { label: 'Receiving Date', value: 'reciving_date' },
     { label: 'Delivery Date', value: 'delivery_date' },
     { label: 'WO Adding Date', value: 'wo_add_date' }
@@ -66,7 +67,8 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
       { label: 'Home', routerLink: '/' },
       { label: 'Work Order Master' }
     ];
-    this.dateType = this.dateTypes[1].value; // Default to the first date type
+    this.dateType = this.dateTypes[0].value; // Default to the first date type
+    this.rangeDates = [null, null]; // Initialize rangeDates to nulls
     this.workOrderFilterForm = this.fb.group({
       work_order_db: ['', [Validators.maxLength(6)]],
       customer: ['', [Validators.maxLength(255)]],
@@ -97,6 +99,16 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
         this.loadingWOMFileStatus = false;
       }
     });
+  }
+
+  onDateTypeChange(event: any){
+    if(event && event.value === 'all'){
+      this.rangeDates = [null, null];
+    } else {
+      const start = new Date();                               // today
+      const end   = new Date(start.getTime() + 45 * 86400000); // 45 days later
+      this.rangeDates = [start, end];
+    }
   }
 
   loadWOMFailedRecords(){
@@ -161,7 +173,12 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     if(this.enableAdvSearch){
       this.loadingAdvanceFilter = true;
     }
-    const rangeDates = this.rangeDates ? this.rangeDates.map(date => this.datePipe.transform(date, 'dd-MM-yyyy')) : undefined;
+    let rangeDates: any;
+    if(this.rangeDates && this.rangeDates[0] && this.rangeDates[1]){
+      rangeDates = this.rangeDates ? this.rangeDates.map(date => this.datePipe.transform(date, 'dd-MM-yyyy')) : undefined;
+    } else {
+      rangeDates= null;
+    }
     this.adminApiService.get_work_order_master({...this.workOrderFilterForm.value, 'range_dates': rangeDates, 'date_type': this.dateType}, page).subscribe({
       next: (res: any)=>{
         this.workOrderMaster = res.data.map(value=>({...value, quality_inspection_required_status: value.quality_inspection_required==="1" ? "new" : "unqualified"}));
