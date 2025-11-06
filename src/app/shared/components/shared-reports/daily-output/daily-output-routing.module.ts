@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Report2Component } from './report2.component';
+import { DailyOutputComponent } from './daily-output.component';
 
 const routes: Routes = [
-  { path: '', component: Report2Component, data: { title: 'Report | Main File History' } }
+  { path: '', component: DailyOutputComponent, data: { title: 'Report | Daily Output' } }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class Report2RoutingModule { }
+export class DailyOutputRoutingModule { }

@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { Report3Component } from './report3.component';
 
 const routes: Routes = [
-  { path: '', component: Report3Component, data: { title: 'Main File History' } }
+  { path: '', component: Report3Component, data: { title: 'Report | Main File History' } }
 ];
 
 @NgModule({

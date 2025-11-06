@@ -1,0 +1,55 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+<div class="card">
+    <div class="grid">
+        <div class="col-12 flex justify-content-between align-items-center">
+            <!-- <h4>Main file history feature will comming soon.</h4> -->
+            <h4>Day Output</h4>
+
+            <div class="flex align-items-center">
+                <p-calendar
+                    [(ngModel)]="selectedDate"
+                    [showIcon]="true"
+                    [dateFormat]="'dd-mm-yy'"
+                    [maxDate]="maxValidDate"
+                    (onSelect)="onDateSelect($event)"
+                    ></p-calendar>
+                    <p-button (click)="exportExcel()" class="ml-2" [disabled]="(reportData && reportData.length === 0) || loading_data" title="Export CSV" icon="pi pi-file-excel" severity="success" ngClass="self-end" />
+            </div>
+        </div>
+        <div class="col-12 mt-2">
+            <p-table 
+                [value]="reportData"
+                [loading]="loading_data"
+                styleClass="p-datatable-gridlines p-datatable-striped"
+                >
+                <!-- TABLE HEADER -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Responsible</th>
+                        <th>Module</th>
+                        <th>Seg-2</th>
+                        <th>Sum of <span class="text-blue-300">{{ selectedDate | date: 'MMMM' }}</span> <br> Forged Qty.</th>
+                        <th>Sum of <span class="text-blue-300">{{ selectedDate | date: 'MMMM' }}</span> <br> Forged WT.</th>
+                        <th>Sum of DAY Qty. <br> ({{ selectedDate | date: 'dd-MM-yyyy' }})</th>
+                        <th>Sum of DAY WT. <br> ({{ selectedDate | date: 'dd-MM-yyyy' }})</th>
+                    </tr>
+                </ng-template>
+
+                <!-- TABLE BODY -->
+                <ng-template pTemplate="body" let-row>
+                    <tr [ngClass]="{ 'total-row': row.isTotal, 'grand-total-row': row.isGrandTotal }">
+                        <td>{{ row.module_responsible_person_name }}</td>
+                        <td>{{ row.module_name }}</td>
+                        <td>{{ row.seg2_name }}</td>
+                        <td>{{ row.total_production_qty }}</td>
+                        <td>{{ row.total_production_wt }}</td>
+                        <td>{{ row.today_qty }}</td>
+                        <td>{{ row.today_wt }}</td>
+                    </tr>
+                </ng-template>
+
+            </p-table>
+
+        </div>
+    </div>
+</div>

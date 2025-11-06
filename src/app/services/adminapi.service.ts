@@ -66,6 +66,10 @@ export class AdminApiService {
     return this.http.get(`${this.baseUrl}get-seg3-wise-data`);
   }
 
+  get_daily_output(date: string): Observable<any>{
+    return this.http.post(`${this.baseUrl}get-daily-output`, {date});
+  }
+
   get_sap_rm_data(sap_id: string): Observable<any>{
     return this.http.post(`${this.baseUrl}get-sap-rm-data`, {sap_id});
   }

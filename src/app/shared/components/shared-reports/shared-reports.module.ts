@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { SharedReportsRoutingModule } from './shared-reports-routing.module';
@@ -22,6 +22,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TabViewModule } from 'primeng/tabview';
 import { PlantMachineBookingComponent } from './plant-machine-booking/plant-machine-booking.component';
+import { DailyOutputComponent } from './daily-output/daily-output.component';
 
 
 @NgModule({
@@ -29,11 +30,13 @@ import { PlantMachineBookingComponent } from './plant-machine-booking/plant-mach
     Report2Component,
     Report3Component,
     Report4Component,
-    PlantMachineBookingComponent
+    PlantMachineBookingComponent,
+    DailyOutputComponent
   ],
   imports: [
     CommonModule,
     SharedReportsRoutingModule,
+    DatePipe,
     TableModule,
     ButtonModule,
     ReactiveFormsModule,

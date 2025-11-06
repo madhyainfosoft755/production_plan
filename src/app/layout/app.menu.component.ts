@@ -65,6 +65,7 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Reports',
                 items: [
+                    { label: 'Daily Output', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/daily-output`] },
                     { label: 'Module-machine Wise Monthly', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/history`] },
                     { label: 'Group Segment', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report2`] },
                     { label: 'Groutp Target', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report3`] },

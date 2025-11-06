@@ -13,10 +13,10 @@ $gutter: 1rem; //for primeflex grid system
 @import "assets/demo/styles/badges.scss";
 @import "assets/demo/styles/code.scss";
 
-// :host ::ng-deep p-breadcrumb nav{
-//     background-color: transparent !important;
-//     border: none !important;
-// }
+p-breadcrumb nav{
+    background-color: transparent !important;
+    border: none !important;
+}
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
   padding-top: 0.5rem;
@@ -30,4 +30,17 @@ $gutter: 1rem; //for primeflex grid system
   padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.total-row {
+  font-weight: 600;
+  background-color: #e6f3ff; /* light blue tint */
+  color: #004c99;
+}
+
+/* Grand total row - stronger color */
+.grand-total-row {
+  font-weight: bold;
+  background-color: #b3e0ff; /* deeper blue */
+  color: #003366;
 }
