@@ -225,7 +225,7 @@ export class DailyUpdateComponent implements OnInit {
                 forged_so_far: [row.forged_so_far],
                 pending_qty: [pending_qty],
                 input_qty: [row.production_qty ?? '', [Validators.min(0)]],
-                remarks: [row.remarks]
+                remarks: [{ value: row.remarks ?? '', disabled: true }]
             });
 
             // Dynamically validate 'remarks' if 'maxExceeded' occurs
@@ -241,6 +241,7 @@ export class DailyUpdateComponent implements OnInit {
                     inputQtyControl?.setErrors({ ...(inputQtyControl.errors || {}), maxExceeded: pending_qty });
                     inputQtyControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
                     if (!remarks) {
+                        remarksControl?.enable({ emitEvent: false });
                         remarksControl?.setValidators([Validators.required]);
                         remarksControl?.setErrors({ ...(remarksControl.errors || {}), required: true });
                     } else {
@@ -253,6 +254,8 @@ export class DailyUpdateComponent implements OnInit {
                     inputQtyControl?.setErrors(null);
                     remarksControl?.clearValidators();
                     remarksControl?.setErrors(null);
+                    remarksControl?.setValue('', { emitEvent: false });
+                    remarksControl?.disable({ emitEvent: false });
                 }
 
                 inputQtyControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
