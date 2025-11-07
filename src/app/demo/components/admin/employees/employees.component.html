@@ -3,13 +3,18 @@
     <div class="grid">
         <div class="col-12">
             <div class="p-2 flex justify-content-between">
-                <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddEmployeeDialog()" />
+                <div class="flex align-items-center justify-content-between">
+                    <p-button label="Add New" class="ml-2" icon="pi pi-plus" (onClick)="showAddEmployeeDialog()" />
+                    <p-button (click)="exportExcel()" class="ml-2" [disabled]="(employeesData && employeesData.length === 0) || loadingED" title="Export CSV" icon="pi pi-file-excel" severity="success" ngClass="self-end" />
+                </div>
                 <span class="p-buttonset">
                     <p-button label="Active" (onClick)="showActiveEmployees()" [disabled]="current"/>
                     <p-button label="Blocked" (onClick)="showBlockedEmployees()" [disabled]="!current"/>
                 </span>
             </div>
-            <p-table [rowHover]="true" [loading]="loadingED" [value]="employeesData" [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table [rowHover]="true"
+            styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" 
+             [loading]="loadingED" [value]="employeesData" [tableStyle]="{ 'min-width': '50rem' }">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>SN</th>
@@ -28,7 +33,7 @@
                         <td>{{ employee.email_add }}</td>
                         <td>{{ employee.emp_id }}</td>
                         <td>{{ employee.role }}</td>
-                        <td>{{ employee.created_at.date | date:'shortDate' }}</td>
+                        <td>{{ employee.created_at.date | date:'dd-MM-yyyy' }}</td>
                         <td>
                             <p-button icon="pi pi-user-edit" size="small" (click)="editEmployee(employee)" />
                         </td>

@@ -2,13 +2,17 @@
 <div class="card">
     <div class="grid">
         <div class="col-12">
-            <div class="p-2">
+            <div class="p-2 flex align-items-center justify-content-between">
                 <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddMachineDialog()" />
+                <div class="flex align-items-center">
+                    <p-button (click)="exportExcel()" class="ml-2" [disabled]="(machinesData && machinesData.length === 0) || loadingMD" title="Export CSV" icon="pi pi-file-excel" severity="success" ngClass="self-end" />
+                </div>
             </div>
             <p-table 
                 [rowHover]="true" 
                 [loading]="loadingMD" 
                 [value]="machinesData" 
+                styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" 
                 [tableStyle]="{ 'min-width': '50rem' }"
                 dataKey="id" >
                 <ng-template pTemplate="header">
@@ -40,9 +44,9 @@
                         </td>
                         <td>{{ machine.plan_no_of_mc }}</td>
                         <td>{{ machine.per_of_efficiency }}</td>
-                        <td>{{ machine.created_at | date:'shortDate' }}</td>
+                        <td>{{ machine.created_at | date:'dd-MM-yyyy' }}</td>
                         <td>
-                            <p-button icon="pi pi-pencil" (click)="showMachineEdit(machine)" />
+                            <p-button icon="pi pi-pencil" size="small" (click)="showMachineEdit(machine)" />
                         </td>
                     </tr>
                 </ng-template>

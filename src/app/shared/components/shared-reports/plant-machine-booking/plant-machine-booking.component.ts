@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { UnbrakoPPCommonService } from 'src/app/services/unbrako-pp-common';
 import { ExcelService } from 'src/app/services/excel.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-plant-machine-booking',
@@ -27,7 +28,8 @@ export class PlantMachineBookingComponent implements OnInit {
     private adminApiService: AdminApiService, 
     private fb: FormBuilder,
     private unbrakoPPCommonService: UnbrakoPPCommonService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private datePipe: DatePipe
   ){}
 
   ngOnInit() :void {
@@ -347,6 +349,21 @@ export class PlantMachineBookingComponent implements OnInit {
 
   getTotal(field: string): number {
     return this.data.reduce((sum, item) => sum + (item[field] || 0), 0);
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    const exportData = this.transformedData.map(r => ({
+      'Module Name': r.module_name,
+      'Machine Name': r.machine_name === 'Subtotal' ? 'Total' : r.machine_name,
+      'No. of Machines': r.no_of_machines,
+      'No. of Shifts': r.no_of_shift,
+      'Sum of No. Of Days Booking': r.total_days_booking,
+      'Sum of Pending Wt.': r.total_pending_wt
+    }));
+
+    this.excelService.exportToExcel(exportData, `Plant_Machine_Booking_${fileDate}`);
   }
 
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminApiService } from 'src/app/services/adminapi.service';
+import { ExcelService } from 'src/app/services/excel.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-seg3',
@@ -13,7 +15,9 @@ export class Seg3Component implements OnInit {
   selectedSeg3: any = null;
 
   constructor(
-    private adminApiService: AdminApiService
+    private adminApiService: AdminApiService,
+    private excelService: ExcelService,
+    private datePipe: DatePipe
   ){}
 
   ngOnInit(): void {
@@ -48,5 +52,17 @@ export class Seg3Component implements OnInit {
       this.load_seg3_data();
       this.visibleAddSeg3Dialog = false; // Close the dialog or perform any action
     }
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    const exportData = this.seg2Data.map((r: any, i: number) => ({
+      'SN': i+1,
+      'Name': r.name,
+      'Added At': this.datePipe.transform(r.created_at, 'dd-MM-yyyy'),
+    }));
+
+    this.excelService.exportToExcel(exportData, `Seg3_Data_${fileDate}`);
   }
 }

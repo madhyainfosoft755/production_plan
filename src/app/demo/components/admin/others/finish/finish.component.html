@@ -2,8 +2,9 @@
     <div class="col-12">
         <div class="p-2">
             <p-button label="Add New" icon="pi pi-plus" (click)="showAddFinishDialog()" />
+            <p-button class="ml-2" (click)="exportExcel()" [disabled]="(finishData && finishData.length === 0) || loadingFinish" title="Export CSV" icon="pi pi-file-excel" severity="success" />
         </div>
-        <p-table [loading]="loadingFinish" [value]="finishData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
+        <p-table [loading]="loadingFinish" [value]="finishData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" >
             <ng-template pTemplate="header">
                 <tr>
                     <th>SN</th>
@@ -18,7 +19,7 @@
                     <td>{{ finish.name }}</td>
                     <td>{{ finish.created_at | date:'medium' }}</td>
                     <td>
-                        <p-button icon="pi pi-pencil" (click)="editFinishDialog(finish)" />
+                        <p-button icon="pi pi-pencil" size="small" (click)="editFinishDialog(finish)" />
                     </td>
                 </tr>
             </ng-template>

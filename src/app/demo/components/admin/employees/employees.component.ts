@@ -1,5 +1,7 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AdminApiService } from 'src/app/services/adminapi.service';
+import { ExcelService } from 'src/app/services/excel.service';
 
 @Component({
   selector: 'app-employees',
@@ -17,7 +19,9 @@ export class EmployeesComponent implements OnInit {
   current = true;
   permissions: {id: number, code: string, description: string}[] | null = null;
   constructor(
-    private adminApiService: AdminApiService
+    private adminApiService: AdminApiService,
+    private excelService: ExcelService,
+    private datePipe: DatePipe
   ){}
   ngOnInit(): void {
     this.breadcrumbItems = [
@@ -70,5 +74,20 @@ export class EmployeesComponent implements OnInit {
       this.load_customers();
       this.visibleAddEmployeeDialog = false; // Close the dialog or perform any action
     }
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    const exportData = this.employeesData.map((r: any, i: number) => ({
+      'SN': i+1,
+      'Name': r.salutation + ' ' + r.name,
+      'Email': r.email_add,
+      'Employee Id': r.emp_id,
+      'Role': r.role,
+      'Added At': this.datePipe.transform(r.created_at.date, 'dd-MM-yyyy')
+    }));
+
+    this.excelService.exportToExcel(exportData, `Employees_${fileDate}`);
   }
 }

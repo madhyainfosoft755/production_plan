@@ -2,8 +2,9 @@
     <div class="col-12">
         <div class="p-2">
             <p-button label="Add New" icon="pi pi-plus" (click)="showAddSTPDialog()" />
+            <p-button class="ml-2" (click)="exportExcel()" [disabled]="(STPData && STPData.length === 0) || loadingSurfaceTreatment" title="Export CSV" icon="pi pi-file-excel" severity="success" />
         </div>
-        <p-table [loading]="loadingSurfaceTreatment" [value]="STPData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
+        <p-table [loading]="loadingSurfaceTreatment" [value]="STPData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" >
             <ng-template pTemplate="header">
                 <tr>
                     <th>SN</th>
@@ -18,7 +19,7 @@
                     <td>{{ row.name }}</td>
                     <td>{{ row.created_at | date:'medium' }}</td>
                     <td>
-                        <p-button icon="pi pi-pencil" (click)="editSTPDialog(row)" />
+                        <p-button icon="pi pi-pencil" size="small" (click)="editSTPDialog(row)" />
                     </td>
                 </tr>
             </ng-template>

@@ -2,6 +2,7 @@
     <div class="col-12">
         <div class="p-2">
             <p-button label="Add New" icon="pi pi-plus" (click)="showAddModuleDialog()" />
+            <p-button class="ml-2" (click)="exportExcel()" [disabled]="(modulesData && modulesData.length === 0) || loadingModules" title="Export CSV" icon="pi pi-file-excel" severity="success" />
         </div>
         <p-table [loading]="loadingModules" [value]="modulesData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
             <ng-template pTemplate="header">

@@ -2,8 +2,9 @@
     <div class="col-12">
         <div class="p-2">
             <p-button label="Add New" icon="pi pi-plus" (click)="showAddGroupDialog()" />
+            <p-button class="ml-2" (click)="exportExcel()" [disabled]="(groupsData && groupsData.length === 0) || loadingGroups" title="Export CSV" icon="pi pi-file-excel" severity="success" />
         </div>
-        <p-table [loading]="loadingGroups" [value]="groupsData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped" >
+        <p-table [loading]="loadingGroups" [value]="groupsData" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" >
             <ng-template pTemplate="header">
                 <tr>
                     <th>SN</th>
@@ -18,7 +19,7 @@
                     <td>{{ group.name }}</td>
                     <td>{{ group.created_at | date:'medium' }}</td>
                     <td>
-                        <p-button icon="pi pi-pencil" (click)="editGroupDialog(group)" />
+                        <p-button icon="pi pi-pencil" size="small" (click)="editGroupDialog(group)" />
                     </td>
                 </tr>
             </ng-template>

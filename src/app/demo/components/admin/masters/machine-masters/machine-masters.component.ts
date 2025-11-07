@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -5,6 +6,7 @@ import { PageEvent } from 'src/app/models/common-models';
 
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { CommonUtilsService } from 'src/app/services/common-utils.service';
+import { ExcelService } from 'src/app/services/excel.service';
 
 @Component({
   selector: 'app-machine-masters',
@@ -49,7 +51,9 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
   constructor(
     private adminApiService: AdminApiService, 
     private fb: FormBuilder,
-    private commonUtilsService: CommonUtilsService
+    private commonUtilsService: CommonUtilsService,
+    private datePipe: DatePipe,
+    private excelService: ExcelService
   ) {
     this.breadcrumbItems = [
       { label: 'Home', routerLink: '/' },
@@ -154,6 +158,26 @@ export class MachineMastersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    const exportData = this.machineMaster.map((r: any, i: number) => ({
+      'SN': i+1,
+      'Process': r.process,
+      'Machine Name': r.machine_name,
+      'Capacity': r.capacity,
+      'No.OF M/C': r.no_of_mc,
+      'Responsible': r.responsible,
+      'Module': r.module,
+      'Speed': r.speed,
+      'No. of Shift': r.plan_no_of_mc,
+      'Plan No. of M/C': r.per_of_efficiency,
+      'No. of shift': r.no_of_shift,
+    }));
+
+    this.excelService.exportToExcel(exportData, `Machine_Master_Data_${fileDate}`);
   }
 
 }

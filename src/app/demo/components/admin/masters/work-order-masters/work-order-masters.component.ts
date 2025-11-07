@@ -2,12 +2,13 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { PageEvent } from 'src/app/models/common-models';
 import { MessageService } from 'primeng/api';
 
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { CommonUtilsService } from 'src/app/services/common-utils.service';
+import { ExcelService } from 'src/app/services/excel.service';
 
 @Component({
   selector: 'app-work-order-masters',
@@ -26,6 +27,7 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   enableAdvSearch = false;
   initialAdvSearchValues;
+  loadingExport = false;
   rangeDates: Date[] | undefined = (() => {
     const start = new Date();                               // today
     const end   = new Date(start.getTime() + 45 * 86400000); // 45 days later
@@ -61,7 +63,8 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     private commonUtilsService: CommonUtilsService,
     private router: Router,
     private datePipe: DatePipe,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private excelService: ExcelService
   ){
     this.breadcrumbItems = [
       { label: 'Home', routerLink: '/' },
@@ -168,8 +171,12 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadData(page=1){
-    this.loadingWOMD = true;
+  loadData(page=1, exportData=false){
+    if(exportData){
+      this.loadingExport = true;
+    } else {
+      this.loadingWOMD = true;
+    }
     if(this.enableAdvSearch){
       this.loadingAdvanceFilter = true;
     }
@@ -179,18 +186,48 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
     } else {
       rangeDates= null;
     }
-    this.adminApiService.get_work_order_master({...this.workOrderFilterForm.value, 'range_dates': rangeDates, 'date_type': this.dateType}, page).subscribe({
+    let filterVal = {...this.workOrderFilterForm.value, 'range_dates': rangeDates, 'date_type': this.dateType}
+    if(exportData){
+      filterVal = {...filterVal, export: 'true'};
+    }
+    this.adminApiService.get_work_order_master(filterVal, page).subscribe({
       next: (res: any)=>{
-        this.workOrderMaster = res.data.map(value=>({...value, quality_inspection_required_status: value.quality_inspection_required==="1" ? "new" : "unqualified"}));
-        this.pagination = res.pagination;
-        if(this.enableAdvSearch){
-          this.visibleFilterDrawer = false;
+        if(exportData){
+          const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+          const exportData = this.workOrderMaster.map((r: any, i: number) => ({
+            'SN': i+1,
+            'Plant': r.plant ,
+            'Work Order': r.work_order_db.toUpperCase() ,
+            'Customer': r.customer ,
+            'Responsible Person': r.responsible_person_name ? r.responsible_person_name  : r.responsible_person_name1,
+            'Segment': r.segment_name ,
+            'Marketing Person': r.marketing_person_name ? r.marketing_person_name : r.marketing_person_name1,
+            'Receiving Date': this.datePipe.transform(r.reciving_date, 'dd-MM-yyyy'),
+            'Delivery Dat': this.datePipe.transform(r.delivery_date, 'dd-MM-yyyy'),
+            'QIR': r.quality_inspection_required_status==="1"? 'Yes':'No' ,
+            'WO Add Date': this.datePipe.transform(r.wo_add_date, 'dd-MM-yyyy'),
+            'No. Of Items': r.no_of_items ,
+            'Weight': r.weight
+          }));
+
+          this.excelService.exportToExcel(exportData, `Work_Order_Master_Data_${fileDate}`);
+          this.loadingWOMD = false;
+          this.loadingExport = false;
+        } else {
+          this.workOrderMaster = res.data.map(value=>({...value, quality_inspection_required_status: value.quality_inspection_required==="1" ? "new" : "unqualified"}));
+          this.pagination = res.pagination;
+          if(this.enableAdvSearch){
+            this.visibleFilterDrawer = false;
+          }
+          this.loadingWOMD = false;
+          this.loadingExport = false;
+          this.loadingAdvanceFilter = false;
         }
-        this.loadingWOMD = false;
-        this.loadingAdvanceFilter = false;
       }, 
       error: (err: any)=>{
         this.loadingWOMD = false;
+        this.loadingExport = false;
         this.loadingAdvanceFilter = false;
       }
     });
@@ -283,6 +320,10 @@ export class WorkOrderMastersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  exportExcel() {
+    this.loadData(1, true);
   }
 
 }

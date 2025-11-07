@@ -5,6 +5,7 @@
             <div class="p-2 flex justify-content-between mb-2">
                 <div>
                     <p-button label="Add New" icon="pi pi-plus" (onClick)="showAddWOMasterDialog()" class="mr-2" />
+                    <p-button class="mr-2" [loading]="loadingExport" (click)="exportExcel()" [disabled]="(workOrderMaster && workOrderMaster.length === 0) || loadingWOMD" title="Export CSV" icon="pi pi-file-excel" severity="success" />
                     <p-button icon="pi pi-filter"  (onClick)="showFilterDrawer()" class="mr-2"/>
                     <!-- Segment Dropdown -->
                     <p-dropdown
@@ -47,7 +48,7 @@
                     <p-button title="Download Work Order Master Template" icon="pi pi-download" [loading]="loadingDWOMTemplate" (onClick)="downloadWOMTemplate()" />
                 </div>
             </div>
-            <p-table #dt1 dataKey="id" [value]="workOrderMaster" [loading]="loadingWOMD" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-striped"
+            <p-table #dt1 dataKey="id" [value]="workOrderMaster" [loading]="loadingWOMD" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
             [globalFilterFields]="['plant', 'work_order_db', 'customer', 'responsible_person_name1', 'segment_name', 'marketing_person_name1', 'reciving_date', 'delivery_date', 'quality_inspection_required', 'created_at']">
                 <!-- <ng-template pTemplate="caption">
                     <div class="flex">

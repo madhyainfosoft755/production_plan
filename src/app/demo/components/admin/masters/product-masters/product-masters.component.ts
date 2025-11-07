@@ -9,6 +9,8 @@ import { CommonUtilsService } from 'src/app/services/common-utils.service';
 import { PageEvent } from 'src/app/models/common-models';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { DatePipe } from '@angular/common';
+import { ExcelService } from 'src/app/services/excel.service';
 // import { PivotModule } from 'ag-grid-enterprise';
 
 // Register all Community features
@@ -26,6 +28,7 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   visibleAddPMDialog: boolean = false;
   breadcrumbItems: any[];
   pivotMode = true;
+  loadingExport = false;
   columnDefs: ColDef[] = [
     { headerName: 'Order', field: 'order_number', filter: true , pivot: true, enablePivot: true },
     { headerName: 'Material Number', field: 'material_number', filter: true , pivot: true, enablePivot: true },
@@ -79,7 +82,9 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private commonUtilsService: CommonUtilsService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private datePipe: DatePipe,
+    private excelService: ExcelService
   ){ 
     this.productMasterForm = this.fb.group({
       order_number: [''],
@@ -292,4 +297,50 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+  exportExcel() {
+    this.loadingExport = true;
+    this.adminApiService.get_all_product_master({...this.productMasterForm.value, export: 'true'}, 1).subscribe({
+      next: (res: any)=>{
+        const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+    
+        const exportData = res.data.map((r: any, i: number) => ({
+          'SN': i+1,
+          'Order': r.order_number ,
+          'Material Number': r.material_number ,
+          'Material Number with Process': r.material_number_for_process ,
+          'Material description': r.material_description ,
+          'Unit of measure (=GMEIN)': r.unit_of_measure ,
+          'Machine Name': r.machine_name ,
+          'Responsible': r.responsible_name ,
+          'Module': r.module_name ,
+          'Segment': r.segment_name ,
+          'Cheese Wt': r.cheese_wt ,
+          'Finish': r.finish_name ,
+          'Finish Wt.': r.finish_wt ,
+          'Size': r.size ,
+          'Group': r.group_name ,
+          'Length': r.length ,
+          'SPEC': r.spec ,
+          'ROD DIA1.': r.rod_dia1 ,
+          'DRAWN DIA.1': r.drawn_dia1 ,
+          'Condition of Raw material': r.condition_of_rm ,
+          'Seg-2': r.seg2_name ,
+          'Seg-3': r.seg3_name ,
+          'SPECIAL REMARKS': r.special_remarks ,
+          'BOM': r.bom ,
+          'RM Component': r.rm_component ,
+          'Added At': this.datePipe.transform(r.created_at, 'dd-MM-yyyy'),
+        }));
+    
+        this.excelService.exportToExcel(exportData, `Product_Master_Data_${fileDate}`);
+        this.loadingExport = false;
+      }, 
+      error: (err: any)=>{
+        this.loadingExport = false;
+
+      }
+    });
+  }
+
+  
 }

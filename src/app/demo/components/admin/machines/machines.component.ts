@@ -1,6 +1,8 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminApiService } from 'src/app/services/adminapi.service';
+import { ExcelService } from 'src/app/services/excel.service';
 
 @Component({
   selector: 'app-machines',
@@ -15,7 +17,9 @@ export class MachinesComponent implements OnInit {
   selectedMachine: any;
   constructor(
     private adminApiService: AdminApiService,
-    private router: Router
+    private router: Router,
+    private excelService: ExcelService,
+    private datePipe: DatePipe
   ){}
   ngOnInit(): void {
     this.breadcrumbItems = [
@@ -58,5 +62,24 @@ export class MachinesComponent implements OnInit {
   showMachineEdit(machine: any){
     this.selectedMachine = machine;
     this.visibleAddMachineDialog = true;
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    const exportData = this.machinesData.map((r: any, i: number) => ({
+      'SN': i+1,
+      'Process': r.process,
+      'Machine Name': r.name,
+      'Capacity': r.capacity,
+      'No.OF M/C': r.no_of_mc,
+      'Speed': r.speed,
+      'No. Of Shift': r.no_of_shift,
+      'Plan No of M/C<': r.plan_no_of_mc,
+      '% of Efficiency': r.per_of_efficiency,
+      'Added At': this.datePipe.transform(r.created_at, 'dd-MM-yyyy')
+    }));
+
+    this.excelService.exportToExcel(exportData, `Machines_${fileDate}`);
   }
 }

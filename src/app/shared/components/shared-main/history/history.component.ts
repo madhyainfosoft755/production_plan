@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { UnbrakoPPCommonService } from 'src/app/services/unbrako-pp-common';
 import { ExcelService } from 'src/app/services/excel.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-shared-history',
@@ -26,7 +27,8 @@ export class HistoryComponent implements OnInit {
     private adminApiService: AdminApiService, 
     private fb: FormBuilder,
     private unbrakoPPCommonService: UnbrakoPPCommonService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private datePipe: DatePipe
   ){}
 
   ngOnInit() :void {
@@ -271,6 +273,27 @@ export class HistoryComponent implements OnInit {
 
     // Output result
     return finalData;
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    const exportData = this.pivotData.map(r => ({
+      'Prod Group': r.group_name,
+      'Size': r.size,
+      'Spec': r.spec,
+      'Drawn Dia 1': r.drawn_dia1,
+      'Material Number': r.materialNumber,
+      'Material Description': r.materialDescription,
+      'W/O': r.work_order,
+      'Segment': r.wom_segment_name,
+      'Customer': r.customer,
+      'Sum of To Forge Qty': r.to_forge_qty,
+      'Sum of To Forge Wt': r.to_forge_wt,
+      'Sum of To Forge RM Wt': r.to_forge_rm_wt,
+    }));
+
+    this.excelService.exportToExcel(exportData, `Module_Machine_Wise_Report_${fileDate}`);
   }
 
 }
