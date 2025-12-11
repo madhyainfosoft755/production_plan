@@ -197,9 +197,9 @@ export class HistoryComponent implements OnInit {
         };
       }
 
-      group.machines[item.machine_name].to_forge_qty += item.to_forge_qty;
-      group.machines[item.machine_name].to_forge_wt += item.to_forge_wt;
-      group.machines[item.machine_name].to_forge_rm_wt += item.to_forge_rm_wt;
+      group.machines[item.machine_name].to_forge_qty += Number(item.to_forge_qty);
+      group.machines[item.machine_name].to_forge_wt += Number(item.to_forge_wt);
+      group.machines[item.machine_name].to_forge_rm_wt += Number(item.to_forge_rm_wt);
     });
 
     return pivot;
@@ -216,9 +216,9 @@ export class HistoryComponent implements OnInit {
           specTotals = { to_forge_qty: 0, to_forge_wt: 0, to_forge_rm_wt: 0 };
       }
       result.push(row);
-      specTotals.to_forge_qty += row.to_forge_qty || 0;
-      specTotals.to_forge_wt += row.to_forge_wt || 0;
-      specTotals.to_forge_rm_wt += row.to_forge_rm_wt || 0;
+      specTotals.to_forge_qty += Number(row.to_forge_qty) || 0;
+      specTotals.to_forge_wt += Number(row.to_forge_wt) || 0;
+      specTotals.to_forge_rm_wt += Number(row.to_forge_rm_wt) || 0;
       lastSpec = row.spec;
     });
 
@@ -245,9 +245,9 @@ export class HistoryComponent implements OnInit {
         }
 
         groupedData[key].entries.push(entry);
-        groupedData[key].to_forge_qty += entry.to_forge_qty;
-        groupedData[key].to_forge_wt += entry.to_forge_wt;
-        groupedData[key].to_forge_rm_wt += entry.to_forge_rm_wt;
+        groupedData[key].to_forge_qty += Number(entry.to_forge_qty);
+        groupedData[key].to_forge_wt += Number(entry.to_forge_wt);
+        groupedData[key].to_forge_rm_wt += Number(entry.to_forge_rm_wt);
     });
 
     // Step 2: Creating the final output with total rows

@@ -31,10 +31,19 @@
                             <p-button 
                                 icon="pi pi-pencil" 
                                 label="Update" 
-                                *ngIf="((isRmUser && today.getDay() !== 6) || isAdminUser)"
+                                *ngIf="(isAdminUser)"
                                 size="small"
+                                class="mr-2"
                                 [disabled]="!selectedRecords.length"
                                 (onClick)="showUpdateForm()" />
+                                <!-- *ngIf="((isRmUser && today.getDay() !== 6) || isAdminUser)" -->
+                            <p-button 
+                                icon="pi pi-pencil" 
+                                label="Update RM" 
+                                *ngIf="(((isRmUser ) || isAdminUser) && selectedRecords.length ==1)"
+                                size="small"
+                                [disabled]="!selectedRecords.length"
+                                (onClick)="showUpdateRMForm()" />
                         </div>
                     </div>
                 </ng-template>
@@ -252,5 +261,11 @@
 <p-dialog header="Update" [modal]="true" [(visible)]="visibleAdminUpdateDialog" [style]="{ width: '50rem' }">
     <div>
         <app-update-main-file [isRmUser]="isRmUser" [STPOptions]="STPData" [data]="selectedRecords" *ngIf="visibleAdminUpdateDialog" (notifyParent)="onChildNotify($event)"></app-update-main-file>
+    </div>
+</p-dialog>
+
+<p-dialog header="Update RM" [modal]="true" [(visible)]="visibleAdminUpdateRMDialog" [style]="{ width: '50rem' }">
+    <div>
+        <app-update-main-file [isRmUser]="true" [STPOptions]="STPData" [data]="selectedRecords" *ngIf="visibleAdminUpdateRMDialog" (notifyParent)="onChildNotify($event)"></app-update-main-file>
     </div>
 </p-dialog>

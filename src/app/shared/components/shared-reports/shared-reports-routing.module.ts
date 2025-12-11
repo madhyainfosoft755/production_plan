@@ -3,12 +3,16 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'report2',
-    loadChildren: () => import('./report2/report2-routing.module').then(m => m.Report2RoutingModule)
+    path: 'group-target',
+    loadChildren: () => import('./group-target/group-target-routing.module').then(m => m.GroupTargetRoutingModule)
   },
   {
-    path: 'report3',
-    loadChildren: () => import('./report3/report3-routing.module').then(m => m.Report3RoutingModule)
+    path: 'group-segment',
+    loadChildren: () => import('./group-segment/group-segment-routing.module').then(m => m.GroupSegmentRoutingModule)
+  },
+  {
+    path: 'group-details',
+    loadChildren: () => import('./group-details/group-details-routing.module').then(m => m.GroupDetailsRoutingModule)
   },
   {
     path: 'report4',

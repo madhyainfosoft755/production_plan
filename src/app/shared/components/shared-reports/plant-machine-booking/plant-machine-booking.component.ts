@@ -113,8 +113,8 @@ export class PlantMachineBookingComponent implements OnInit {
             machine_name: 'Subtotal',
             no_of_machines: '', // optional: leave blank or show a value
             no_of_shift: '',
-            total_days_booking: groupItems.reduce((sum, item) => sum + (item.total_days_booking || 0), 0),
-            total_pending_wt: groupItems.reduce((sum, item) => sum + (item.total_pending_wt || 0), 0)
+            total_days_booking: groupItems.reduce((sum, item) => sum + (Number(item.total_days_booking) || 0), 0),
+            total_pending_wt: groupItems.reduce((sum, item) => sum + (Number(item.total_pending_wt) || 0), 0)
           };
 
           this.transformedData.push(subtotalRow);
@@ -348,7 +348,7 @@ export class PlantMachineBookingComponent implements OnInit {
 
 
   getTotal(field: string): number {
-    return this.data.reduce((sum, item) => sum + (item[field] || 0), 0);
+    return this.data.reduce((sum, item) => sum + (Number(item[field]) || 0), 0);
   }
 
   exportExcel() {

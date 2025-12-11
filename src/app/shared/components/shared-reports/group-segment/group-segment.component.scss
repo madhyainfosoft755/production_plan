@@ -1,0 +1,19 @@
+
+/* Very light orange for total column */
+.total-col, 
+.total-col-header {
+  background-color: #ffe8cc !important; /* light orange */
+  font-weight: 600;
+}
+
+/* Lighter orange for footer total row */
+.total-row td {
+  background-color: #fff3e0 !important; /* even lighter orange */
+  font-weight: 600;
+}
+
+/* Optional: adjust text alignment */
+p-table td, p-table th {
+  text-align: center;
+  vertical-align: middle;
+}

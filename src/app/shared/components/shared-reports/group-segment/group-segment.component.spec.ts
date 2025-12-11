@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Report3Component } from './report3.component';
+import { GroupSegmentComponent } from './group-segment.component';
 
-describe('Report3Component', () => {
-  let component: Report3Component;
-  let fixture: ComponentFixture<Report3Component>;
+describe('GroupSegmentComponent', () => {
+  let component: GroupSegmentComponent;
+  let fixture: ComponentFixture<GroupSegmentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Report3Component]
+      imports: [GroupSegmentComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(Report3Component);
+    fixture = TestBed.createComponent(GroupSegmentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

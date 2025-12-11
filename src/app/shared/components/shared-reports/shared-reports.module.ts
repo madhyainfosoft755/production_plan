@@ -3,8 +3,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { SharedReportsRoutingModule } from './shared-reports-routing.module';
-import { Report2Component } from './report2/report2.component';
-import { Report3Component } from './report3/report3.component';
+import { GroupSegmentComponent } from './group-segment/group-segment.component';
+import { GroupTargetComponent } from './group-target/group-target.component';
 import { Report4Component } from './report4/report4.component';
 
 import { TableModule } from 'primeng/table';
@@ -23,12 +23,14 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TabViewModule } from 'primeng/tabview';
 import { PlantMachineBookingComponent } from './plant-machine-booking/plant-machine-booking.component';
 import { DailyOutputComponent } from './daily-output/daily-output.component';
+import { GroupDetailsComponent } from './group-details/group-details.component';
 
 
 @NgModule({
   declarations: [
-    Report2Component,
-    Report3Component,
+    GroupSegmentComponent,
+    GroupTargetComponent,
+    GroupDetailsComponent,
     Report4Component,
     PlantMachineBookingComponent,
     DailyOutputComponent

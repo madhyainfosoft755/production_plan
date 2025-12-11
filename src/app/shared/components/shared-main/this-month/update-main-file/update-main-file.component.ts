@@ -65,7 +65,7 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
       rm_delivery_date: [null],
       rm_delivery: [''],
       rm_correction: [''],
-      // plant_allocation: [''],
+      plant_allocation: [''],
       // advance_final_rm_wt: [''],
       // rm_allocation_priority: ['']
     });
@@ -162,6 +162,22 @@ export class UpdateMainFileComponent implements OnInit, OnChanges {
     this.adminApiService.get_sap_rm_data(this.data[0].sap_id).subscribe({
       next: (res: any)=>{
         this.sapRmData = res.data;
+        console.log(res.sap_data);
+        const plantAllocationValue = Number(res.sap_data.plan_allocation || '');
+
+        this.updateRMFieldsForm.patchValue({
+          rm_delivery_date: res.sap_data['rm_delivery_date'] ? new Date(res.sap_data['rm_delivery_date'])  : null,
+          rm_delivery: res.sap_data['is_rm_ready'] == "0" ? false : true,
+          rm_correction: res.sap_data['rm_correction'] || '',
+          plant_allocation: plantAllocationValue,
+        });
+
+        //Disable the field if plant allocation has a value
+        if (plantAllocationValue && plantAllocationValue !== 0) {
+          this.updateRMFieldsForm.get('plant_allocation')?.disable();
+        } else {
+          this.updateRMFieldsForm.get('plant_allocation')?.enable();
+        }
       }, 
       error: (err: any)=>{
       }

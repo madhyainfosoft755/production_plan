@@ -58,12 +58,16 @@ export class AdminApiService {
     return this.http.post(`${this.baseUrl}get-sap-data?page=${page}`, filters);
   }
 
-  get_segment_wise_data(): Observable<any>{
-    return this.http.get(`${this.baseUrl}get-segment-wise-data`);
+  get_segment_wise_data(filters: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}get-segment-wise-data`, filters);
   }
 
-  get_seg3_wise_data(): Observable<any>{
-    return this.http.get(`${this.baseUrl}get-seg3-wise-data`);
+  get_seg3_wise_data(filters: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}get-seg3-wise-data`, filters);
+  }
+
+  get_group_details_wise_data(filters: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}get-group-details-wise-data`, filters);
   }
 
   get_daily_output(date: string): Observable<any>{

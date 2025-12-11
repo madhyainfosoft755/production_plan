@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Report2Component } from './report2.component';
+import { GroupDetailsComponent } from './group-details.component';
 
 const routes: Routes = [
-  { path: '', component: Report2Component, data: { title: 'Report | Main File History' } }
+  { path: '', component: GroupDetailsComponent, data: { title: 'Report | Group Details' } }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class Report2RoutingModule { }
+export class GroupDetailsRoutingModule { }

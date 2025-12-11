@@ -75,6 +75,7 @@ export class ThisMonthComponent implements OnInit {
   loading_data: boolean = false;
   visibleMainFileDialog: boolean = false;
   visibleAdminUpdateDialog = false;
+  visibleAdminUpdateRMDialog = false;
   STPData: any[] = [];
   selectedRow: any = null;
   cols: Column[];
@@ -477,6 +478,7 @@ export class ThisMonthComponent implements OnInit {
     if(val){
       // this.updateDataFromChild(this.unbrakoPPCommonService.SAPMainFileMapping(val))
       this.visibleAdminUpdateDialog = false; // Close the dialog or perform any action
+      this.visibleAdminUpdateRMDialog = false; // Close the dialog or perform any action
     }
   }
 
@@ -538,6 +540,11 @@ export class ThisMonthComponent implements OnInit {
   showUpdateForm(){
     if(this.selectedRecords.length && ((this.isRmUser && this.today.getDay() !== 6) || this.isAdminUser)){
       this.visibleAdminUpdateDialog = true;
+    }
+  }
+  showUpdateRMForm(){
+    if(this.selectedRecords.length && this.isAdminUser){
+      this.visibleAdminUpdateRMDialog = true;
     }
   }
   

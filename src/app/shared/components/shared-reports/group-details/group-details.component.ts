@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { UnbrakoPPCommonService } from 'src/app/services/unbrako-pp-common';
 import { ExcelService } from 'src/app/services/excel.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-report2',
-  templateUrl: './report2.component.html',
-  styleUrl: './report2.component.scss'
+  selector: 'app-group-details',
+  templateUrl: './group-details.component.html',
+  styleUrl: './group-details.component.scss'
 })
-export class Report2Component  implements OnInit {
+export class GroupDetailsComponent  implements OnInit {
   breadcrumbItems: any[];
   // data: any;
   loading_data: boolean = false;
@@ -26,7 +27,8 @@ export class Report2Component  implements OnInit {
   constructor(
     private adminApiService: AdminApiService,
     private unbrakoPPCommonService: UnbrakoPPCommonService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private datePipe: DatePipe
   ){}
 
   ngOnInit() :void {
@@ -36,14 +38,14 @@ export class Report2Component  implements OnInit {
     });
     this.breadcrumbItems = [
       { label: 'Home', routerLink: '/' },
-      { label: 'Group Segment Report' }
+      { label: 'Group Details Report' }
     ];
     this.loadData();
   }
   
-  loadData(params: any = {}){
+  loadData(filters: any = {}){
     this.loading_data = true;
-    this.adminApiService.get_seg3_wise_data().subscribe({
+    this.adminApiService.get_seg3_wise_data(filters).subscribe({
       next: (res: any)=>{
         this.columns = res.columns;
         this.rows = res.rows;
@@ -112,8 +114,8 @@ export class Report2Component  implements OnInit {
     this.month_full_year = undefined;
     this.rangeDates = undefined;
     this.loadData({
-      week_start: this.formatDate(this.selectedWeek.start_date),
-      week_end: this.formatDate(this.selectedWeek.end_date)
+      week_start: this.unbrakoPPCommonService.getFormatedDate(this.selectedWeek.start_date),
+      week_end: this.unbrakoPPCommonService.getFormatedDate(this.selectedWeek.end_date)
     });
     // {
     //   "week_number": 3,
@@ -133,17 +135,14 @@ export class Report2Component  implements OnInit {
   private formatMonth(date: Date): string {
     return `${date.getMonth() + 1}/${date.getFullYear()}`; // Converts to MM/YYYY
   }
-  private formatDate(date: Date): string {
-    return date.toISOString().split('T')[0]; // Converts to YYYY-MM-DD format
-  }
 
   date_range_select(event: any){
     if(this.rangeDates[1] !== null){
       this.month_full_year = undefined;
       this.selectedWeek = undefined;
       this.loadData({
-        start_date: this.formatDate(this.rangeDates[0]),
-        end_date: this.formatDate(this.rangeDates[1])
+        start_date: this.unbrakoPPCommonService.getFormatedDate(this.rangeDates[0]),
+        end_date: this.unbrakoPPCommonService.getFormatedDate(this.rangeDates[1])
       });
     }
     // [
@@ -189,6 +188,52 @@ export class Report2Component  implements OnInit {
       }
     }
     return total;
+  }
+
+  exportExcel() {
+    const fileDate = this.datePipe.transform(new Date(), 'dd_MM_yyyy');
+
+    // format is 
+    // [
+    //   {
+    //     'Module Name': r.module_name,
+    //     'Machine Name': r.machine_name === 'Subtotal' ? 'Total' : r.machine_name,
+    //     'No. of Machines': r.no_of_machines,
+    //     'No. of Shifts': r.no_of_shift,
+    //     'Sum of No. Of Days Booking': r.total_days_booking,
+    //     'Sum of Pending Wt.': r.total_pending_wt
+    //   }
+    // ]
+
+    const exportData: any[] = [];
+
+    // Build export data matching the table structure
+    this.rows.forEach(row => {
+      const rowData: any = { 'Segment / Person': row };
+
+      // Add each column value
+      this.columns.forEach(col => {
+        rowData[col] = this.data[row][col] || 0;
+      });
+
+      // Add row total
+      rowData['Total (Row)'] = this.getRowTotal(row);
+
+      exportData.push(rowData);
+    });
+
+    // Add footer totals (Column Totals + Grand Total)
+    const footerRow: any = { 'Segment / Person': 'Total (Column)' };
+
+    this.columns.forEach(col => {
+      footerRow[col] = this.getColumnTotal(col);
+    });
+
+    footerRow['Total (Row)'] = this.getGrandTotal();
+
+    exportData.push(footerRow);
+
+    this.excelService.exportToExcel(exportData, `Group_Segment_Report_${fileDate}`);
   }
   
 }

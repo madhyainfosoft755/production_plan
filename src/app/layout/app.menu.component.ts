@@ -67,8 +67,9 @@ export class AppMenuComponent implements OnInit {
                 items: [
                     { label: 'Daily Output', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/daily-output`] },
                     { label: 'Module-machine Wise Monthly', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/mainfile/history`] },
-                    { label: 'Group Segment', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report2`] },
-                    { label: 'Groutp Target', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report3`] },
+                    { label: 'Group Segment', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/group-segment`] },
+                    { label: 'Groutp Target', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/group-target`] },
+                    // { label: 'Groutp Details', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/group-details`] },
                     // { label: 'Module-Machine Wise', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/report4`] },
                     { label: 'Plant Machine Booking', icon: 'pi pi-fw pi-id-card', routerLink: [`/${this.user.role.toLowerCase()}/reports/plant-machine-booking`] },
                 ],
