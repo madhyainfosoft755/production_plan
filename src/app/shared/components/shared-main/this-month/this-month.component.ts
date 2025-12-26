@@ -185,7 +185,6 @@ export class ThisMonthComponent implements OnInit {
 
     this.cols = [
       { field: 'sap_orderNumber', header: 'SAP Order Number' },
-      { field: 'pm_order_number', header: 'Product Master Order' },
       { field: 'systemStatus', header: 'System Status' },
       { field: 'orderQuantity_GMEIN', header: 'Order quantity' },
       { field: 'deliveredQuantity_GMEIN', header: 'Delivered quantity' },

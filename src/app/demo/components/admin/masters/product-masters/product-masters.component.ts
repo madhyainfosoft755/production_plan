@@ -305,15 +305,12 @@ export class ProductMastersComponent implements OnInit, OnDestroy {
     
         const exportData = res.data.map((r: any, i: number) => ({
           'SN': i+1,
-          'Order': r.order_number ,
           'Material Number': r.material_number ,
           'Material Number with Process': r.material_number_for_process ,
           'Material description': r.material_description ,
-          'Unit of measure (=GMEIN)': r.unit_of_measure ,
           'Machine Name': r.machine_name ,
           'Responsible': r.responsible_name ,
           'Module': r.module_name ,
-          'Segment': r.segment_name ,
           'Cheese Wt': r.cheese_wt ,
           'Finish': r.finish_name ,
           'Finish Wt.': r.finish_wt ,

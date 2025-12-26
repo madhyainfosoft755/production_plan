@@ -15,7 +15,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   submitted = false;
   loading = true;
   visibleAddFinishDialog: boolean = false;
-  visibleAddSegmentDialog: boolean = false;
   visibleAddGroupDialog: boolean = false;
   visibleAddSeg2Dialog: boolean = false;
   visibleAddSeg3Dialog: boolean = false;
@@ -24,11 +23,9 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   material_no_for_process: string = null;
   // Dropdown Options
   machineOptions: any;
-  segmentOptions = [];
   loadingFinish: boolean = false;
   loadingSeg2: boolean = false;
   loadingSeg3: boolean = false;
-  loadingSegments: boolean = false;
   loadingGroups: boolean = false;
   loadingMachines: boolean = false;
   finishOptions = [];
@@ -85,7 +82,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
     this.loading = true;
     this.loadingSeg2 = true;
     this.loadingSeg3 = true;
-    this.loadingSegments = true;
     this.loadingGroups = true;
     this.loadingFinish = true;
     this.loadingMachines = true;
@@ -96,7 +92,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
       machinesInfo: this.adminApiService.get_machines_info(),
       seg2Data: this.adminApiService.get_all_seg2(), // Replace with actual API calls
       seg3Data: this.adminApiService.get_all_seg3(),
-      segmentsData: this.adminApiService.get_all_segments(),
       groupData: this.adminApiService.get_all_groups()
     }).subscribe({
       next: (res: any) => {
@@ -111,10 +106,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
         if(res.seg3Data){
           this.seg3Options = res.seg3Data.data;
           this.loadingSeg3 = false;
-        }
-        if(res.segmentsData){
-          this.segmentOptions = res.segmentsData.data;
-          this.loadingSegments = false;
         }
         if(res.groupData){
           this.groupOptions = res.groupData.data;
@@ -163,18 +154,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
     });
   }
 
-  load_segment_data(){
-    this.loadingSegments = true;
-    this.adminApiService.get_all_segments().subscribe({
-      next: (res: any)=>{
-        this.segmentOptions = res.data;
-        this.loadingSegments = false;
-      }, 
-      error: (err: any)=>{
-        this.loadingSegments = false;
-      }
-    });
-  }
   load_group_data(){
     this.loadingGroups = true;
     this.adminApiService.get_all_groups().subscribe({
@@ -254,9 +233,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
   showAddFinishDialog(){
     this.visibleAddFinishDialog = true;
   }
-  showAddSegmentDialog(){
-    this.visibleAddSegmentDialog = true;
-  }
   showAddGroupDialog(){
     this.visibleAddGroupDialog = true;
   }
@@ -271,13 +247,6 @@ export class FilterProductMasterComponent implements OnInit, OnChanges {
     if(message){
       this.load_finish_data();
       this.visibleAddFinishDialog = false; // Close the dialog or perform any action
-    }
-  }
-
-  onSegmentNotify(message: boolean): void {
-    if(message){
-      this.load_segment_data();
-      this.visibleAddSegmentDialog = false; // Close the dialog or perform any action
     }
   }
 

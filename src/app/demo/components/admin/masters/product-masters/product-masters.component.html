@@ -34,17 +34,14 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>SN</th>
-                        <th class="sap_file_color">Order</th>
                         <th class="sap_file_color">Material Number</th>
                         <th class="sap_file_color">Material Number with Process</th>
                         <th class="sap_file_color">Material description</th>
-                        <th class="sap_file_color">Unit of measure (=GMEIN)</th>
                         <th class="input_fields_color">Machine Name</th>
                         <!-- <th class="input_fields_color">Machine-1</th> -->
 
                         <th class="machine_master_color">Responsible </th>
                         <th class="machine_master_color">Module</th>
-                        <th class="input_fields_color">Segment</th>
                         <th class="input_fields_color">Cheese Wt</th>
                         <th class="input_fields_color">Finish </th>
                         <th class="input_fields_color">Finish Wt.</th>
@@ -69,17 +66,14 @@
                 <ng-template pTemplate="body" let-pmd let-rowIndex="rowIndex">
                     <tr>
                         <td>{{ rowIndex+1 }}</td>
-                        <td>{{ pmd.order_number }}</td>
                         <td>{{ pmd.material_number }}</td>
                         <td>{{ pmd.material_number_for_process }}</td>
                         <td>{{ pmd.material_description }}</td>
-                        <td>{{ pmd.unit_of_measure }}</td>
                         <td>{{ pmd.machine_name }}</td>
                         <!-- <td>{{ pmd.machine_1 }}</td> -->
 
                         <td>{{ pmd.responsible_name }}</td>
                         <td>{{ pmd.module_name }}</td>
-                        <td>{{ pmd.segment_name }}</td>
                         <td>{{ pmd.cheese_wt }}</td>
                         <td>{{ pmd.finish_name }}</td>
                         <td>{{ pmd.finish_wt }}</td>

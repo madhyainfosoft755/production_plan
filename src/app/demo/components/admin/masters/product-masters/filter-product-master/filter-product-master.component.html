@@ -2,10 +2,6 @@
   <form [formGroup]="productMasterForm" (ngSubmit)="onSubmit()">
       <div class="p-fluid grid">
           <div class="field col-12 sm:col-4">
-              <label for="order_number">Order</label>
-              <input id="order_number" formControlName="order_number" type="text" pInputText placeholder="Enter Order" />
-          </div>
-          <div class="field col-12 sm:col-4">
               <label for="material_number">Material Number</label>
               <input id="material_number" formControlName="material_number" type="text" pInputText placeholder="Enter Material Number" />
           </div>
@@ -49,24 +45,7 @@
               <p-progressSpinner *ngIf="loadingMachineModules" styleClass="w-2rem h-2rem" />
             </div>
           </div>
-          <!-- Input Fields -->
-          <div class="field col-12 sm:col-4">
-            <label for="segment">Segment</label>
-            <div class="flex align-items-center">
-                <p-dropdown
-                  id="segment"
-                  class="flex-grow-1"
-                  [options]="segmentOptions"
-                  formControlName="segment"
-                  appendTo="body"
-                  placeholder="Select Segment"
-                  optionLabel="name"
-                  optionValue="id"
-                  filter="true"
-                ></p-dropdown>
-                <p-progressSpinner *ngIf="loadingSegments" styleClass="w-2rem h-2rem" />
-            </div>
-          </div>
+          
           <div class="field col-12 sm:col-4">
             <label for="cheese_wt">Cheese Wt</label>
             <input id="cheese_wt" type="text" pInputText formControlName="cheese_wt" placeholder="Enter Cheese Wt" />

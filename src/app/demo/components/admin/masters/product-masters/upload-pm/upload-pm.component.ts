@@ -15,20 +15,17 @@ export class UploadPMComponent implements OnInit {
   selectedFile: File | null = null;
   allowedFileTypes = ['xlsx', 'csv'];
   expectedHeaders = [
-    { name: 'Order', type: 'varchar' },
     { name: 'Material Number', type: 'varchar' },
     { name: 'Material Number Froging', type: 'varchar' },
     { name: 'Material Description', type: 'varchar' },
     { name: 'Machine Name', type: 'varchar' },
     { name: 'Module', type: 'varchar' },
-    { name: 'Unit of Measure', type: 'varchar' },
     { name: 'Seg-2', type: 'varchar' },
     { name: 'Seg-3', type: 'varchar' },
     { name: 'Product Size', type: 'varchar' },
     { name: 'Product Group', type: 'varchar' },
     { name: 'Product Length', type: 'varchar' },
     { name: 'Finish', type: 'varchar' },
-    { name: 'Segment', type: 'varchar' },
     { name: 'Finish Wt', type: 'number' },
     { name: 'Cheese Wt', type: 'number' },
     { name: 'RM SPEC', type: 'varchar' },

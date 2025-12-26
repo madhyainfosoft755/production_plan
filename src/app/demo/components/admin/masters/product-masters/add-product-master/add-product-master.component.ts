@@ -14,7 +14,6 @@ export class AddProductMasterComponent implements OnInit {
   submitted = false;
   loading = true;
   visibleAddFinishDialog: boolean = false;
-  visibleAddSegmentDialog: boolean = false;
   visibleAddGroupDialog: boolean = false;
   visibleAddSeg2Dialog: boolean = false;
   visibleAddSeg3Dialog: boolean = false;
@@ -23,11 +22,9 @@ export class AddProductMasterComponent implements OnInit {
   material_no_for_process: string = null;
   // Dropdown Options
   machineOptions: any;
-  segmentOptions = [];
   loadingFinish: boolean = false;
   loadingSeg2: boolean = false;
   loadingSeg3: boolean = false;
-  loadingSegments: boolean = false;
   loadingGroups: boolean = false;
   loadingMachines: boolean = false;
   finishOptions = [];
@@ -49,13 +46,10 @@ export class AddProductMasterComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private adminApiService: AdminApiService) {
     this.productMasterForm = this.fb.group({
-      order_number: ['', Validators.required],
       material_number: ['', Validators.required],
       material_description: ['', Validators.required],
-      unit_of_measure: ['', Validators.required],
       machine: ['', Validators.required],
       machine_module: ['', Validators.required],
-      segment: [null],
       cheese_wt: [null],
       finish: [null],
       finish_wt: [null],
@@ -83,7 +77,6 @@ export class AddProductMasterComponent implements OnInit {
     if(this.selectedProductNumber){
       // this.onInput(this.selectedProductNumber.material_number);
       this.productMasterForm.patchValue({
-        order_number: this.selectedProductNumber.order_number,
         material_number: this.selectedProductNumber.material_number,
       });
     }
@@ -94,7 +87,6 @@ export class AddProductMasterComponent implements OnInit {
     this.loading = true;
     this.loadingSeg2 = true;
     this.loadingSeg3 = true;
-    this.loadingSegments = true;
     this.loadingGroups = true;
     this.loadingFinish = true;
     this.loadingMachines = true;
@@ -105,7 +97,6 @@ export class AddProductMasterComponent implements OnInit {
       machinesInfo: this.adminApiService.get_machines_info(),
       seg2Data: this.adminApiService.get_all_seg2(), // Replace with actual API calls
       seg3Data: this.adminApiService.get_all_seg3(),
-      segmentsData: this.adminApiService.get_all_segments(),
       groupData: this.adminApiService.get_all_groups()
     }).subscribe({
       next: (res: any) => {
@@ -120,10 +111,6 @@ export class AddProductMasterComponent implements OnInit {
         if(res.seg3Data){
           this.seg3Options = res.seg3Data.data;
           this.loadingSeg3 = false;
-        }
-        if(res.segmentsData){
-          this.segmentOptions = res.segmentsData.data;
-          this.loadingSegments = false;
         }
         if(res.groupData){
           this.groupOptions = res.groupData.data;
@@ -167,18 +154,6 @@ export class AddProductMasterComponent implements OnInit {
     });
   }
 
-  load_segment_data(){
-    this.loadingSegments = true;
-    this.adminApiService.get_all_segments().subscribe({
-      next: (res: any)=>{
-        this.segmentOptions = res.data;
-        this.loadingSegments = false;
-      }, 
-      error: (err: any)=>{
-        this.loadingSegments = false;
-      }
-    });
-  }
   load_group_data(){
     this.loadingGroups = true;
     this.adminApiService.get_all_groups().subscribe({
@@ -287,9 +262,6 @@ export class AddProductMasterComponent implements OnInit {
   showAddFinishDialog(){
     this.visibleAddFinishDialog = true;
   }
-  showAddSegmentDialog(){
-    this.visibleAddSegmentDialog = true;
-  }
   showAddGroupDialog(){
     this.visibleAddGroupDialog = true;
   }
@@ -304,13 +276,6 @@ export class AddProductMasterComponent implements OnInit {
     if(message){
       this.load_finish_data();
       this.visibleAddFinishDialog = false; // Close the dialog or perform any action
-    }
-  }
-
-  onSegmentNotify(message: boolean): void {
-    if(message){
-      this.load_segment_data();
-      this.visibleAddSegmentDialog = false; // Close the dialog or perform any action
     }
   }
 
@@ -344,10 +309,8 @@ export class AddProductMasterComponent implements OnInit {
           this.materialNumberInfo = res.data;
           this.productMasterForm.patchValue({
             material_description: res.data.material_description,
-            unit_of_measure: res.data.unit_of_measure,
             machine: res.data.machine,
             machine_module: res.data.machine_module,
-            segment: res.data.segment,
             cheese_wt: res.data.cheese_wt,
             finish: res.data.finish,
             finish_wt: res.data.finish_wt,
@@ -371,10 +334,8 @@ export class AddProductMasterComponent implements OnInit {
           this.checkingMaterialNumber = false;
           this.productMasterForm.patchValue({
             material_description: '',
-            unit_of_measure: '',
             machine: '',
             machine_module: '',
-            segment: null,
             cheese_wt: null,
             finish: null,
             finish_wt: null,

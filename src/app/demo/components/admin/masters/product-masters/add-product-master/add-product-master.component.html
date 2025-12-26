@@ -2,12 +2,6 @@
     <p-fieldset legend="SAP DATA" [toggleable]="false">
         <div class="p-fluid grid">
           <!-- SAP DATA -->
-          <!-- <h3 class="col-12">SAP DATA</h3> -->
-          <div class="field col-12 sm:col-4">
-            <label for="order">Order <span class="text-red-500">*</span></label>
-            <input id="order" type="text" pInputText formControlName="order_number" placeholder="Enter Order" />
-            <small *ngIf="submitted && productMasterForm.controls['order_number'].invalid" class="p-error">Order is required.</small>
-          </div>
           <div class="field col-12 sm:col-4">
             <label for="material_number">Material Number <span class="text-red-500">*</span></label>
             <p-inputGroup>
@@ -24,11 +18,6 @@
             <small *ngIf="submitted && productMasterForm.controls['material_number'].invalid" class="p-error">
               Material Number is required.
             </small>
-          </div>
-          <div class="field col-12 sm:col-4">
-            <label for="unit_of_measure">Unit of Measure <span class="text-red-500">*</span></label>
-            <input id="unit_of_measure" type="text" pInputText formControlName="unit_of_measure" placeholder="Enter Unit of Measure" />
-            <small *ngIf="submitted && productMasterForm.controls['unit_of_measure'].invalid" class="p-error">Unit of Measure is required.</small>
           </div>
           <div class="field col-12 sm:col-6">
             <label for="material_description">Material Description <span class="text-red-500">*</span></label>
@@ -141,25 +130,6 @@
         <div class="p-fluid grid">
             
       
-          <!-- Input Fields -->
-          <div class="field col-12 sm:col-4">
-            <label for="segment">Segment</label>
-            <div class="flex align-items-center">
-                <p-dropdown
-                  id="segment"
-                  class="flex-grow-1"
-                  [options]="segmentOptions"
-                  formControlName="segment"
-                  appendTo="body"
-                  placeholder="Select Segment"
-                  optionLabel="name"
-                  optionValue="id"
-                  filter="true"
-                ></p-dropdown>
-                <p-button icon="pi pi-plus" (click)="showAddSegmentDialog()" />
-                <p-progressSpinner *ngIf="loadingSegments" styleClass="w-2rem h-2rem" />
-            </div>
-          </div>
           <div class="field col-12 sm:col-4">
             <label for="cheese_wt">Cheese Wt</label>
             <input id="cheese_wt" type="text" pInputText formControlName="cheese_wt" placeholder="Enter Cheese Wt" />
@@ -300,10 +270,6 @@
 
 <p-dialog header="Add Finish" [modal]="true" [(visible)]="visibleAddFinishDialog" [style]="{ width: '25vw' }">
     <app-add-finish *ngIf="visibleAddFinishDialog" (notifyParent)="onFinishNotify($event)"></app-add-finish>
-</p-dialog>
-
-<p-dialog header="Add Segment" [modal]="true" [(visible)]="visibleAddSegmentDialog" [style]="{ width: '25vw' }">
-  <app-add-segments *ngIf="visibleAddSegmentDialog" (notifyParent)="onSegmentNotify($event)"></app-add-segments>
 </p-dialog>
 
 <p-dialog header="Add Group" [modal]="true" [(visible)]="visibleAddGroupDialog" [style]="{ width: '25vw' }">
