@@ -24,6 +24,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { PlantMachineBookingComponent } from './plant-machine-booking/plant-machine-booking.component';
 import { DailyOutputComponent } from './daily-output/daily-output.component';
 import { GroupDetailsComponent } from './group-details/group-details.component';
+import { FinishWisePlanningComponent } from './finish-wise-planning/finish-wise-planning.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { GroupDetailsComponent } from './group-details/group-details.component';
     GroupDetailsComponent,
     Report4Component,
     PlantMachineBookingComponent,
-    DailyOutputComponent
+    DailyOutputComponent,
+    FinishWisePlanningComponent
   ],
   imports: [
     CommonModule,

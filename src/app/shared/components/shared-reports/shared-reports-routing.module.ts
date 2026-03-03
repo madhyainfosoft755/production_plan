@@ -19,6 +19,10 @@ const routes: Routes = [
     loadChildren: () => import('./report4/report4-routing.module').then(m => m.Report4RoutingModule)
   },
   {
+    path: 'finish-wise-planning',
+    loadChildren: () => import('./finish-wise-planning/finish-wise-planning-routing.module').then(m => m.FinishWisePlanningRoutingModule)
+  },
+  {
     path: 'daily-output',
     loadChildren: () => import('./daily-output/daily-output-routing.module').then(m => m.DailyOutputRoutingModule)
   },

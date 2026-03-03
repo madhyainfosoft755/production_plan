@@ -27,15 +27,15 @@ export const errorHandlingInterceptor: HttpInterceptorFn =(
         case 0:
           appNotificationService.error('Server error', 'Service Unavailable');
           break;
-        case 400:
-          appNotificationService.error(`${error.status.toString()} : `, error.statusText);
-          break;
-        case 404:
-          appNotificationService.error(`${error.status.toString()} : Not Found`, 'Requested page not found');
-          break;
-        case 401:
-          appNotificationService.error(`${error.status.toString()} : Unauthorized Access`, error.error.message);
-          break;
+        // case 400:
+        //   appNotificationService.error(`${error.status.toString()} : `, error.statusText);
+        //   break;
+        // case 404:
+        //   appNotificationService.error(`${error.status.toString()} : Not Found`, 'Requested page not found');
+        //   break;
+        // case 401:
+        //   appNotificationService.error(`${error.status.toString()} : Unauthorized Access`, error.error.message);
+        //   break;
         case 500:
           appNotificationService.error(`${error.status.toString()} : Internal Server Error`, errorMsg);
           break;

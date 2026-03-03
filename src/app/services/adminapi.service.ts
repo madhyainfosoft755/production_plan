@@ -62,6 +62,10 @@ export class AdminApiService {
     return this.http.post(`${this.baseUrl}get-segment-wise-data`, filters);
   }
 
+  get_finish_wise_planning_data(filters: any): Observable<any>{
+    return this.http.post(`${this.baseUrl}get-finish-wise-planning-data`, filters);
+  }
+
   get_seg3_wise_data(filters: any): Observable<any>{
     return this.http.post(`${this.baseUrl}get-seg3-wise-data`, filters);
   }
@@ -187,6 +191,10 @@ export class AdminApiService {
 
   upload_sap(data: any): Observable<any>{
     return this.http.post(`${this.baseUrl}transfer-and-upload`, data);
+  }
+
+  upload_part_number_bulk(data: any): Observable<any>{
+    return this.http.postBlob(`${this.baseUrl}upload-part-number-bulk`, data);
   }
 
   generating_main_file(): Observable<any>{

@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminApiService } from 'src/app/services/adminapi.service';
 import { debounceTime, catchError, switchMap, of } from 'rxjs';
+import { Message } from 'primeng/api';
 
 @Component({
   selector: 'app-add-part-number',
@@ -33,6 +34,10 @@ export class AddPartNumberComponent implements OnInit {
   partNumberInfo: any[] = [];
   selectedWorkOrder: string | number | null = null;
 
+  addPartsOn = true;
+  loadingFileUpload = false;
+  messages: Message[] | undefined;
+
   constructor(private fb: FormBuilder, private adminApiService: AdminApiService) {}
 
   ngOnInit(): void {
@@ -40,7 +45,7 @@ export class AddPartNumberComponent implements OnInit {
       parts: this.fb.array([this.createPartGroup()])
     });
 
-    this.setupPartNumberValidation(); // 👈 watch & validate via API
+    this.setupPartNumberValidation(); // watch & validate via API
     this.loadWorkOrderdb();
 
   }
@@ -85,6 +90,9 @@ export class AddPartNumberComponent implements OnInit {
         });
     }
 
+    addPartOn(){
+        this.addPartsOn = true;
+    }
     addPart(): void {
         this.parts.push(this.createPartGroup());
         this.setupPartNumberValidation(); // Add validation for new row
@@ -162,6 +170,68 @@ export class AddPartNumberComponent implements OnInit {
             }, 
             error: (err: any)=>{
                 this.loadingSubmit = false;
+            }
+        });
+    }
+
+    bulkUploadParts(){
+        this.addPartsOn = false;
+    }
+
+    onFileUploaded(file: File){
+        // Handle the uploaded file (e.g., send to API)
+        console.log('File received from child component:', file);
+        // You can implement the logic to send this file to your API or process it as needed.
+        this.loadingFileUpload = true;
+        const formData = new FormData();
+        formData.append('upload_excel', file);
+        formData.append('work_order_id', this.selectedWorkOrder.toString());
+        this.adminApiService.upload_part_number_bulk(formData).subscribe({
+            next: (response: any)=>{      
+                console.log(response);
+                const contentType = response.headers.get('Content-Type');
+
+                // If backend returned JSON (validation message)
+                if (contentType?.includes('application/json')) {
+
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                        const json = JSON.parse(reader.result as string);
+                        console.log('JSON response:', json);
+
+                        this.loadingFileUpload = false;
+                        this.notifyParent.emit(true);
+                    };
+
+                    reader.readAsText(response.body!);
+                    return;
+                }
+
+                
+                const blob = response.body!;
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = this.selectedWorkOrder.toString() + '.xlsx'; // default fallback
+                if (contentDisposition) {
+                    const matches = /filename="([^"]+)"/.exec(contentDisposition);
+                    if (matches?.[1]) {
+                        filename = matches[1];
+                    }
+                }
+
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                a.click();
+
+                URL.revokeObjectURL(a.href); // clean up
+                this.messages = [
+                    { severity: 'error', detail: 'Some Parts are not found in the database.' }
+                ];
+                this.loadingFileUpload = false;
+            },
+            error: (err: any)=>{
+                this.loadingFileUpload = false;
             }
         });
     }

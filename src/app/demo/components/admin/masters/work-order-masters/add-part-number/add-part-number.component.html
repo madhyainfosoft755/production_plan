@@ -22,11 +22,13 @@
                 </p-inputGroup>
                 <p-progressSpinner *ngIf="loadingWODB" styleClass="w-2rem h-2rem" />
             </div>
-            <p-button type="button" label="Add" (click)="addPart()" />
+            <p-button [disabled]="!addPartsOn" type="button" label="Bulk Upload" (click)="bulkUploadParts()" />
+            <p-button [disabled]="addPartsOn" type="button" label="Add Parts" (click)="addPartOn()" />
+            <p-button [disabled]="!addPartsOn" type="button" label="Add" (click)="addPart()" />
         </div>
     </div>
 
-    <div class="col-12">
+    <div class="col-12" *ngIf="addPartsOn">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div formArrayName="parts" class="p-fluid grid">
                 <div *ngFor="let part of parts.controls; let i = index" [formGroupName]="i" class="flex align-items-end p-0 col-12">
@@ -80,4 +82,14 @@
         </form>
 
     </div>
+
+    <div class="col-12" *ngIf="!addPartsOn">
+
+    </div>
 </div>
+<p-messages 
+    [(value)]="messages" 
+    [enableService]="false" 
+    [closable]="true"
+    styleClass="mt-2" />
+<app-bulk-upload-parts *ngIf="!addPartsOn" (notifyFileUpload)="onFileUploaded($event)" (notifyFileChange)="messages = undefined"></app-bulk-upload-parts>

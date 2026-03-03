@@ -24,13 +24,15 @@ import { WorkOrderMastersComponent } from './work-order-masters.component';
 import { AddWorkOrderComponent } from './add-work-order/add-work-order.component';
 import { UploadWOMComponent } from './upload-wom/upload-wom.component';
 import { AddPartNumberComponent } from './add-part-number/add-part-number.component';
+import { BulkUploadPartsComponent } from './add-part-number/bulk-upload-parts/bulk-upload-parts.components';
 
 @NgModule({
   declarations: [
     WorkOrderMastersComponent,
     AddWorkOrderComponent,
     UploadWOMComponent,
-    AddPartNumberComponent
+    AddPartNumberComponent,
+    BulkUploadPartsComponent
   ],
   imports: [
     CommonModule,

@@ -42,6 +42,10 @@ export class HttpService {
     }
   }
 
+  postBlob(url: string, model: any) {
+    return this.http.post(url, model, { responseType: 'blob', observe: 'response' }) as Observable<any>;
+  }
+
   put(url: string, model: any) {
     return this.http.put(url, model) as Observable<any>;
   }
