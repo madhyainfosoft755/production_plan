@@ -67,7 +67,7 @@ export class AddWeeklyPlanningComponent implements OnInit {
             capacity: 0,
             single_mc_shift_capacity: 0,
             no_of_machines: 0,
-            plan_no_of_machine: 0,
+            plan_no_of_machines: 0,
             machine_speed: 0,
             no_of_shift: 0,
             per_of_efficiency: 0,
@@ -83,7 +83,7 @@ export class AddWeeklyPlanningComponent implements OnInit {
         // Sum numeric fields
         for (const row of originalData) {
             totalRow.no_of_machines += Number(row.no_of_machines || 0);
-            totalRow.plan_no_of_machine += Number(row.plan_no_of_machine || 0);
+            totalRow.plan_no_of_machines += Number(row.plan_no_of_machines || 0);
             totalRow.machine_speed += Number(row.machine_speed || 0);
             totalRow.no_of_shift += Number(row.no_of_shift || 0);
             totalRow.per_of_efficiency += Number(row.per_of_efficiency || 0);
